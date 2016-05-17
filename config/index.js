@@ -16,13 +16,13 @@ if (IS_DEVELOPMENT) {
 
 // Server
 const IS_SSL = IS_DEVELOPMENT ? false : true;
-const PROTOCOL = IS_SSL ? 'https' : 'http';
-const SERVER_HOST = process.env.SERVER_HOST || 'localhost';
-const SERVER_PORT = process.env.SERVER_PORT || 8080;
+const HOST = process.env.HOST || 'localhost';
+const HTTP_PORT = process.env.HTTP_PORT || 8080;
+const HTTPS_PORT = process.env.HTTPS_PORT || 8443;
 
 // Parse server
 const APP_NAME = 'DBD Capital';
-const SERVER_URL = `${PROTOCOL}://${SERVER_HOST}:${SERVER_PORT}/parse`;
+const SERVER_URL = `https://${HOST}:${HTTPS_PORT}/parse`;
 const APP_ID = process.env.APP_ID || 'dbdcapital';
 const MASTER_KEY = process.env.MASTER_KEY || '70c6093dba5a7e55968a1c7ad3dd3e5a74ef5cac';
 // const DASHBOARD_AUTH = process.env.DASHBOARD_AUTH;
@@ -35,9 +35,10 @@ export default {
   IS_SSL,
   APP_NAME,
   APP_ID,
-  SERVER_HOST,
-  SERVER_PORT,
+  HOST,
+  HTTP_PORT,
+  HTTPS_PORT,
+  SERVER_URL,
   MASTER_KEY,
   DATABASE_URI,
-  SERVER_URL,
 };
