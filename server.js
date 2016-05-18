@@ -1,6 +1,6 @@
 // @flow
 
-// import path from 'path';
+import path from 'path';
 import fs from 'fs';
 import express from 'express';
 import webpack from 'webpack';
@@ -23,14 +23,24 @@ const app = express();
 if (Config.IS_DEVELOPMENT) {
   const compiler = webpack(WebpackConfig);
 
-  app.use(webpackDevMiddleware(compiler, {
+  const middleware = webpackDevMiddleware(compiler, {
     noInfo: true,
     publicPath: WebpackConfig.output.publicPath,
-  }));
-
+    stats: {
+      colors: true,
+    },
+  });
+  app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
+  app.get('/', (req, res)=>{
+    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+    res.end();
+  });
 } else {
   app.use(express.static(__dirname + '/dist'));
+  app.get('/', (req, res)=>{
+    res.sendFile(path.join(__dirname, 'dist/index.html'));
+  });
 }
 
 // Redirect from http requests to https
@@ -49,7 +59,7 @@ const api = new ParseServer({
   appId: Config.APP_ID,
   masterKey: Config.MASTER_KEY,
   databaseURI: Config.DATABASE_URI,
-  serverURL: Config.SERVER_URL, // HTTP or HTTPS. For requests from Cloud Code to Parse Server
+  serverURL: Config.SERVER_PARSE_URL, // HTTP or HTTPS. For requests from Cloud Code to Parse Server
   // cloud: '/Users/compass/Code/DBD/DBDCapital-Node/node_modules/parse-server/lib/cloud-code/Parse.Cloud.js', // Absolute path to your Cloud Code
 });
 
@@ -59,7 +69,7 @@ const dashboard = new ParseDashboard({
       'appName': Config.APP_NAME,
       'appId': Config.APP_ID,
       'masterKey': Config.MASTER_KEY,
-      'serverURL': Config.SERVER_URL,
+      'serverURL': Config.SERVER_PARSE_URL,
     },
   ],
 });

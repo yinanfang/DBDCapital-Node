@@ -1,42 +1,90 @@
+// Reference: https://github.com/christianalfoni/webpack-express-boilerplate/blob/master/webpack.production.config.js
 // @flow
 'use strict';
 
 var path = require('path');
 var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var StatsPlugin = require('stats-webpack-plugin');
+var BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
-// import Config from './config';
+var Config =  require('./config');
+
+var plugins = Config.IS_DEVELOPMENT ? [
+  new webpack.optimize.OccurenceOrderPlugin(),
+  new HtmlWebpackPlugin({
+    template: 'app/index.html',
+    inject: true,
+    filename: 'index.html',
+  }),
+  new webpack.HotModuleReplacementPlugin(),
+  new BrowserSyncPlugin({ // BrowserSync options
+    // Browse to http://localhost:3000 during dev
+    host: 'localhost',
+    port: 3000,
+    open: true,
+    // Webpack dev server url
+    proxy: Config.SERVER_URL,
+  }, { // plugin options
+    reload: false,
+  }),
+  new webpack.NoErrorsPlugin(),
+] : [
+  new webpack.optimize.OccurenceOrderPlugin(),
+  new HtmlWebpackPlugin({
+    template: 'app/index.html',
+    inject: true,
+    filename: 'index.html',
+  }),
+  new ExtractTextPlugin('[name]-[hash].min.css'),
+  new webpack.optimize.UglifyJsPlugin({
+    compressor: {
+      warnings: false,
+      screw_ie8: true,
+    },
+  }),
+  new StatsPlugin('webpack.stats.json'),
+  new webpack.NoErrorsPlugin(),
+];
+
+var cssLoader = Config.IS_DEVELOPMENT ? {
+  test: /\.css?$/,
+  loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]',
+} : {
+  test: /\.css?$/,
+  loader: ExtractTextPlugin.extract('style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss'),
+};
+
 
 module.exports = {
-  devtool: 'eval-source-map',
+  devtool: Config.IS_DEVELOPMENT ? 'eval-source-map' : null,
   entry: [
     'webpack-hot-middleware/client',
     './app/index',
   ],
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: '[name]-[hash].js',
     publicPath: '/static/',
   },
-  plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-  ],
+  plugins,
   module: {
     loaders: [
       {
         test: /\.js$/,
         loaders: [ 'babel' ],
         exclude: /node_modules/,
-        include: __dirname,
+      }, {
+        test: /\.json?$/,
+        loader: 'json',
       },
-      {
-        test: /\.css?$/,
-        loaders: [ 'style', 'raw' ],
-        include: __dirname,
-      },
+      cssLoader,
     ],
   },
+  postcss: [
+    require('autoprefixer'),
+  ],
 };
 
 
