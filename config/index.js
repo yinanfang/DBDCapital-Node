@@ -15,7 +15,6 @@ if (IS_DEVELOPMENT) {
 }
 
 // Server
-const IS_SSL = IS_DEVELOPMENT ? false : true;
 const HOST = process.env.HOST || 'localhost';
 const HTTP_PORT = process.env.HTTP_PORT || 8080;
 const HTTPS_PORT = process.env.HTTPS_PORT || 8443;
@@ -30,9 +29,8 @@ const MASTER_KEY = process.env.MASTER_KEY || '70c6093dba5a7e55968a1c7ad3dd3e5a74
 // Database - MongoLab
 const DATABASE_URI = process.env.DATABASE_URI || 'mongodb://localhost:27017/dev';
 
-export default {
+module.exports = {
   IS_DEVELOPMENT,
-  IS_SSL,
   APP_NAME,
   APP_ID,
   HOST,

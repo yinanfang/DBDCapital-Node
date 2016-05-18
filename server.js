@@ -3,16 +3,35 @@
 // import path from 'path';
 import fs from 'fs';
 import express from 'express';
+import webpack from 'webpack';
 import http from 'http';
 import https from 'https';
+
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
+
 import {ParseServer} from 'parse-server';
 import ParseDashboard from 'parse-dashboard';
 
 import Config from './config';
+import WebpackConfig from './webpack.config.js';
 
 console.log(Config);
 
 const app = express();
+
+if (Config.IS_DEVELOPMENT) {
+  const compiler = webpack(WebpackConfig);
+
+  app.use(webpackDevMiddleware(compiler, {
+    noInfo: true,
+    publicPath: WebpackConfig.output.publicPath,
+  }));
+
+  app.use(webpackHotMiddleware(compiler));
+} else {
+  app.use(express.static(__dirname + '/dist'));
+}
 
 // Redirect from http requests to https
 app.all('*', function(req, res, next) {
@@ -20,6 +39,10 @@ app.all('*', function(req, res, next) {
     return next();
   }
   res.redirect('https://'+Config.HOST+':'+Config.HTTPS_PORT+req.path);
+});
+
+app.get('/', function(req, res, next) {
+  res.sendFile(__dirname + '/app/index.html');
 });
 
 const api = new ParseServer({
@@ -47,6 +70,11 @@ app.use('/parse', api);
 // make the Parse Dashboard available at /dashboard
 app.use('/dashboard', dashboard);
 
+// Error handling
+app.use(function (err, req, res, next) {
+  console.log(err.message);
+});
+
 http.createServer(app).listen(Config.HTTP_PORT);
 
 const SSLOption = {
@@ -56,5 +84,5 @@ const SSLOption = {
 };
 
 https.createServer(SSLOption, app).listen(Config.HTTPS_PORT, () => {
-  console.log(Config.APP_NAME+' running on port ' + Config.HTTPS_PORT);
+  console.info(`${Config.APP_NAME} 🌎 ==> Listening on https://${Config.HOST}:${Config.HTTPS_PORT}`);
 });
