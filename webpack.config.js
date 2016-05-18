@@ -48,6 +48,8 @@ var plugins = Config.IS_DEVELOPMENT ? [
   new webpack.NoErrorsPlugin(),
 ];
 
+var babelPresets = Config.IS_DEVELOPMENT ? ['react', 'es2015', 'react-hmre'] : ['react', 'es2015'];
+
 var cssLoader = Config.IS_DEVELOPMENT ? {
   test: /\.css?$/,
   loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]',
@@ -73,8 +75,11 @@ module.exports = {
     loaders: [
       {
         test: /\.js$/,
-        loaders: [ 'babel' ],
+        loader: 'babel',
         exclude: /node_modules/,
+        query: {
+          'presets': babelPresets,
+        },
       }, {
         test: /\.json?$/,
         loader: 'json',

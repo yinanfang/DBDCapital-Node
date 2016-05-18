@@ -1,16 +1,20 @@
 // import 'babel-polyfill'
-// import React from 'react';
-// import { render } from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 // import { Provider } from 'react-redux';
-// import App from './containers/App'
+import App from './App.js';
 // import configureStore from './store/configureStore'
 // import 'todomvc-app-css/index.css'
 
-import styles from './style.css';
-
 // const store = configureStore()
 
-console.log('test');
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+
+
+
 // render(
 //   <Provider>
 //     <div></div>
