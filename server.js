@@ -6,6 +6,7 @@ import express from 'express';
 import webpack from 'webpack';
 import http from 'http';
 import https from 'https';
+import favicon from 'serve-favicon';
 
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
@@ -42,6 +43,14 @@ if (Config.IS_DEVELOPMENT) {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
   });
 }
+
+// Serve favicon
+app.use(favicon(__dirname+'/images/favicon.ico'));
+// app.use(favicon({
+//   '/favicon.ico': __dirname+'/images/favicon.ico', // Normal desktop
+//   '/favicon-144.ico': __dirname+'/images/favicon.ico', // Microsoft
+//   '/favicon-192.ico': __dirname+'/images/favicon.ico', // Apple
+// }));
 
 // Redirect from http requests to https
 app.all('*', function(req, res, next) {

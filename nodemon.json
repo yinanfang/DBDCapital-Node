@@ -2,6 +2,7 @@
   "verbose": true,
   "watch": [
     "server.js",
-    "server/*.js"
+    "server/*.js",
+    "webpack.config.js"
   ]
 }

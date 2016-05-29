@@ -17,13 +17,14 @@ var plugins = Config.IS_DEVELOPMENT ? [
     template: 'app/index.html',
     inject: true,
     filename: 'index.html',
+    showErrors: true,
   }),
   new webpack.HotModuleReplacementPlugin(),
   new BrowserSyncPlugin({ // BrowserSync options
     // Browse to http://localhost:3000 during dev
     host: 'localhost',
     port: 3000,
-    open: true,
+    open: true, // Open a tab in browser
     // Webpack dev server url
     proxy: Config.SERVER_URL,
   }, { // plugin options
@@ -91,23 +92,3 @@ module.exports = {
     require('autoprefixer'),
   ],
 };
-
-
-
-
-
-
-// module.exports = {
-//   context: __dirname,
-//   devtool: Config.IS_DEVELOPMENT ? 'inline-sourcemap' : null,
-//   entry: './app/main.js',
-//   output: {
-//     path: __dirname + '/js',
-//     filename: 'main.min.js'
-//   },
-//   plugins: Config.IS_DEVELOPMENT ? [] : [
-//     new webpack.optimize.DedupePlugin(),
-//     new webpack.optimize.OccurenceOrderPlugin(),
-//     new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
-//   ],
-// };

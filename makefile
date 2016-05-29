@@ -5,6 +5,9 @@ serve: copy-config
 
 all:
 
+setup:
+	npm install --dev
+
 build: clean
 	NODE_ENV=production webpack --progress --profile --colors
 
