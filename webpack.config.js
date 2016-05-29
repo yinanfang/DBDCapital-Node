@@ -1,17 +1,16 @@
 // Reference: https://github.com/christianalfoni/webpack-express-boilerplate/blob/master/webpack.production.config.js
 // @flow
-'use strict';
 
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var StatsPlugin = require('stats-webpack-plugin');
-var BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+import path from 'path';
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import StatsPlugin from 'stats-webpack-plugin';
+import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 
-var Config =  require('./config');
+import Config from './config';
 
-var plugins = Config.IS_DEVELOPMENT ? [
+const plugins = Config.IS_DEVELOPMENT ? [
   new webpack.optimize.OccurenceOrderPlugin(),
   new HtmlWebpackPlugin({
     template: 'app/index.html',
@@ -49,9 +48,9 @@ var plugins = Config.IS_DEVELOPMENT ? [
   new webpack.NoErrorsPlugin(),
 ];
 
-var babelPresets = Config.IS_DEVELOPMENT ? ['react', 'es2015', 'react-hmre'] : ['react', 'es2015'];
+const babelPresets = Config.IS_DEVELOPMENT ? ['react', 'es2015', 'react-hmre'] : ['react', 'es2015'];
 
-var cssLoader = Config.IS_DEVELOPMENT ? {
+const cssLoader = Config.IS_DEVELOPMENT ? {
   test: /\.css?$/,
   loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]',
 } : {
@@ -62,10 +61,10 @@ var cssLoader = Config.IS_DEVELOPMENT ? {
 
 module.exports = {
   devtool: Config.IS_DEVELOPMENT ? 'eval-source-map' : null,
-  entry: [
-    'webpack-hot-middleware/client',
-    './app/index',
-  ],
+  entry: {
+    // [name]: [sources] -> file.html output uses the same name. js/css files use [name] and will auto-append to file.html
+    index: ['./app/index', 'webpack-hot-middleware/client'],
+  },
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name]-[hash].js',
@@ -79,13 +78,17 @@ module.exports = {
         loader: 'babel',
         exclude: /node_modules/,
         query: {
-          'presets': babelPresets,
+          presets: babelPresets,
         },
       }, {
         test: /\.json?$/,
         loader: 'json',
       },
       cssLoader,
+      { // inline base64 URLs for <=8k images, direct URLs for the rest
+        test: /\.(png|jpg)$/,
+        loader: 'url-loader?limit=8192',
+      },
     ],
   },
   postcss: [

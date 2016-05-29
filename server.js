@@ -6,12 +6,14 @@ import express from 'express';
 import webpack from 'webpack';
 import http from 'http';
 import https from 'https';
+import bodyParser from 'body-parser';
 import favicon from 'serve-favicon';
+import errorHandler from 'errorhandler';
 
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 
-import {ParseServer} from 'parse-server';
+import { ParseServer } from 'parse-server';
 import ParseDashboard from 'parse-dashboard';
 
 import Config from './config';
@@ -21,6 +23,28 @@ console.log(Config);
 
 const app = express();
 
+// Redirect from http requests to https
+app.all('*', (req, res, next) => {
+  if (req.secure) {
+    return next();
+  }
+  console.log('insecure connection. Rerouting to https...');
+  return res.redirect(`https://${Config.HOST}:${Config.HTTPS_PORT}${req.path}`);
+});
+
+// Serve favicon
+app.use(favicon(path.join(__dirname, '/images/favicon.ico')));
+// app.use(favicon({
+//   '/favicon.ico': __dirname+'/images/favicon.ico', // Normal desktop
+//   '/favicon-144.ico': __dirname+'/images/favicon.ico', // Microsoft
+//   '/favicon-192.ico': __dirname+'/images/favicon.ico', // Apple
+// }));
+
+// Body parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Webpack server on dev
 if (Config.IS_DEVELOPMENT) {
   const compiler = webpack(WebpackConfig);
 
@@ -33,36 +57,20 @@ if (Config.IS_DEVELOPMENT) {
   });
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
-  app.get('/', (req, res)=>{
+  app.get('/', (req, res) => {
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     res.end();
   });
 } else {
-  app.use(express.static(__dirname + '/dist'));
-  app.get('/', (req, res)=>{
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
+  app.use(express.static(path.join(__dirname, '/dist')));
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '/dist/index.html'));
   });
 }
 
-// Serve favicon
-app.use(favicon(__dirname+'/images/favicon.ico'));
-// app.use(favicon({
-//   '/favicon.ico': __dirname+'/images/favicon.ico', // Normal desktop
-//   '/favicon-144.ico': __dirname+'/images/favicon.ico', // Microsoft
-//   '/favicon-192.ico': __dirname+'/images/favicon.ico', // Apple
-// }));
-
-// Redirect from http requests to https
-app.all('*', function(req, res, next) {
-  if (req.secure) {
-    return next();
-  }
-  res.redirect('https://'+Config.HOST+':'+Config.HTTPS_PORT+req.path);
-});
-
-app.get('/', function(req, res, next) {
-  res.sendFile(__dirname + '/app/index.html');
-});
+// app.get('/', function(req, res, next) {
+//   res.sendFile(__dirname + '/app/index.html');
+// });
 
 const api = new ParseServer({
   appId: Config.APP_ID,
@@ -73,12 +81,12 @@ const api = new ParseServer({
 });
 
 const dashboard = new ParseDashboard({
-  'apps': [
+  apps: [
     {
-      'appName': Config.APP_NAME,
-      'appId': Config.APP_ID,
-      'masterKey': Config.MASTER_KEY,
-      'serverURL': Config.SERVER_PARSE_URL,
+      appName: Config.APP_NAME,
+      appId: Config.APP_ID,
+      masterKey: Config.MASTER_KEY,
+      serverURL: Config.SERVER_PARSE_URL,
     },
   ],
 });
@@ -89,10 +97,10 @@ app.use('/parse', api);
 // make the Parse Dashboard available at /dashboard
 app.use('/dashboard', dashboard);
 
-// Error handling
-app.use(function (err, req, res, next) {
-  console.log(err.message);
-});
+// Error handling after all routing
+if (Config.IS_DEVELOPMENT) {
+  app.use(errorHandler());
+}
 
 http.createServer(app).listen(Config.HTTP_PORT);
 

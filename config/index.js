@@ -1,5 +1,4 @@
 // @flow
-'use strict';
 
 // Environment
 const IS_DEVELOPMENT = process.env.NODE_ENV == 'development' ? true : false;

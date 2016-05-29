@@ -1,3 +1,7 @@
 body {
-  background: gray; 
+  background: gray;
+}
+
+.app {
+  background: blue;
 }

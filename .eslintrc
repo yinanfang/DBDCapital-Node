@@ -21,8 +21,9 @@
       "linebreak-style": [2, "unix"],
       "semi": [2, "always"],
       "no-console": [0],
+      "max-len": [0],
       "comma-dangle": [2, "always-multiline"],
-      "no-unused-vars": [2, {"vars": "all", "args": "none"}]
+      "no-unused-vars": [2, {"vars": "all", "args": "none"}],
   },
 
   "extends": "eslint-config-airbnb"
