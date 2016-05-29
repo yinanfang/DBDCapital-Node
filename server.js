@@ -9,6 +9,7 @@ import https from 'https';
 import bodyParser from 'body-parser';
 import favicon from 'serve-favicon';
 import errorHandler from 'errorhandler';
+import morgan from 'morgan';
 
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
@@ -16,19 +17,23 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import { ParseServer } from 'parse-server';
 import ParseDashboard from 'parse-dashboard';
 
-import Config from '~/config';
+import Config from './config';
 import WebpackConfig from './webpack.config.js';
 
-console.log(Config);
+import logger from './utils/logger.js';
+
+logger.debug(Config);
 
 const app = express();
+
+app.use(morgan('combined', { stream: logger.stream }));
 
 // Redirect from http requests to https
 app.all('*', (req, res, next) => {
   if (req.secure) {
     return next();
   }
-  console.log('insecure connection. Rerouting to https...');
+  logger.info('insecure connection. Rerouting to https...');
   return res.redirect(`https://${Config.HOST}:${Config.HTTPS_PORT}${req.path}`);
 });
 

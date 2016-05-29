@@ -29,6 +29,9 @@ const MASTER_KEY = process.env.MASTER_KEY || '70c6093dba5a7e55968a1c7ad3dd3e5a74
 // Database - MongoLab
 const DATABASE_URI = process.env.DATABASE_URI || 'mongodb://localhost:27017/dev';
 
+// Loggly
+const LOGGLY_TOKEN = process.env.LOGGLY_TOKEN || 'ijdiwjci-d27d-jdjh-vdj2-ijdhu28djdss';
+
 module.exports = {
   IS_DEVELOPMENT,
   APP_NAME,
@@ -40,4 +43,5 @@ module.exports = {
   SERVER_PARSE_URL,
   MASTER_KEY,
   DATABASE_URI,
+  LOGGLY_TOKEN,
 };
