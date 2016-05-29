@@ -1,7 +1,7 @@
 # Reference: https://github.com/djhi/my-nutrition/blob/master/makefile
 
 serve: copy-config
-	NODE_ENV=development nodemon --exec ./node_modules/babel-cli/bin/babel-node server
+	NODE_ENV=development nodemon --exec ./node_modules/babel-cli/bin/babel-node.js server
 
 all:
 
@@ -10,7 +10,7 @@ setup:
 	npm install --dev
 
 build: clean
-	NODE_ENV=production ./node_modules/babel-cli/bin/babel-node ./node_modules/webpack/bin/webpack --progress --profile --colors
+	NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js ./node_modules/webpack/bin/webpack.js --progress --profile --colors
 
 copy-config:
 

@@ -7,6 +7,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
 import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
+import autoprefixer from 'autoprefixer';
 
 import Config from './config';
 
@@ -92,6 +93,6 @@ module.exports = {
     ],
   },
   postcss: [
-    require('autoprefixer'),
+    autoprefixer,
   ],
 };

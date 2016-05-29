@@ -16,7 +16,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import { ParseServer } from 'parse-server';
 import ParseDashboard from 'parse-dashboard';
 
-import Config from './config';
+import Config from '~/config';
 import WebpackConfig from './webpack.config.js';
 
 console.log(Config);

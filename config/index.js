@@ -1,14 +1,16 @@
 // @flow
 
+import dotenv from 'dotenv';
+
 // Environment
-const IS_DEVELOPMENT = process.env.NODE_ENV == 'development' ? true : false;
+const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 // Load environment specific variables
 // .env.xxx locat at the root level
 if (IS_DEVELOPMENT) {
-  require('dotenv').config({path: '.env.development'});
+  dotenv.config({ path: '.env.development' });
 } else {
-  require('dotenv').config({path: '.env.production'});
+  dotenv.config({ path: '.env.production' });
 }
 
 // Server

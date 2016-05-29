@@ -24,6 +24,9 @@
       "max-len": [0],
       "comma-dangle": [2, "always-multiline"],
       "no-unused-vars": [2, {"vars": "all", "args": "none"}],
+
+      // For babel-root-import exception
+      "import/no-unresolved": [2, { ignore: ['\~*'] }]
   },
 
   "extends": "eslint-config-airbnb"
