@@ -1,4 +1,5 @@
 // Reference: http://tostring.it/2014/06/23/advanced-logging-with-nodejs/
+// @flow
 
 import path from 'path';
 import winston from 'winston';

@@ -6,8 +6,6 @@ serve: copy-config
 all:
 
 setup:
-	# npm install -g
-	npm install --dev
 
 build: clean
 	NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js ./node_modules/webpack/bin/webpack.js --progress --profile --colors

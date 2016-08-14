@@ -33,9 +33,11 @@ node_modules
 .node_repl_history
 
 # Env file
-.env
 .env.development
 .env.production
 *.crt
 *.key
 dist
+
+# Mac file
+.DS_Store
