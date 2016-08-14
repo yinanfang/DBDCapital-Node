@@ -115,6 +115,7 @@ const SSLOption = {
   key: fs.readFileSync('dbd-capital.com.key'),
 };
 
-https.createServer(SSLOption, app).listen(Config.HTTPS_PORT, () => {
+// Use undefined to avoid Flow issue: https://github.com/facebook/flow/issues/1684#issuecomment-222624389
+https.createServer(SSLOption, app).listen(Config.HTTPS_PORT, undefined, undefined, () => {
   console.info(`${Config.APP_NAME} 🌎 ==> Listening on https://${Config.HOST}:${Config.HTTPS_PORT}`);
 });
