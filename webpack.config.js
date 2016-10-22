@@ -25,6 +25,7 @@ const plugins = Config.IS_DEVELOPMENT ? [
     host: 'localhost',
     port: 3000,
     open: true, // Open a tab in browser
+    browser: ['google chrome'],
     // Webpack dev server url
     proxy: Config.SERVER_URL,
   }, { // plugin options

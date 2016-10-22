@@ -110,7 +110,7 @@ if (Config.IS_DEVELOPMENT) {
 http.createServer(app).listen(Config.HTTP_PORT);
 
 const SSLOption = {
-  ca: [fs.readFileSync('intermediate.crt'), fs.readFileSync('StartCom_root.crt')],
+  ca: [fs.readFileSync('StartCom_root_bundle.crt')], // Avoid importing root crt to Mac Key Chain
   cert: fs.readFileSync('dbd-capital.com.crt'),
   key: fs.readFileSync('dbd-capital.com.key'),
 };
