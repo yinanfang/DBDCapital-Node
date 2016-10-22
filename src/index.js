@@ -1,17 +1,15 @@
 import 'babel-polyfill';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { browserHistory } from 'react-router';
+import { syncHistoryWithStore } from 'react-router-redux';
+import Root from './containers/Root';
+import configureStore from './store/configureStore';
 
-import { createStore } from 'redux';
-import App from './App.js';
-import counter from './reducers';
-// import configureStore from './store/configureStore'
-// import 'todomvc-app-css/index.css'
+const store = configureStore();
+const history = syncHistoryWithStore(browserHistory, store);
 
-// const store = configureStore()
-
-
-ReactDOM.render(
-  <App />,
+render(
+  <Root store={store} history={history} />,
   document.getElementById('root')
 );
