@@ -4,7 +4,7 @@
 copy-config:
 
 setup:
-	# sudo mongod --dbpath /data/db/ --port 27017 --fork --logpath /var/log/mongodb.log
+	# sudo mongod --dbpath /data/db/ --port 27017 --fork --logpath ./logg/mongodb.log
 
 # Dev
 dev: setup
