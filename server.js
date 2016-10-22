@@ -38,7 +38,7 @@ app.all('*', (req, res, next) => {
 });
 
 // Serve favicon
-app.use(favicon(path.join(__dirname, '/app/images/favicon.ico')));
+app.use(favicon(path.join(__dirname, '/src/images/favicon.ico')));
 // app.use(favicon({
 //   '/favicon.ico': __dirname+'/images/favicon.ico', // Normal desktop
 //   '/favicon-144.ico': __dirname+'/images/favicon.ico', // Microsoft

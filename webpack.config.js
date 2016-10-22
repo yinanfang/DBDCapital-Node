@@ -13,7 +13,7 @@ import Config from './config';
 const plugins = Config.IS_DEVELOPMENT ? [
   new webpack.optimize.OccurenceOrderPlugin(),
   new HtmlWebpackPlugin({
-    template: 'app/index.html',
+    template: 'src/index.html',
     inject: true,
     filename: 'index.html',
     showErrors: true,
@@ -34,7 +34,7 @@ const plugins = Config.IS_DEVELOPMENT ? [
 ] : [
   new webpack.optimize.OccurenceOrderPlugin(),
   new HtmlWebpackPlugin({
-    template: 'app/index.html',
+    template: 'src/index.html',
     inject: true,
     filename: 'index.html',
   }),
@@ -64,7 +64,7 @@ module.exports = {
   devtool: Config.IS_DEVELOPMENT ? 'eval-source-map' : null,
   entry: {
     // [name]: [sources] -> file.html output uses the same name. js/css files use [name] and will auto-append to file.html
-    index: ['./app/index', 'webpack-hot-middleware/client'],
+    index: ['./src/index', 'webpack-hot-middleware/client'],
   },
   output: {
     path: path.join(__dirname, 'dist'),
