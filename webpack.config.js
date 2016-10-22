@@ -1,5 +1,4 @@
 // Reference: https://github.com/christianalfoni/webpack-express-boilerplate/blob/master/webpack.production.config.js
-// @flow
 
 import path from 'path';
 import webpack from 'webpack';

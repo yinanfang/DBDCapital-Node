@@ -34,7 +34,7 @@ app.all('*', (req, res, next) => {
     return next();
   }
   logger.info('insecure connection. Rerouting to https...');
-  return res.redirect(`https://${Config.HOST}:${Config.HTTPS_PORT}${req.path}`);
+  return res.redirect(`https://${Config.DOMAIN}:${Config.HTTPS_PORT}${req.path}`);
 });
 
 // Serve favicon
@@ -117,5 +117,5 @@ const SSLOption = {
 
 // Use undefined to avoid Flow issue: https://github.com/facebook/flow/issues/1684#issuecomment-222624389
 https.createServer(SSLOption, app).listen(Config.HTTPS_PORT, undefined, undefined, () => {
-  console.info(`${Config.APP_NAME} 🌎 ==> Listening on https://${Config.HOST}:${Config.HTTPS_PORT}`);
+  console.info(`${Config.APP_NAME} 🌎 ==> Listening IP: ${Config.IP}, PORT: ${Config.HTTPS_PORT}`);
 });

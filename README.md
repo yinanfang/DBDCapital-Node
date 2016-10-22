@@ -22,14 +22,24 @@
 127.0.0.1 dbd-capital.com
 127.0.0.1 www.dbd-capital.com
 ```
+- Find Browser-Sync url from console
 - https://dbd-capital.com:8443
 - https://www.dbd-capital.com:8443
-- No Parse dashboard access
+- https://dbd-capital.com:8443/dashboard/apps
+
 
 ## MongoLab - Robomongo
 - MongoLab: https://mlab.com/databases/dbdcapital
 - Don't use "admin"! Connection Settings - Authentication - Database: dbdcapital
-
+- Installation
+```shell
+    brew update && brew install mongodb
+```    
+- Kill mongod
+```shell
+    ps aux | grep mongo
+    sudo kill #id
+```
 
 ## Linter setup
 ```shell
