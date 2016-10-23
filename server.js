@@ -22,6 +22,10 @@ import WebpackConfig from './webpack.config.js';
 
 import logger from './utils/logger.js';
 
+/* ***************************************************************************
+Common
+*****************************************************************************/
+
 logger.debug(Config);
 
 const app = express();
@@ -49,33 +53,9 @@ app.use(favicon(path.join(__dirname, '/src/images/favicon.ico')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Webpack server on dev
-if (Config.IS_DEVELOPMENT) {
-  const compiler = webpack(WebpackConfig);
-
-  const middleware = webpackDevMiddleware(compiler, {
-    noInfo: true,
-    publicPath: WebpackConfig.output.publicPath,
-    stats: {
-      colors: true,
-    },
-  });
-  app.use(middleware);
-  app.use(webpackHotMiddleware(compiler));
-  app.get('/', (req, res) => {
-    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
-    res.end();
-  });
-} else {
-  app.use(express.static(path.join(__dirname, '/dist')));
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/dist/index.html'));
-  });
-}
-
-// app.get('/', function(req, res, next) {
-//   res.sendFile(__dirname + '/app/index.html');
-// });
+/* ***************************************************************************
+Parse Server
+*****************************************************************************/
 
 const api = new ParseServer({
   appId: Config.APP_ID,
@@ -97,18 +77,53 @@ const dashboard = new ParseDashboard({
 });
 
 // make the Parse Server available at /parse
-app.use('/parse', api);
+app.use('^/parse', api);
 
 // make the Parse Dashboard available at /dashboard
-app.use('/dashboard', dashboard);
+app.use('^/dashboard', dashboard);
 
-// Error handling after all routing
+/* ***************************************************************************
+Web App
+*****************************************************************************/
+
+if (Config.IS_DEVELOPMENT) {
+  const compiler = webpack(WebpackConfig);
+
+  const middleware = webpackDevMiddleware(compiler, {
+    noInfo: true,
+    publicPath: WebpackConfig.output.publicPath,
+    stats: {
+      colors: true,
+    },
+  });
+  app.use(middleware);
+  app.use(webpackHotMiddleware(compiler));
+  app.use(['^/$', '^/home'], (req, res) => {
+    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+    res.end();
+  });
+} else {
+  app.use(express.static(path.join(__dirname, '/dist')));
+  app.use(['^/$', '^/home'], (req, res) => {
+    res.sendFile(path.join(__dirname, '/dist/index.html'));
+  });
+}
+
+/* ***************************************************************************
+Error handling after all routing
+*****************************************************************************/
+
 if (Config.IS_DEVELOPMENT) {
   app.use(errorHandler());
 }
 
+/* ***************************************************************************
+Server
+*****************************************************************************/
+
 http.createServer(app).listen(Config.HTTP_PORT);
 
+// SSl 
 const SSLOption = {
   ca: [fs.readFileSync('StartCom_root_bundle.crt')], // Avoid importing root crt to Mac Key Chain
   cert: fs.readFileSync('dbd-capital.com.crt'),

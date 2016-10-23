@@ -1,7 +1,5 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import styles from '../style.css';
-import image from '../images/OKAWARI.jpg';
 
 class App extends React.Component {
   constructor(props) {
@@ -12,12 +10,16 @@ class App extends React.Component {
   }
   render() {
     return (
-      <div className={styles.app}>
-        <div>barrrrrrrrrr</div>
-        <img src={image} alt="placeholder"></img>
+      <div className="app_top">
+        {this.props.children}
       </div>
     );
   }
 }
+
+App.propTypes = {
+  // Injected by React Router
+  children: PropTypes.node,
+};
 
 export default connect()(App);

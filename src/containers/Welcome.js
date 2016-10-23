@@ -1,8 +1,9 @@
 import React from 'react';
-import styles from './style.css';
-import image from './images/OKAWARI.jpg';
+import { connect } from 'react-redux';
+import styles from '../style.css';
+import image from '../images/OKAWARI.jpg';
 
-export default class App extends React.Component {
+class Welcome extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,9 +13,11 @@ export default class App extends React.Component {
   render() {
     return (
       <div className={styles.app}>
-        <div>barrrrrrrrrr</div>
+        <h1>Welcome</h1>
         <img src={image} alt="placeholder"></img>
       </div>
     );
   }
 }
+
+export default connect()(Welcome);
