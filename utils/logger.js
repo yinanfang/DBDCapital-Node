@@ -3,9 +3,11 @@
 
 import path from 'path';
 import winston from 'winston';
-require('winston-loggly');
 
 import Config from '~/config';
+
+require('winston-loggly');
+
 
 // Log levels: https://github.com/winstonjs/winston/blob/master/lib/winston/config/cli-config.js
 

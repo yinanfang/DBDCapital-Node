@@ -16,7 +16,7 @@ class Welcome extends React.Component {
     return (
       <div className={styles.app}>
         <h1>Welcome</h1>
-        <img src={image} alt="placeholder"></img>
+        <img src={image} alt="placeholder" />
       </div>
     );
   }

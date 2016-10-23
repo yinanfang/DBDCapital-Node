@@ -61,7 +61,8 @@ const cssLoader = Config.IS_DEVELOPMENT ? {
 
 
 module.exports = {
-  devtool: Config.IS_DEVELOPMENT ? 'eval-source-map' : null,
+  devtool: 'eval-source-map',
+  // devtool: Config.IS_DEVELOPMENT ? 'eval-source-map' : null,
   entry: {
     // [name]: [sources] -> file.html output uses the same name. js/css files use [name] and will auto-append to file.html
     index: ['./src/index', 'webpack-hot-middleware/client'],
@@ -69,26 +70,27 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name]-[hash].js',
-    publicPath: '/static/',
+    sourceMapFilename: '[name]-[hash].js.map',
+    // publicPath: '/static/',
   },
   plugins,
   module: {
     loaders: [
-      {
+      { // Bable
         test: /\.js$/,
         loader: 'babel',
         exclude: /node_modules/,
         query: {
           presets: babelPresets,
         },
-      }, {
+      }, { // Json
         test: /\.json?$/,
         loader: 'json',
       },
       cssLoader,
-      { // inline base64 URLs for <=8k images, direct URLs for the rest
-        test: /\.(png|jpg)$/,
-        loader: 'url-loader?limit=8192',
+      { // Image: inline base64 URLs for <=8k images, direct URLs for the rest
+        test: /\.(gif|jpe?g|png|svg)$/,
+        loader: 'url-loader?limit=8192&name=[name]-[hash].[ext]',
       },
     ],
   },

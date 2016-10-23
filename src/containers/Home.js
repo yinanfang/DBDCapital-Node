@@ -16,7 +16,7 @@ class Home extends React.Component {
     return (
       <div className={styles.app}>
         <h1>Home</h1>
-        <img src={image} alt="placeholder"></img>
+        <img src={image} alt="placeholder" />
       </div>
     );
   }

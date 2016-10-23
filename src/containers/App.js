@@ -4,12 +4,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      test: 'foo',
-    };
-  }
   render() {
     return (
       <div className="app_top">
