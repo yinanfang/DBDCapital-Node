@@ -7,6 +7,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
 import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 import autoprefixer from 'autoprefixer';
+import WebpackShellPlugin from 'webpack-shell-plugin';
 
 import Config from './config';
 
@@ -40,12 +41,17 @@ const plugins = Config.IS_DEVELOPMENT ? [
   }),
   new ExtractTextPlugin('[name]-[hash].min.css'),
   new webpack.optimize.UglifyJsPlugin({
+    sourceMap: true,
     compressor: {
       warnings: false,
       screw_ie8: true,
     },
   }),
   new StatsPlugin('webpack.stats.json'),
+  new WebpackShellPlugin({
+    onBuildStart: ['echo "\n\n-----"', 'echo "Webpack Start"', 'echo "-----\n"'],
+    onBuildEnd: ['echo "\n\n-----"', 'echo "Webpack End"', 'echo "-----\n"'],
+  }),
   new webpack.NoErrorsPlugin(),
 ];
 
@@ -61,7 +67,7 @@ const cssLoader = Config.IS_DEVELOPMENT ? {
 
 
 module.exports = {
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   // devtool: Config.IS_DEVELOPMENT ? 'eval-source-map' : null,
   entry: {
     // [name]: [sources] -> file.html output uses the same name. js/css files use [name] and will auto-append to file.html
@@ -70,7 +76,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name]-[hash].js',
-    sourceMapFilename: '[name]-[hash].js.map',
+    sourceMapFilename: '[file].map',
     // publicPath: '/static/',
   },
   plugins,

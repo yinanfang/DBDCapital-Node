@@ -31,7 +31,7 @@
     "import/no-unresolved": [2, { ignore: ["^[~]"] }],
 
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "react/prefer-stateless-function": [0],
+    # "react/prefer-stateless-function": [0],
 
     "flowtype/boolean-style": [
       2,
