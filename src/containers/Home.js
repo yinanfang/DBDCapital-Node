@@ -5,21 +5,14 @@ import { connect } from 'react-redux';
 import styles from '../style.css';
 import image from '../images/OKAWARI.jpg';
 
-class Home extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      test: 'foo',
-    };
-  }
-  render() {
-    return (
-      <div className={styles.app}>
-        <h1>Home</h1>
-        <img src={image} alt="placeholder" />
-      </div>
-    );
-  }
-}
+const Home = (props) => {
+  const a = 1;
+  return (
+    <div className={styles.app}>
+      <h1>Home</h1>
+      <img src={image} alt="placeholder" />
+    </div>
+  );
+};
 
 export default connect()(Home);
