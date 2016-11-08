@@ -16,7 +16,7 @@ clean:
 	rm -rf dist
 
 build: clean
-	NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js ./node_modules/webpack/bin/webpack.js --progress --profile --colors
+	NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js ./node_modules/webpack/bin/webpack.js --progress --profile --colors --production
 
 prod: build
 	sudo NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js server

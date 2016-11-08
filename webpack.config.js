@@ -11,6 +11,13 @@ import WebpackShellPlugin from 'webpack-shell-plugin';
 
 import Config from './config';
 
+// [name]: [sources] -> file.html output uses the same name. js/css files use [name] and will auto-append to file.html
+const entry = Config.IS_DEVELOPMENT ? {
+  index: ['babel-polyfill', './src/index', 'webpack-hot-middleware/client'],
+} : {
+  index: ['babel-polyfill', './src/index'],
+};
+
 const plugins = Config.IS_DEVELOPMENT ? [
   new webpack.optimize.OccurenceOrderPlugin(),
   new HtmlWebpackPlugin({
@@ -18,6 +25,10 @@ const plugins = Config.IS_DEVELOPMENT ? [
     inject: true,
     filename: 'index.html',
     showErrors: true,
+  }),
+  new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery',
   }),
   new webpack.HotModuleReplacementPlugin(),
   new BrowserSyncPlugin({ // BrowserSync options
@@ -39,12 +50,28 @@ const plugins = Config.IS_DEVELOPMENT ? [
     inject: true,
     filename: 'index.html',
   }),
+  new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery',
+  }),
   new ExtractTextPlugin('[name]-[hash].min.css'),
+  // Disable React compressed production version warnings for UglifyJsPlugin with DefinePlugin
+  // https://github.com/facebook/react/issues/6479#issuecomment-214590100
+  // http://dev.topheman.com/make-your-react-production-minified-version-with-webpack/
+  new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: JSON.stringify('production'),
+    },
+  }),
   new webpack.optimize.UglifyJsPlugin({
+    minimize: true,
     sourceMap: true,
     compressor: {
       warnings: false,
-      screw_ie8: true,
+      // screw_ie8: true,
+    },
+    output: {
+      comments: false,
     },
   }),
   new StatsPlugin('webpack.stats.json'),
@@ -57,22 +84,28 @@ const plugins = Config.IS_DEVELOPMENT ? [
 
 const babelPresets = Config.IS_DEVELOPMENT ? ['react', 'es2015', 'react-hmre'] : ['react', 'es2015'];
 
+// Prefer react-css-modules over css-loader
+// Source: https://github.com/gajus/react-css-modules#usage
 const cssLoader = Config.IS_DEVELOPMENT ? {
   test: /\.css?$/,
-  loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]',
+  loaders: [
+    'style?sourceMap',
+    'css?modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!resolve-url!postcss',
+  ],
 } : {
-  test: /\.css?$/,
-  loader: ExtractTextPlugin.extract('style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss'),
+  test: /\.css$/,
+  loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!resolve-url!postcss'),
+  // This doesn't work for now: https://github.com/webpack/extract-text-webpack-plugin/issues/173
+  // loader: ExtractTextPlugin.extract({
+  //   notExtractLoader: 'style',
+  //   loader: 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!resolve-url!postcss',
+  // }),
 };
-
 
 module.exports = {
   devtool: 'source-map',
   // devtool: Config.IS_DEVELOPMENT ? 'eval-source-map' : null,
-  entry: {
-    // [name]: [sources] -> file.html output uses the same name. js/css files use [name] and will auto-append to file.html
-    index: ['./src/index', 'webpack-hot-middleware/client'],
-  },
+  entry,
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name]-[hash].js',
