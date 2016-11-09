@@ -7,7 +7,7 @@ setup:
 	# sudo mongod --dbpath /data/db/ --port 27017 --fork --logpath ./logg/mongodb.log
 
 # Dev
-dev: setup
+dev
 	NODE_ENV=development nodemon --exec ./node_modules/babel-cli/bin/babel-node.js server
 
 

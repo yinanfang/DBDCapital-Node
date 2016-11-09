@@ -8,7 +8,6 @@ import StatsPlugin from 'stats-webpack-plugin';
 import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 import WebpackShellPlugin from 'webpack-shell-plugin';
 
-import autoprefixer from 'autoprefixer';
 import postcssImport from 'postcss-import';
 import precss from 'precss';
 import simpleVar from 'postcss-simple-vars';
@@ -99,19 +98,19 @@ const cssLoader = Config.IS_DEVELOPMENT ? {
   loaders: [
     'style',
     'css?sourceMap&modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]',
-    'resolve-url',
+    // 'resolve-url',
     'postcss?sourceMap=inline',
   ],
 } : {
   test: /\.css$/,
   loader: ExtractTextPlugin.extract(
     'style',
-    'css?modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!resolve-url!postcss'
+    'css?modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!postcss'
   ),
   // This doesn't work for now: https://github.com/webpack/extract-text-webpack-plugin/issues/173
   // loader: ExtractTextPlugin.extract({
   //   notExtractLoader: 'style',
-  //   loader: 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!resolve-url!postcss',
+  //   loader: 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss',
   // }),
 };
 
@@ -150,8 +149,7 @@ module.exports = {
       postcssImport({ addDependencyTo: webp }),
       precss,
       simpleVar,
-      autoprefixer,
-      cssNext,
+      cssNext, // Included autoprefixer
       postcssNested,
       postcssMixins,
       cssMQPacker,
