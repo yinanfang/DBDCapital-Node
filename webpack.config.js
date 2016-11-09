@@ -89,12 +89,14 @@ const babelPresets = Config.IS_DEVELOPMENT ? ['react', 'es2015', 'react-hmre'] :
 const cssLoader = Config.IS_DEVELOPMENT ? {
   test: /\.css?$/,
   loaders: [
-    'style?sourceMap',
-    'css?modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!resolve-url!postcss',
+    'style',
+    'css?sourceMap&modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]',
+    'resolve-url',
+    'postcss?sourceMap=inline',
   ],
 } : {
   test: /\.css$/,
-  loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!resolve-url!postcss'),
+  loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!resolve-url!postcss?sourceMap=inline'),
   // This doesn't work for now: https://github.com/webpack/extract-text-webpack-plugin/issues/173
   // loader: ExtractTextPlugin.extract({
   //   notExtractLoader: 'style',
