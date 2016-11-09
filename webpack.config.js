@@ -98,7 +98,7 @@ const cssLoader = Config.IS_DEVELOPMENT ? {
   test: /\.css$/,
   loader: ExtractTextPlugin.extract(
     'style',
-    'css?modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!resolve-url!postcss',
+    'css?modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!resolve-url!postcss'
   ),
   // This doesn't work for now: https://github.com/webpack/extract-text-webpack-plugin/issues/173
   // loader: ExtractTextPlugin.extract({
