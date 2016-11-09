@@ -6,8 +6,16 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
 import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
-import autoprefixer from 'autoprefixer';
 import WebpackShellPlugin from 'webpack-shell-plugin';
+
+import autoprefixer from 'autoprefixer';
+import postcssImport from 'postcss-import';
+import precss from 'precss';
+import simpleVar from 'postcss-simple-vars';
+import cssNext from 'postcss-cssnext';
+import postcssNested from 'postcss-nested';
+import postcssMixins from 'postcss-mixins';
+import cssMQPacker from 'css-mqpacker';
 
 import Config from './config';
 
@@ -87,7 +95,7 @@ const babelPresets = Config.IS_DEVELOPMENT ? ['react', 'es2015', 'react-hmre'] :
 // Prefer react-css-modules over css-loader
 // Source: https://github.com/gajus/react-css-modules#usage
 const cssLoader = Config.IS_DEVELOPMENT ? {
-  test: /\.css?$/,
+  test: /\.css$/,
   loaders: [
     'style',
     'css?sourceMap&modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]',
@@ -137,7 +145,17 @@ module.exports = {
       },
     ],
   },
-  postcss: [
-    autoprefixer,
-  ],
+  postcss: function(webp) {
+    return [
+      postcssImport({ addDependencyTo: webp }),
+      precss,
+      simpleVar,
+      autoprefixer,
+      cssNext,
+      postcssNested,
+      postcssMixins,
+      cssMQPacker,
+    ]
+  },
+
 };
