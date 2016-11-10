@@ -98,13 +98,13 @@ if (Config.IS_DEVELOPMENT) {
   });
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
-  app.use(['^/$', '^/home'], (req, res) => {
+  app.use(['^/$', '^/account'], (req, res) => {
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     res.end();
   });
 } else {
   app.use(express.static(path.join(__dirname, '/dist')));
-  app.use(['^/$', '^/home'], (req, res) => {
+  app.use(['^/$', '^/account'], (req, res) => {
     res.sendFile(path.join(__dirname, '/dist/index.html'));
   });
 }

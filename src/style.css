@@ -1,9 +1,19 @@
 @import "normalize.css";
 
+/* Force the body to be full page height */
+html, body {
+  height: 100%;
+}
+
 body {
-  background: gray;
+  background: red;
 }
 
 .app {
   background: blue;
+}
+
+.pageTitle {
+  font-family: Circular,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  letter-spacing: 1.5px;
 }
