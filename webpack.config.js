@@ -147,12 +147,12 @@ module.exports = {
   postcss: function(webp) {
     return [
       postcssImport({ addDependencyTo: webp }),
-      precss,
-      simpleVar,
+      // precss,
+      // simpleVar,
       cssNext, // Included autoprefixer
-      postcssNested,
-      postcssMixins,
-      cssMQPacker,
+      // postcssNested,
+      // postcssMixins,
+      // cssMQPacker,
     ]
   },
 };
