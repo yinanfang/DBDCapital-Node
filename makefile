@@ -20,3 +20,8 @@ build: clean
 
 prod: build
 	sudo NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js server
+
+
+# Test
+jasmine:
+	NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js

@@ -7,10 +7,8 @@ import Radium from 'radium';
 import Helmet from 'react-helmet';
 
 import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import FlatButton from 'material-ui/FlatButton';
-import ActionHome from 'material-ui/svg-icons/action/home'
+import ActionHome from 'material-ui/svg-icons/action/home';
 
 import withWidth, {MEDIUM, LARGE} from 'material-ui/utils/withWidth';
 

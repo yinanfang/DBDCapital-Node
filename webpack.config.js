@@ -42,12 +42,22 @@ const plugins = Config.IS_DEVELOPMENT ? [
     // Browse to http://localhost:3000 during dev
     host: 'localhost',
     port: 3000,
-    open: true, // Open a tab in browser
+    // open: true, // Open a tab in browser
+    open: false, // Don't open
     browser: ['google chrome'],
     // Webpack dev server url
     proxy: Config.SERVER_URL,
   }, { // plugin options
     reload: false,
+  }),
+  new WebpackShellPlugin({
+    onBuildStart: ['echo "-----"', 'echo "Webpack Start"', 'echo "-----"'],
+    onBuildEnd: [
+      'echo "-----"',
+      // 'make jasmine',
+      'echo "Webpack End"',
+      'echo "-----"',
+    ],
   }),
   new webpack.NoErrorsPlugin(),
 ] : [
@@ -144,7 +154,7 @@ module.exports = {
       },
     ],
   },
-  postcss: function(webp) {
+  postcss: (webp) => {
     return [
       postcssImport({ addDependencyTo: webp }),
       // precss,
@@ -153,6 +163,6 @@ module.exports = {
       // postcssNested,
       // postcssMixins,
       // cssMQPacker,
-    ]
+    ];
   },
 };

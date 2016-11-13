@@ -19,8 +19,8 @@ export default {
     position: 'absolute',
     left: 0,
     right: 0,
-    'marginTop': '10px',
-    'marginBottom': '10px',
+    marginTop: '10px',
+    marginBottom: '10px',
   },
   noVisibility: {
     visibility: 'hidden',

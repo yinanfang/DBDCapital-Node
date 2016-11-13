@@ -18,9 +18,9 @@ import { ParseServer } from 'parse-server';
 import ParseDashboard from 'parse-dashboard';
 
 import Config from './config';
-import WebpackConfig from './webpack.config.js';
+import WebpackConfig from './webpack.config';
 
-import logger from './utils/logger.js';
+import logger from './utils/logger';
 
 /* ***************************************************************************
 Common
@@ -115,6 +115,8 @@ Error handling after all routing
 
 if (Config.IS_DEVELOPMENT) {
   app.use(errorHandler());
+} else {
+  // TODO: Add Production handler
 }
 
 /* ***************************************************************************
