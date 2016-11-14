@@ -63,6 +63,9 @@ app.use(Router.Parse);
 API v1.0
 *****************************************************************************/
 
+// Need to parse JWT before any Auth happens
+app.use('*', Router.Auth);
+
 app.use('^/api/v1.0', Router.API);
 
 /* ***************************************************************************

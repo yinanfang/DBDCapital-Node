@@ -1,5 +1,13 @@
 // @flow
 
+const mainWebAppWithAuth = [
+  '^/account',
+];
+
+const mainWebAppWithNoAuth = [
+  '^/$',
+];
+
 export default {
   Parse: {
     Server: '^/parse',
@@ -7,8 +15,17 @@ export default {
   },
   DBDCapital: {
     Routes: [
-      '^/$',
-      '^/account',
+      ...mainWebAppWithAuth,
+      ...mainWebAppWithNoAuth,
+    ],
+  },
+  API: {
+    noAuth: [
+      'register',
+      '/login',
+    ],
+    requireAuth: [
+      '/user',
     ],
   },
 };

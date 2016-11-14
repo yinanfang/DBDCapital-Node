@@ -1,7 +1,12 @@
 import request from 'supertest';
+import jwt from 'jsonwebtoken';
+
+import logger from '../../utils/logger';
+import API from '../../api/v1.0';
 
 const baseUrl = 'https://localhost:3000';
 const APIUrl = 'https://localhost:3000/api/v1.0';
+
 
 const errorHandler = (err, res, done) => {
   if (err) done.fail(err);
@@ -38,6 +43,8 @@ describe('Parse server Test', () => {
   });
 });
 
+let receivedToken = '';
+
 describe('API v1.0 Test', () => {
   it('/register', (done) => {
     request(APIUrl).get('/register')
@@ -48,12 +55,25 @@ describe('API v1.0 Test', () => {
   it('/login', (done) => {
     request(APIUrl).get('/login')
       .expect(200)
+      .expect((res) => {
+        receivedToken = API.getJWTFromRequest(res);
+        const decoded = jwt.decode(receivedToken);
+        logger.debug(decoded);
+      })
       .end((err, res) => errorHandler(err, res, done));
   });
 
-  it('/user', (done) => {
+  it('/user with correct token', (done) => {
     request(APIUrl).get('/user')
+      .set('Authorization', `Bearer ${receivedToken}`)
       .expect(200)
+      .end((err, res) => errorHandler(err, res, done));
+  });
+
+  it('/user with wrong token', (done) => {
+    request(APIUrl).get('/user')
+      .set('Authorization', 'Bearer wrong toekn')
+      .expect(302)
       .end((err, res) => errorHandler(err, res, done));
   });
 });

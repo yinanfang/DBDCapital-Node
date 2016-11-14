@@ -9,15 +9,16 @@
     display: flex;
   }
   --limiter: {
-      width: 86%;
-      max-width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
+    width: 86%;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
   };
 }
 
 /* Force the body to be full page height */
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -39,7 +40,7 @@ body {
 }
 
 .pageTitle {
-  font-family: Circular,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: Circular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   letter-spacing: 1.5px;
   cursor: pointer;
 }
@@ -50,8 +51,4 @@ body {
 
 .homeSecondarySection {
   height: 800px;
-}
-
-.forceHide {
-  display: none,
 }

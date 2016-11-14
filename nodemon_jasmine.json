@@ -1,6 +1,6 @@
 {
   "verbose": true,
-  "delay": 15,
+  "delay": 15000,
   "watch": [
     "server.js",
     "webpack.config.js",
@@ -8,6 +8,8 @@
     "config/*.js",
     "constant/*.js",
     "routes/*.js",
-    "spec/api/**/*_spec.js"
+    "spec/api/**/*_spec.js",
+    "api/**/*.js",
+    "path.js"
   ]
 }

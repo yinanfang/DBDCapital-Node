@@ -7,6 +7,8 @@ import ParseDashboard from 'parse-dashboard';
 import Config from '../config';
 import Path from '../path';
 
+import API from '../api/v1.0';
+
 /* ***************************************************************************
 Parse Server
 *****************************************************************************/
@@ -39,14 +41,18 @@ ParseRouter.use(Path.Parse.Server, api);
 ParseRouter.use(Path.Parse.Dashboard, dashboard);
 
 /* ***************************************************************************
-API
+API & Auth
 *****************************************************************************/
+
+const AuthRouter = express.Router();
+
+AuthRouter.use(API.ParseJWT);
 
 const APIRouter = express.Router();
 
-APIRouter.get('/login', (req, res) => {
-  res.send('got it');
-});
+APIRouter.use(Path.API.requireAuth, API.RequireAuth);
+
+APIRouter.get('/login', API.Login);
 
 APIRouter.get('/register', (req, res) => {
   res.send('got it');
@@ -61,6 +67,7 @@ Export
 *****************************************************************************/
 
 export default {
-  Parse: ParseRouter,
   API: APIRouter,
+  Auth: AuthRouter,
+  Parse: ParseRouter,
 };
