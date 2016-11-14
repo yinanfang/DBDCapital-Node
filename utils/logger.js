@@ -4,7 +4,7 @@
 import path from 'path';
 import winston from 'winston';
 
-import Config from '~/config';
+import Config from '../config';
 
 require('winston-loggly');
 

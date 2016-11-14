@@ -24,4 +24,5 @@ prod: build
 
 # Test
 jasmine:
-	NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js
+	sleep 15
+	NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon --config nodemon_jasmine.json --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js

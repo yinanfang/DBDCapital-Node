@@ -1,0 +1,13 @@
+{
+  "verbose": true,
+  "delay": 15,
+  "watch": [
+    "server.js",
+    "webpack.config.js",
+    "utils/*.js",
+    "config/*.js",
+    "constant/*.js",
+    "routes/*.js",
+    "spec/api/**/*_spec.js"
+  ]
+}

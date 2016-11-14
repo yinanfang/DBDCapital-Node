@@ -51,3 +51,7 @@ body {
 .homeSecondarySection {
   height: 800px;
 }
+
+.forceHide {
+  display: none,
+}

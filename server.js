@@ -14,10 +14,10 @@ import morgan from 'morgan';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 
-import { ParseServer } from 'parse-server';
-import ParseDashboard from 'parse-dashboard';
+import Router from './routes';
 
 import Config from './config';
+import Path from './path';
 import WebpackConfig from './webpack.config';
 
 import logger from './utils/logger';
@@ -57,30 +57,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 Parse Server
 *****************************************************************************/
 
-const api = new ParseServer({
-  appId: Config.APP_ID,
-  masterKey: Config.MASTER_KEY,
-  databaseURI: Config.DATABASE_URI,
-  serverURL: Config.SERVER_PARSE_URL, // HTTP or HTTPS. For requests from Cloud Code to Parse Server
-  // cloud: '/Users/compass/Code/DBD/DBDCapital-Node/node_modules/parse-server/lib/cloud-code/Parse.Cloud.js', // Absolute path to your Cloud Code
-});
+app.use(Router.Parse);
 
-const dashboard = new ParseDashboard({
-  apps: [
-    {
-      appName: Config.APP_NAME,
-      appId: Config.APP_ID,
-      masterKey: Config.MASTER_KEY,
-      serverURL: Config.SERVER_PARSE_URL,
-    },
-  ],
-});
+/* ***************************************************************************
+API v1.0
+*****************************************************************************/
 
-// make the Parse Server available at /parse
-app.use('^/parse', api);
-
-// make the Parse Dashboard available at /dashboard
-app.use('^/dashboard', dashboard);
+app.use('^/api/v1.0', Router.API);
 
 /* ***************************************************************************
 Web App
@@ -98,13 +81,13 @@ if (Config.IS_DEVELOPMENT) {
   });
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
-  app.use(['^/$', '^/account'], (req, res) => {
+  app.use(Path.DBDCapital.Routes, (req, res) => {
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     res.end();
   });
 } else {
   app.use(express.static(path.join(__dirname, '/dist')));
-  app.use(['^/$', '^/account'], (req, res) => {
+  app.use(Path.DBDCapital.Routes, (req, res) => {
     res.sendFile(path.join(__dirname, '/dist/index.html'));
   });
 }

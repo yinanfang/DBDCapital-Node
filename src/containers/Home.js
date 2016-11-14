@@ -10,8 +10,6 @@ import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import ActionHome from 'material-ui/svg-icons/action/home';
 
-import withWidth, {MEDIUM, LARGE} from 'material-ui/utils/withWidth';
-
 import styleCSS from '../style.css';
 import styleJS from '../style.css.js';
 
