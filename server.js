@@ -2,8 +2,8 @@
 
 import path from 'path';
 import fs from 'fs';
+
 import express from 'express';
-import webpack from 'webpack';
 import http from 'http';
 import https from 'https';
 import bodyParser from 'body-parser';
@@ -11,12 +11,15 @@ import favicon from 'serve-favicon';
 import errorHandler from 'errorhandler';
 import morgan from 'morgan';
 
+import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 
 import Router from './routes';
 
+// Loads all environment variables
 import Config from './config';
+
 import Path from './path';
 import WebpackConfig from './webpack.config';
 
@@ -120,5 +123,11 @@ const SSLOption = {
 
 // Use undefined to avoid Flow issue: https://github.com/facebook/flow/issues/1684#issuecomment-222624389
 https.createServer(SSLOption, app).listen(Config.HTTPS_PORT, undefined, undefined, () => {
-  console.info(`${Config.APP_NAME} 🌎 ==> Listening IP: ${Config.IP}, PORT: ${Config.HTTPS_PORT}`);
+  logger.info(`${Config.APP_NAME} 🌎 ==> Listening IP: ${Config.IP}, PORT: ${Config.HTTPS_PORT}`);
+
+  // Convinient urls
+  if (Config.IS_DEVELOPMENT) {
+    logger.info('Website with BrowserSync: https://localhost:3000');
+    logger.info(`Parse Dashboard: https://${Config.IP}:8443/dashboard/apps`);
+  }
 });

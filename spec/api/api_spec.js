@@ -72,7 +72,7 @@ describe('API v1.0 Test', () => {
 
   it('/user with wrong token', (done) => {
     request(APIUrl).get('/user')
-      .set('Authorization', 'Bearer wrong toekn')
+      .set('Authorization', 'Bearer wrong-toekn')
       .expect(302)
       .end((err, res) => errorHandler(err, res, done));
   });

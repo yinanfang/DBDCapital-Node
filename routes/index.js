@@ -32,7 +32,15 @@ const dashboard = new ParseDashboard({
       serverURL: Config.SERVER_PARSE_URL,
     },
   ],
-});
+  users: [
+    {
+      user: 'lucas',
+      pass: '$2a$08$lfsMntj46EpFPIVupmj/U.AtXoiKbAylweazS3w/yvsZlg.ZgfU5C',
+    },
+  ],
+  useEncryptedPasswords: true,
+}, true // allowInsecureHTTP
+);
 
 // make the Parse Server available at /parse
 ParseRouter.use(Path.Parse.Server, api);

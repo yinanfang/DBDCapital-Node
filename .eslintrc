@@ -30,6 +30,7 @@
     "no-unused-vars": [2, {"vars": "all", "args": "none"}],
 
     "import/no-unresolved": [2, { ignore: ["^[~]"] }],
+    "no-param-reassign": [2, { "props": false }],
 
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     # "react/prefer-stateless-function": [0],

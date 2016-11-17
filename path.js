@@ -21,7 +21,7 @@ export default {
   },
   API: {
     noAuth: [
-      'register',
+      '/register',
       '/login',
     ],
     requireAuth: [
