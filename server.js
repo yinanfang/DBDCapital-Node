@@ -33,6 +33,7 @@ logger.debug(Config);
 
 const app = express();
 
+// Log at response
 app.use(morgan('combined', { stream: logger.stream }));
 
 // Redirect from http requests to https
@@ -123,7 +124,7 @@ const SSLOption = {
 
 // Use undefined to avoid Flow issue: https://github.com/facebook/flow/issues/1684#issuecomment-222624389
 https.createServer(SSLOption, app).listen(Config.HTTPS_PORT, undefined, undefined, () => {
-  logger.info(`${Config.APP_NAME} 🌎 ==> Listening IP: ${Config.IP}, PORT: ${Config.HTTPS_PORT}`);
+  logger.info(`🌎 ==> Listening IP: ${Config.IP}, PORT: ${Config.HTTPS_PORT}`);
 
   // Convinient urls
   if (Config.IS_DEVELOPMENT) {

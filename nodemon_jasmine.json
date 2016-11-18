@@ -10,6 +10,7 @@
     "routes/*.js",
     "spec/api/**/*_spec.js",
     "api/**/*.js",
-    "path.js"
+    "path.js",
+    "cloud/**/*.js"
   ]
 }

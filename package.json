@@ -43,7 +43,7 @@
     "nightmare": "^2.8.1",
     "normalize.css": "^5.0.0",
     "normalizr": "^2.2.1",
-    "parse": "~1.9.1",
+    "parse": "^1.9.2",
     "parse-dashboard": "~1.0.11",
     "parse-server": "~2.2.25-beta.1",
     "passport": "^0.3.2",

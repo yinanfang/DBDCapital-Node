@@ -8,6 +8,7 @@
     "constant/*.js",
     "routes/*.js",
     "api/**/*.js",
-    "path.js"
+    "path.js",
+    "cloud/**/*.js"
   ]
 }

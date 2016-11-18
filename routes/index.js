@@ -16,29 +16,27 @@ Parse Server
 const ParseRouter = express.Router();
 
 const api = new ParseServer({
-  appId: Config.APP_ID,
-  masterKey: Config.MASTER_KEY,
+  appId: Config.PARSE_APP_ID,
+  masterKey: Config.PARSE_MASTER_KEY,
   databaseURI: Config.DATABASE_URI,
-  serverURL: Config.SERVER_PARSE_URL, // HTTP or HTTPS. For requests from Cloud Code to Parse Server
+  serverURL: Config.PARSE_SERVER_URL, // HTTP or HTTPS. For requests from Cloud Code to Parse Server
+  publicServerURL: Config.PARSE_SERVER_URL,
   // cloud: '/Users/compass/Code/DBD/DBDCapital-Node/node_modules/parse-server/lib/cloud-code/Parse.Cloud.js', // Absolute path to your Cloud Code
+  // cloud: path.join(__dirname, 'dist/index.html'),
+  cloud: Config.PARSE_CLOUD_CODE_ENTRANCE,
 });
 
 const dashboard = new ParseDashboard({
   apps: [
     {
-      appName: Config.APP_NAME,
-      appId: Config.APP_ID,
-      masterKey: Config.MASTER_KEY,
-      serverURL: Config.SERVER_PARSE_URL,
+      appName: Config.PARSE_APP_NAME,
+      appId: Config.PARSE_APP_ID,
+      masterKey: Config.PARSE_MASTER_KEY,
+      serverURL: Config.PARSE_SERVER_URL,
     },
   ],
-  users: [
-    {
-      user: 'lucas',
-      pass: '$2a$08$lfsMntj46EpFPIVupmj/U.AtXoiKbAylweazS3w/yvsZlg.ZgfU5C',
-    },
-  ],
-  useEncryptedPasswords: true,
+  users: Config.PARSE_REMOTE_USERS,
+  useEncryptedPasswords: true, // Bcrypt password
 }, true // allowInsecureHTTP
 );
 
@@ -60,15 +58,13 @@ const APIRouter = express.Router();
 
 APIRouter.use(Path.API.requireAuth, API.RequireAuth);
 
-APIRouter.get('/login', API.Login);
+APIRouter.post('/login', API.Login);
 
-APIRouter.get('/register', (req, res) => {
-  res.send('got it');
-});
+APIRouter.post('/register', API.Register);
 
-APIRouter.get('/user', (req, res) => {
-  res.send('got it');
-});
+APIRouter.get('/user', API.User);
+
+APIRouter.delete('/deleteUser', API.DeleteUser);
 
 /* ***************************************************************************
 Export
