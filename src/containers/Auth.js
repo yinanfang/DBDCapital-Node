@@ -11,11 +11,25 @@ import FlatButton from 'material-ui/FlatButton';
 import styleCSS from '../style.css';
 import styleJS from '../style.css.js';
 
+import image from '../images/OKAWARI.jpg';
+
 const Auth = (props) => {
   const a = 1;
   return (
     <div className={styleCSS.authBase}>
-      <div> <FlatButton label="Center" /> </div>
+      <div className={styleCSS.authDialogue}>
+        <div className={styleCSS.authDialogueBackdrop}>
+          <div className={styleCSS.authDialogueBackdropLeft}>
+            {/* <img src={image} alt="placeholder" /> */}
+          </div>
+          <div className={styleCSS.authDialogueBackdropRight}>
+            {/* <img src={image} alt="placeholder" /> */}
+          </div>
+        </div>
+        <div>
+          test
+        </div>
+      </div>
     </div>
   );
 };

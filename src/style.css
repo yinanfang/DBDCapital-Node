@@ -76,13 +76,43 @@ Auth
 
 .authBase {
   background: var(--color_darkslategray);
+  min-width: 100vw;
   min-height: 100vh;
-  min-width: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .authDialogue {
-  
+  width: 80vw;
+  height: 60vh;
+  background: red;
+}
+
+.authDialogueBackdrop {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+:root {
+  --authDialogueBackdropSingle: {
+    width: 50%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+  };
+}
+
+.authDialogueBackdropLeft {
+  background: url(./images/OKAWARI.jpg);
+
+  @apply --authDialogueBackdropSingle; /* background modifier must be after background */
+}
+
+.authDialogueBackdropRight {
+  background: url(./images/OKAWARI.jpg);
+
+  @apply --authDialogueBackdropSingle;
 }

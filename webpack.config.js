@@ -131,7 +131,7 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: '[name]-[hash].js',
     sourceMapFilename: '[file].map',
-    // publicPath: '/static/',
+    publicPath: `${Config.SERVER_URL}/`, // Image href path from browser: https://github.com/webpack/docs/wiki/Configuration#user-content-outputpublicpath
   },
   plugins,
   module: {
