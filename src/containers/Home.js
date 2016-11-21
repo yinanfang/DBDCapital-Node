@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Radium from 'radium';
 
 import Helmet from 'react-helmet';
+import loremipsum from 'lorem-ipsum';
 
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
@@ -22,16 +23,27 @@ const Home = (props) => {
           title={<span className={styleCSS.pageTitle}>DBD Capital</span>}
           // iconElementLeft={<ActionHome className={styleCSS.forceHide} />}
           iconElementLeft={<ActionHome style={styleJS.forceHide} />}
-          iconElementRight={<FlatButton label="Sign In" hoverColor={styleJS.homeSignUpBox.hoverColor} backgroundColor={styleJS.homeSignUpBox.backgroundColor} style={styleJS.boxShadow} />}
+          // iconElementRight={<FlatButton label="Sign In" hoverColor={styleJS.homeSignUpBox.hoverColor} backgroundColor={styleJS.homeSignUpBox.backgroundColor} style={styleJS.boxShadow} />}
+          iconElementRight={<FlatButton label="Sign In" href="/auth" type="text/html" hoverColor={styleJS.homeSignUpBox.hoverColor} backgroundColor={styleJS.homeSignUpBox.backgroundColor} style={styleJS.boxShadow} />}
           style={styleJS.homeNavBar}
           className={styleCSS.homeNavBar}
         />
-        <video loop muted autoPlay="autoplay" className={styleCSS.homeVideo} preload="auto" poster="https://www.mapbox.com/home/video/header.jpg">
+        <video loop muted autoPlay className={styleCSS.homeVideo} preload="auto" poster="https://www.mapbox.com/home/video/header.jpg">
           <source src="https://www.mapbox.com/home/video/header.mp4" type="video/mp4" width="100%" height="100%" />
         </video>
       </div>
-      <div className={styleCSS.homeSecondarySection}>
-        <p>Second div</p>
+      <div className={styleCSS.showcase}>
+        {[...Array(5)].map((x, i) =>
+          <p key={i + 1}>Showcase 1-{i + 1} - {loremipsum({ count: 5 })}</p>
+        )}
+      </div>
+      <div className={styleCSS.showcase}>
+        {[...Array(5)].map((x, i) =>
+          <p key={i + 1}>Showcase 2-{i + 1} - {loremipsum({ count: 5 })}</p>
+        )}
+      </div>
+      <div className={styleCSS.footer}>
+        <p>Footer</p>
       </div>
     </div>
   );

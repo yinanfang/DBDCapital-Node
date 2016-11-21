@@ -1,12 +1,19 @@
 @import "normalize.css";
 
-/* Base rules */
+/* ***************************************************************************
+Common
+*****************************************************************************/
+
 :root {
+  /* Color */
+  --color_darkslategray: rgb(44, 48, 52);
+
+  /* Base rules */
   --clearFix: {
-    display: block;
+    display: block; /* Not enrouaged */
   };
   --flexBox: {
-    display: flex;
+    display: flex; /* Preferred */
   }
   --limiter: {
     width: 86%;
@@ -23,12 +30,20 @@ body {
 }
 
 body {
-  background: red; /* Debug Only! */
+  /* background: red;  Debug Only! */
 }
 
 .appBase {
-  background: blue; /* Debug Only! */
+  /* background: blue;  Debug Only! */
 }
+
+.footer {
+  height: 20vh;
+}
+
+/* ***************************************************************************
+Home
+*****************************************************************************/
 
 .homeMainSection {
   max-height: 90vh;
@@ -49,6 +64,25 @@ body {
   width: 100%;
 }
 
-.homeSecondarySection {
-  height: 800px;
+.showcase {
+  @apply --limiter;
+
+  min-height: 50vh;
+}
+
+/* ***************************************************************************
+Auth
+*****************************************************************************/
+
+.authBase {
+  background: var(--color_darkslategray);
+  min-height: 100vh;
+  min-width: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.authDialogue {
+  
 }

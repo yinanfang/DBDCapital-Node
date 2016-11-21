@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import logger from '../../utils/logger';
 import API from '../../api/v1.0';
 import { SERVER_URL, SERVER_API_BASE, PARSE_CLOUD_API_BASE, PARSE_APP_ID } from '../../config';
+import Path from '../../path';
 
 const errorHandler = (err, res, done) => {
   if (err) done.fail(err);
@@ -17,17 +18,26 @@ const requestParseCloudAPI = request(PARSE_CLOUD_API_BASE);
 
 // Needs to call done()
 // https://github.com/visionmedia/supertest/issues/283#issuecomment-149450240
-describe('Website Monitoring Test', () => {
-  it('Home page should 200', (done) => {
-    requestNodeServer.get('/')
-      .expect(200)
-      .end((err, res) => errorHandler(err, res, done));
+describe('Website Monitoring Test - Asynchronous', () => {
+  Path.DBDCapital.RoutesUnsecure.forEach((route) => {
+    it(`Testing ${route}`, (done) => {
+      requestNodeServer.get(route)
+        .expect(200)
+        .end((err, res) => errorHandler(err, res, done));
+    });
   });
+});
 
-  it('Account page should 200', (done) => {
-    requestNodeServer.get('/account')
-      .expect(200)
-      .end((err, res) => errorHandler(err, res, done));
+// Sync test with order: http://stackoverflow.com/questions/21634558/looping-on-a-protractor-test-with-parameters/23635357#23635357
+describe('Website Monitoring Test - Synchronous', () => {
+  Path.DBDCapital.RoutesUnsecure.forEach((route) => {
+    (() => {
+      it(`Testing ${route}`, (done) => {
+        requestNodeServer.get(route)
+          .expect(200)
+          .end((err, res) => errorHandler(err, res, done));
+      });
+    })(route);
   });
 });
 

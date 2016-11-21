@@ -1,11 +1,32 @@
 // @flow
 
-const mainWebAppWithAuth = [
-  '^/account',
+const secure = (paths) => {
+  return paths.map((item) => {
+    return `^${item}$`;
+  });
+};
+
+const webWithAuth = [
+  '/account',
 ];
 
-const mainWebAppWithNoAuth = [
-  '^/$',
+const webWithNoAuth = [
+  '/',
+  '/auth',
+];
+
+const webRoutesUnsecure = [
+  ...webWithAuth,
+  ...webWithNoAuth,
+];
+
+const APIWithAuth = [
+  '^/user$',
+];
+
+const APIWithNoAuth = [
+  '^/register$',
+  '^/login$',
 ];
 
 export default {
@@ -14,18 +35,15 @@ export default {
     Dashboard: '^/dashboard',
   },
   DBDCapital: {
-    Routes: [
-      ...mainWebAppWithAuth,
-      ...mainWebAppWithNoAuth,
-    ],
+    Routes: secure(webRoutesUnsecure),
+    RoutesUnsecure: webRoutesUnsecure,
   },
   API: {
-    noAuth: [
-      '/register',
-      '/login',
-    ],
-    requireAuth: [
-      '/user',
+    requireAuth: APIWithAuth,
+    noAuth: APIWithNoAuth,
+    Routes: [
+      ...APIWithAuth,
+      ...APIWithNoAuth,
     ],
   },
 };
