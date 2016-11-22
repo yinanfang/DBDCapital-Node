@@ -19,8 +19,8 @@ const IP = ip.address();
 const DOMAIN = 'dbd-capital.com';
 const HTTP_PORT = process.env.HTTP_PORT || 8080;
 const HTTPS_PORT = process.env.HTTPS_PORT || 8443;
-const SERVER_URL = `https://${IP}:${HTTPS_PORT}`;
-const SERVER_URL_PUBLIC = `https://${DOMAIN}:${HTTPS_PORT}`;
+// const SERVER_URL = `https://${IP}:${HTTPS_PORT}`;
+const SERVER_URL = IS_DEVELOPMENT ? `https://localhost:${HTTPS_PORT}` : `https://${DOMAIN}:${HTTPS_PORT}`;
 const SERVER_API_BASE = `${SERVER_URL}/api/v1.0`;
 
 // JWT Secret
@@ -51,7 +51,6 @@ module.exports = {
   HTTP_PORT,
   HTTPS_PORT,
   SERVER_URL,
-  SERVER_URL_PUBLIC,
   SERVER_API_BASE,
   PARSE_SERVER_URL,
   PARSE_MASTER_KEY,

@@ -6,7 +6,9 @@ Common
 
 :root {
   /* Color */
-  --color_darkslategray: rgb(44, 48, 52);
+  --color_lightSlateGray: rgb(54, 63, 69);
+  --color_darkSlateGray: rgb(44, 48, 52);
+  --color_snow: rgb(249, 249, 249);
 
   /* Base rules */
   --clearFix: {
@@ -75,7 +77,7 @@ Auth
 *****************************************************************************/
 
 .authBase {
-  background: var(--color_darkslategray);
+  background: var(--color_lightSlateGray);
   min-width: 100vw;
   min-height: 100vh;
   display: flex;
@@ -86,7 +88,8 @@ Auth
 .authDialogue {
   width: 80vw;
   height: 60vh;
-  background: red;
+  background: gray;
+  position: relative;
 }
 
 .authDialogueBackdrop {
@@ -106,13 +109,48 @@ Auth
 }
 
 .authDialogueBackdropLeft {
-  background: url(./images/OKAWARI.jpg);
+  background: url(./images/authDialogueBgLeft.png);
 
   @apply --authDialogueBackdropSingle; /* background modifier must be after background */
 }
 
 .authDialogueBackdropRight {
-  background: url(./images/OKAWARI.jpg);
+  background: url(./images/authDialogueBgRight.jpg);
 
-  @apply --authDialogueBackdropSingle;
+  @apply --authDialogueBackdropSingle; /* background modifier must be after background */
+}
+
+.authTextboxMask {
+  height: 100%;
+  width: 50%;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+}
+
+.authTextboxContainer {
+  width: 200%;
+  height: 100%;
+  position: relative;
+}
+
+:root {
+  --authTextboxSingle: {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+  }
+}
+
+.authTextboxLeft {
+  @apply --authTextboxSingle;
+
+  background: var(--color_darkSlateGray);
+}
+
+.authTextboxRight {
+  @apply --authTextboxSingle;
+
+  right: 0;
+  background: var(--color_snow);
 }

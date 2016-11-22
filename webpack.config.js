@@ -9,12 +9,12 @@ import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 import WebpackShellPlugin from 'webpack-shell-plugin';
 
 import postcssImport from 'postcss-import';
-import precss from 'precss';
-import simpleVar from 'postcss-simple-vars';
+// import precss from 'precss';
+// import simpleVar from 'postcss-simple-vars';
 import cssNext from 'postcss-cssnext';
-import postcssNested from 'postcss-nested';
-import postcssMixins from 'postcss-mixins';
-import cssMQPacker from 'css-mqpacker';
+// import postcssNested from 'postcss-nested';
+// import postcssMixins from 'postcss-mixins';
+// import cssMQPacker from 'css-mqpacker';
 
 import Config from './config';
 
@@ -33,10 +33,10 @@ const plugins = Config.IS_DEVELOPMENT ? [
     filename: 'index.html',
     showErrors: true,
   }),
-  new webpack.ProvidePlugin({
-    $: 'jquery',
-    jQuery: 'jquery',
-  }),
+  // new webpack.ProvidePlugin({
+  //   $: 'jquery',
+  //   jQuery: 'jquery',
+  // }),
   new webpack.HotModuleReplacementPlugin(),
   new BrowserSyncPlugin({ // BrowserSync options
     // Browse to http://localhost:3000 during dev
@@ -67,10 +67,10 @@ const plugins = Config.IS_DEVELOPMENT ? [
     inject: true,
     filename: 'index.html',
   }),
-  new webpack.ProvidePlugin({
-    $: 'jquery',
-    jQuery: 'jquery',
-  }),
+  // new webpack.ProvidePlugin({
+  //   $: 'jquery',
+  //   jQuery: 'jquery',
+  // }),
   new ExtractTextPlugin('[name]-[hash].min.css'),
   // Disable React compressed production version warnings for UglifyJsPlugin with DefinePlugin
   // https://github.com/facebook/react/issues/6479#issuecomment-214590100
