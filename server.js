@@ -129,6 +129,6 @@ https.createServer(SSLOption, app).listen(Config.HTTPS_PORT, undefined, undefine
   // Convinient urls
   if (Config.IS_DEVELOPMENT) {
     logger.info('Website with BrowserSync: https://localhost:3000');
-    logger.info(`Parse Dashboard: https://${Config.IP}:8443/dashboard/apps`);
+    logger.info(`Parse Dashboard: ${Config.PARSE_SERVER_BASE}/dashboard/apps`);
   }
 });

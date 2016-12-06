@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import logger from '../../utils/logger';
 import API from '../../api/v1.0';
-import { SERVER_URL, SERVER_API_BASE, PARSE_CLOUD_API_BASE, PARSE_APP_ID } from '../../config';
+import { SERVER_URL, SERVER_API_BASE, PARSE_SERVER_BASE, PARSE_CLOUD_API_BASE, PARSE_APP_ID } from '../../config';
 import Path from '../../path';
 
 const errorHandler = (err, res, done) => {
@@ -13,6 +13,7 @@ const errorHandler = (err, res, done) => {
 
 const requestNodeServer = request(SERVER_URL);
 const requestNodeAPI = request(SERVER_API_BASE);
+const requestParseDashboard = request(PARSE_SERVER_BASE);
 const requestParseCloudAPI = request(PARSE_CLOUD_API_BASE);
 
 
@@ -38,20 +39,6 @@ describe('Website Monitoring Test - Synchronous', () => {
           .end((err, res) => errorHandler(err, res, done));
       });
     })(route);
-  });
-});
-
-describe('Parse server Test', () => {
-  it('Dashboard should 200', (done) => {
-    requestNodeServer.get('/dashboard/apps')
-      .expect(200)
-      .end((err, res) => errorHandler(err, res, done));
-  });
-
-  it('Should be able to see User table', (done) => {
-    requestNodeServer.get('/dashboard/apps/DBD%20Capital/browser/_User')
-      .expect(200)
-      .end((err, res) => errorHandler(err, res, done));
   });
 });
 
@@ -97,6 +84,20 @@ describe('Node Sever API v1.0 Test', () => {
     requestNodeAPI.get('/user')
       .set('Authorization', 'Bearer wrong-toekn')
       .expect(302)
+      .end((err, res) => errorHandler(err, res, done));
+  });
+});
+
+describe('Parse server Test', () => {
+  it('Dashboard should 200', (done) => {
+    requestParseDashboard.get('/dashboard/apps')
+      .expect(200)
+      .end((err, res) => errorHandler(err, res, done));
+  });
+
+  it('Should be able to see User table', (done) => {
+    requestParseDashboard.get('/dashboard/apps/DBD%20Capital/browser/_User')
+      .expect(200)
       .end((err, res) => errorHandler(err, res, done));
   });
 });
