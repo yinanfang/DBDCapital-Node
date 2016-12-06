@@ -9,6 +9,7 @@ Common
   --color_lightSlateGray: rgb(54, 63, 69);
   --color_darkSlateGray: rgb(44, 48, 52);
   --color_snow: rgb(249, 249, 249);
+  --color_deepskyblue: rgb(3, 169, 244);
 
   /* Base rules */
   --clearFix: {
@@ -120,18 +121,20 @@ Auth
   @apply --authDialogueBackdropSingle; /* background modifier must be after background */
 }
 
-.authTextboxMask {
+.authDialogueMask {
   height: 100%;
   width: 50%;
   overflow: hidden;
   position: absolute;
   top: 0;
+  margin-left: 50%; /* Show the right dialogue box */
 }
 
-.authTextboxContainer {
+.authDialogueContainer {
   width: 200%;
   height: 100%;
   position: relative;
+  margin-left: -100%; /* Show the right dialogue box */
 }
 
 :root {
@@ -142,15 +145,43 @@ Auth
   }
 }
 
-.authTextboxLeft {
+.authDialogueContainerLeft {
   @apply --authTextboxSingle;
 
   background: var(--color_darkSlateGray);
 }
 
-.authTextboxRight {
+.authDialogueContainerRight {
   @apply --authTextboxSingle;
 
   right: 0;
   background: var(--color_snow);
+}
+
+:root {
+  --authDialogueFormContainer: {
+    position: relative;
+    width: 55%;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    & h2 {
+      color: var(--color_deepskyblue);
+      font-weight: 300;
+      margin: 0;
+    }
+
+    & button {
+      float: right;
+    }
+  };
+}
+
+.authDialogueFormContainerLeft {
+  @apply --authDialogueFormContainer;
+}
+
+.authDialogueFormContainerRight {
+  @apply --authDialogueFormContainer;
 }

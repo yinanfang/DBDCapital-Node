@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import Radium from 'radium';
 
 import Helmet from 'react-helmet';
@@ -21,10 +22,8 @@ const Home = (props) => {
         <Helmet title="Home" />
         <AppBar
           title={<span className={styleCSS.pageTitle}>DBD Capital</span>}
-          // iconElementLeft={<ActionHome className={styleCSS.forceHide} />}
           iconElementLeft={<ActionHome style={styleJS.forceHide} />}
-          // iconElementRight={<FlatButton label="Sign In" hoverColor={styleJS.homeSignUpBox.hoverColor} backgroundColor={styleJS.homeSignUpBox.backgroundColor} style={styleJS.boxShadow} />}
-          iconElementRight={<FlatButton label="Sign In" href="/auth" type="text/html" hoverColor={styleJS.homeSignUpBox.hoverColor} backgroundColor={styleJS.homeSignUpBox.backgroundColor} style={styleJS.boxShadow} />}
+          iconElementRight={<Link to="/auth"><FlatButton label="Sign In" type="text/html" hoverColor={styleJS.homeSignUpBox.hoverColor} backgroundColor={styleJS.homeSignUpBox.backgroundColor} style={styleJS.boxShadow} /></Link>}
           style={styleJS.homeNavBar}
           className={styleCSS.homeNavBar}
         />
