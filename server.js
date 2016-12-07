@@ -15,6 +15,9 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 
+import { ParseServer } from 'parse-server';
+import ParseDashboard from 'parse-dashboard';
+
 import Router from './routes';
 
 // Loads all environment variables
@@ -61,7 +64,36 @@ app.use(bodyParser.urlencoded({ extended: true }));
 Parse Server
 *****************************************************************************/
 
-app.use(Router.Parse);
+const api = new ParseServer({
+  appId: Config.PARSE_APP_ID,
+  masterKey: Config.PARSE_MASTER_KEY,
+  databaseURI: Config.DATABASE_URI,
+  serverURL: Config.PARSE_SERVER_URL, // HTTP or HTTPS. For requests from Cloud Code to Parse Server
+  publicServerURL: Config.PARSE_SERVER_URL,
+  // cloud: '/Users/compass/Code/DBD/DBDCapital-Node/node_modules/parse-server/lib/cloud-code/Parse.Cloud.js', // Absolute path to your Cloud Code
+  // cloud: path.join(__dirname, 'dist/index.html'),
+  cloud: Config.PARSE_CLOUD_CODE_ENTRANCE,
+});
+
+const dashboard = new ParseDashboard({
+  apps: [
+    {
+      appName: Config.PARSE_APP_NAME,
+      appId: Config.PARSE_APP_ID,
+      masterKey: Config.PARSE_MASTER_KEY,
+      serverURL: Config.PARSE_SERVER_URL,
+    },
+  ],
+  users: Config.PARSE_REMOTE_USERS,
+  // useEncryptedPasswords: true, // Bcrypt password
+}, true // allowInsecureHTTP
+);
+
+// make the Parse Server available at /parse
+app.use(Path.Parse.Server, api);
+
+// make the Parse Dashboard available at /dashboard
+app.use(Path.Parse.Dashboard, dashboard);
 
 /* ***************************************************************************
 API v1.0

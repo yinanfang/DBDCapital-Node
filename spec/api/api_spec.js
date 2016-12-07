@@ -89,15 +89,15 @@ describe('Node Sever API v1.0 Test', () => {
 });
 
 describe('Parse server Test', () => {
-  it('Dashboard should 200', (done) => {
+  it('Dashboard should 302', (done) => {
     requestParseDashboard.get('/dashboard/apps')
-      .expect(200)
+      .expect(302)
       .end((err, res) => errorHandler(err, res, done));
   });
 
   it('Should be able to see User table', (done) => {
     requestParseDashboard.get('/dashboard/apps/DBD%20Capital/browser/_User')
-      .expect(200)
+      .expect(302)
       .end((err, res) => errorHandler(err, res, done));
   });
 });

@@ -32,7 +32,7 @@ const APIWithNoAuth = [
 export default {
   Parse: {
     Server: '^/parse',
-    Dashboard: '^/dashboard',
+    Dashboard: '/dashboard', // New parse-dashboard won't accept ^
   },
   DBDCapital: {
     Routes: secure(webRoutesUnsecure),

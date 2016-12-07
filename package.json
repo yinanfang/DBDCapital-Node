@@ -8,7 +8,8 @@
     "test": "karma start karma.conf.js --browsers PhantomJS_custom",
     "jasmine": "make jasmine",
     "lint": "eslint './**/*.js' -c .eslintrc .eslintignore",
-    "flow": "flow; test $? -eq 0 -o $? -eq 2"
+    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "parse": "parse-dashboard --appId a7e55968a1c7ad3dd3e5a --masterKey 70c6093dba5a7e55968a1c7ad3dd3e5a74ef5cac --serverURL \"https://10.0.0.37:8443/parse\" --appName DBDCapital"
   },
   "dependencies": {
     "babel-cli": "~6.18.0",
@@ -46,8 +47,8 @@
     "normalize.css": "^5.0.0",
     "normalizr": "^2.2.1",
     "parse": "^1.9.2",
-    "parse-dashboard": "~1.0.11",
-    "parse-server": "~2.2.25-beta.1",
+    "parse-dashboard": "^1.0.21",
+    "parse-server": "^2.2.25",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "postcss-cssnext": "^2.8.0",
