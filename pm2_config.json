@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "DBDCapital",
+      "script": "pm2_entry.js",
+      "watch": false,
+      "error_file": "err_pm2.log"
+    }
+  ]
+}
