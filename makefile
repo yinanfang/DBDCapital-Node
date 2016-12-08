@@ -26,13 +26,8 @@ clean:
 build: clean
 	NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js ./node_modules/webpack/bin/webpack.js --progress --profile --colors --production
 
-prod:
-	# sudo NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js server
-
 pm2:
-	# sudo pm2 start index.js --no-daemon
-	# sudo pm2 ls
-	sudo pm2 start pm2_config.json # --no-daemon
+	sudo pm2 start pm2_config.json
 
 # Test
 jasmine:
