@@ -6,6 +6,9 @@ import { browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
+// Google Analytics
+import 'autotrack';
+
 import Root from './containers/Root';
 import configureStore from './store/configureStore';
 
