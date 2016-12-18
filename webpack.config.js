@@ -99,7 +99,7 @@ const plugins = Config.IS_DEVELOPMENT ? [
   new webpack.NoErrorsPlugin(),
 ];
 
-const babelPresets = Config.IS_DEVELOPMENT ? ['react', 'es2015', 'react-hmre'] : ['react', 'es2015'];
+const babelPresets = Config.IS_DEVELOPMENT ? ['react', 'es2015', 'stage-2', 'react-hmre'] : ['react', 'es2015', 'stage-2'];
 
 // Prefer react-css-modules over css-loader
 // Source: https://github.com/gajus/react-css-modules#usage
@@ -154,9 +154,9 @@ module.exports = {
       },
     ],
   },
-  postcss: (webp) => {
+  postcss: () => {
     return [
-      postcssImport({ addDependencyTo: webp }),
+      postcssImport,
       // precss,
       // simpleVar,
       cssNext, // Included autoprefixer

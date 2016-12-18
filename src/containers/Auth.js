@@ -1,20 +1,16 @@
 // @flow
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import $ from 'jquery';
 
-// import AppBar from 'material-ui/AppBar';
-// import IconButton from 'material-ui/IconButton';
-// import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 
+import Actions from '../actions';
 import styleCSS from '../style.css';
 import styleJS from '../style.css.js';
-
-// import image from '../images/OKAWARI.jpg';
 
 const Auth = (props) => {
   const moveRight = (event) => {
@@ -25,7 +21,6 @@ const Auth = (props) => {
       marginLeft: '-100%',
     });
   };
-
   const moveLeft = () => {
     $(`.${styleCSS.authDialogueMask}`).animate({
       marginLeft: 0,
@@ -35,8 +30,41 @@ const Auth = (props) => {
     });
   };
 
-  const loginOnclick = () => {
+  const LIGHT = 'light';
+  const DARK = 'dark';
+  const textField = (theme, content, type = 'text') => {
+    if (theme === LIGHT) {
+      return <TextField fullWidth name={content.name} floatingLabelText={content.text} floatingLabelStyle={styleJS.authLabelLight} floatingLabelFocusStyle={styleJS.authLabelLight} underlineStyle={styleJS.authInputUnderlineLight} underlineFocusStyle={styleJS.authInputUnderlineLight} type={type} />;
+    }
+    return <TextField fullWidth name={content.name} floatingLabelText={content.text} floatingLabelStyle={styleJS.authLabelDark} floatingLabelFocusStyle={styleJS.authLabelDark} underlineStyle={styleJS.authInputUnderlineDark} underlineFocusStyle={styleJS.authInputUnderlineDark} type={type} />;
+  };
+
+  const registerOnclick = () => {
     browserHistory.push('/');
+  };
+
+  const formPair = (name, text) => ({ name, text });
+  const form = {
+    register: {
+      key: 'register',
+      firstname: formPair('fistname', 'Fist Name'),
+      lastname: formPair('lastname', 'Last Name'),
+      email: formPair('email', 'Email'),
+      username: formPair('username', 'Username'),
+      password: formPair('password', 'Password'),
+    },
+    login: {
+      key: 'login',
+      username: formPair('username', 'Username'),
+      password: formPair('password', 'Password'),
+    },
+  };
+
+  const loginOnclick = () => {
+    props.login(
+      $(`form[name="${form.login.key}"] input[name="${form.login.username.name}"]`).val(),
+      $(`form[name="${form.login.key}"] input[name="${form.login.password.name}"]`).val(),
+    );
   };
 
   return (
@@ -49,27 +77,27 @@ const Auth = (props) => {
         <div className={styleCSS.authDialogueMask}>
           <div className={styleCSS.authDialogueContainer}>
             <div className={styleCSS.authDialogueContainerLeft}>
-              <div className={styleCSS.authDialogueFormContainerLeft}>
+              <form name={form.register.key} className={styleCSS.authDialogueFormContainerLeft}>
                 <h2>Sign Up</h2>
-                <TextField floatingLabelText="First Name" floatingLabelStyle={styleJS.authLabelLight} floatingLabelFocusStyle={styleJS.authLabelLight} underlineStyle={styleJS.authInputUnderlineLight} underlineFocusStyle={styleJS.authInputUnderlineLight} />
-                <TextField floatingLabelText="Last Name" floatingLabelStyle={styleJS.authLabelLight} floatingLabelFocusStyle={styleJS.authLabelLight} underlineStyle={styleJS.authInputUnderlineLight} underlineFocusStyle={styleJS.authInputUnderlineLight} /><br />
-                <TextField floatingLabelText="Username" floatingLabelStyle={styleJS.authLabelLight} floatingLabelFocusStyle={styleJS.authLabelLight} underlineStyle={styleJS.authInputUnderlineLight} underlineFocusStyle={styleJS.authInputUnderlineLight} /><br />
-                <TextField floatingLabelText="Email" floatingLabelStyle={styleJS.authLabelLight} floatingLabelFocusStyle={styleJS.authLabelLight} underlineStyle={styleJS.authInputUnderlineLight} underlineFocusStyle={styleJS.authInputUnderlineLight} /><br />
-                <TextField floatingLabelText="Password" floatingLabelStyle={styleJS.authLabelLight} floatingLabelFocusStyle={styleJS.authLabelLight} underlineStyle={styleJS.authInputUnderlineLight} underlineFocusStyle={styleJS.authInputUnderlineLight} type="password" /><br />
+                {textField(LIGHT, form.register.firstname)}
+                {textField(LIGHT, form.register.lastname)}
+                {textField(LIGHT, form.register.email)}
+                {textField(LIGHT, form.register.username)}
+                {textField(LIGHT, form.register.password, 'password')}
                 <br />
-                <FlatButton label="Sign Up" style={styleJS.authButtonMain} />
+                <FlatButton label="Sign Up" onClick={registerOnclick} style={styleJS.authButtonMain} />
                 <FlatButton onClick={moveRight} label="Log In" style={styleJS.authButtonSecondary} />
-              </div>
+              </form>
             </div>
             <div className={styleCSS.authDialogueContainerRight}>
-              <div className={styleCSS.authDialogueFormContainerRight}>
+              <form name={form.login.key} className={styleCSS.authDialogueFormContainerRight}>
                 <h2>Login</h2>
-                <TextField floatingLabelText="Username" floatingLabelStyle={styleJS.authLabelDark} floatingLabelFocusStyle={styleJS.authLabelDark} underlineStyle={styleJS.authInputUnderlineDark} underlineFocusStyle={styleJS.authInputUnderlineDark} /><br />
-                <TextField floatingLabelText="Password" floatingLabelStyle={styleJS.authLabelDark} floatingLabelFocusStyle={styleJS.authLabelDark} underlineStyle={styleJS.authInputUnderlineDark} underlineFocusStyle={styleJS.authInputUnderlineDark} type="password" /><br />
+                {textField(DARK, form.login.username)}
+                {textField(DARK, form.login.password, 'password')}
                 <br />
                 <FlatButton label="Log In" onClick={loginOnclick} style={styleJS.authButtonMain} />
                 <FlatButton onClick={moveLeft} label="Sign Up" style={styleJS.authButtonSecondary} />
-              </div>
+              </form>
             </div>
           </div>
         </div>
@@ -78,4 +106,14 @@ const Auth = (props) => {
   );
 };
 
-export default connect()(Auth);
+Auth.propTypes = {
+  login: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => {
+  return {};
+};
+
+export default connect(mapStateToProps, {
+  login: Actions.login.request,
+})(Auth);

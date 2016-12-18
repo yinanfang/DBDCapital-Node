@@ -1,3 +1,5 @@
+// @flow
+
 import { routerReducer as routing } from 'react-router-redux';
 import { combineReducers } from 'redux';
 
@@ -14,7 +16,7 @@ const entities = (state = 0, action) => {
 
 const rootReducer = combineReducers({
   entities,
-  routing,
+  routing, // https://github.com/reactjs/react-router-redux
 });
 
 export default rootReducer;

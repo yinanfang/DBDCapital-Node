@@ -90,7 +90,7 @@ const Login = (req, res, next) => {
       res.send('Login successfully!!!');
     },
     error: (user, error) => {
-      logger.error(`Login fail - ${JSON.stringify(user)}`);
+      logger.error(`Login fail - ${JSON.stringify(user)} - ${JSON.stringify(error)}`);
       res.send('Login failed...');
     },
   });
@@ -112,5 +112,5 @@ export default {
   Register,
   Login,
   User,
-  DeleteUser
+  DeleteUser,
 };

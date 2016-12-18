@@ -3,6 +3,8 @@
 import dotenv from 'dotenv';
 import ip from 'ip';
 
+import Path from '../path';
+
 // Environment
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
@@ -17,11 +19,11 @@ if (IS_DEVELOPMENT) {
 // Server
 const IP = ip.address();
 const DOMAIN = 'dbd-capital.com';
-const HTTP_PORT = process.env.HTTP_PORT || 8080;
-const HTTPS_PORT = process.env.HTTPS_PORT || 8443;
+const HTTP_PORT = IS_DEVELOPMENT ? 8080 : 80;
+const HTTPS_PORT = IS_DEVELOPMENT ? 8443 : 443;
 // const SERVER_URL = `https://${IP}:${HTTPS_PORT}`;
 const SERVER_URL = IS_DEVELOPMENT ? `https://localhost:${HTTPS_PORT}` : `https://${DOMAIN}:${HTTPS_PORT}`;
-const SERVER_API_BASE = `${SERVER_URL}/api/v1.0`;
+const SERVER_API_BASE = `${SERVER_URL}${Path.API.basePath}`;
 
 // JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'B49K2USXPCxZgmLdVsJtDpCBCsiVnURy';
@@ -43,7 +45,7 @@ const PARSE_CLOUD_API_BASE = `${PARSE_SERVER_URL}/functions`;
 const PARSE_REMOTE_USERS = JSON.parse('[{"user":"lucas","pass":"test"}]');
 // const DASHBOARD_AUTH = process.env.DASHBOARD_AUTH;
 
-module.exports = {
+export default {
   IS_DEVELOPMENT,
   PARSE_APP_NAME,
   PARSE_APP_ID,

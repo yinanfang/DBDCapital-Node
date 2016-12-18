@@ -2,12 +2,14 @@
 
 ## Dev Quick Start
 ```shell
-    $ npm install -g flow-bin
-    $ npm install
+    npm install -g flow-bin
+    npm install
 
     # Retrieve .env.development, .evn.production, dbd-capital.com.crt, dbd-capital,com.key, StartCom_root_bundle.crt
 
-    $ make dev
+    make dev
+
+    # Install correct eslint: https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb#eslint-config-airbnb-1
 ```
 
 ## Production Quick Start

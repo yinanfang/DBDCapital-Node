@@ -39,6 +39,7 @@ export default {
     RoutesUnsecure: webRoutesUnsecure,
   },
   API: {
+    basePath: '/api/v1.0',
     requireAuth: APIWithAuth,
     noAuth: APIWithNoAuth,
     Routes: [

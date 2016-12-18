@@ -1,9 +1,11 @@
+// @flow
+
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 
 import logger from '../../utils/logger';
 import API from '../../api/v1.0';
-import { SERVER_URL, SERVER_API_BASE, PARSE_SERVER_BASE, PARSE_CLOUD_API_BASE, PARSE_APP_ID } from '../../config';
+import Config from '../../config';
 import Path from '../../path';
 
 const errorHandler = (err, res, done) => {
@@ -11,11 +13,10 @@ const errorHandler = (err, res, done) => {
   else done();
 };
 
-const requestNodeServer = request(SERVER_URL);
-const requestNodeAPI = request(SERVER_API_BASE);
-const requestParseDashboard = request(PARSE_SERVER_BASE);
-const requestParseCloudAPI = request(PARSE_CLOUD_API_BASE);
-
+const requestNodeServer = request(Config.SERVER_URL);
+const requestNodeAPI = request(Config.SERVER_API_BASE);
+const requestParseDashboard = request(Config.PARSE_SERVER_BASE);
+const requestParseCloudAPI = request(Config.PARSE_CLOUD_API_BASE);
 
 // Needs to call done()
 // https://github.com/visionmedia/supertest/issues/283#issuecomment-149450240
@@ -105,7 +106,7 @@ describe('Parse server Test', () => {
 describe('Parse-Sever API v1.0 Test', () => {
   it('/deleteUser delete test user with username', (done) => {
     requestParseCloudAPI.post('/deleteUser')
-      .set('X-Parse-Application-Id', PARSE_APP_ID)
+      .set('X-Parse-Application-Id', Config.PARSE_APP_ID)
       .send(testUser)
       .expect(200)
       .end((err, res) => errorHandler(err, res, done));
