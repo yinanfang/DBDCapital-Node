@@ -33,3 +33,6 @@ pm2:
 jasmine:
 	sleep 15
 	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development nodemon --config nodemon_jasmine.json --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js
+
+updateAndRestart:
+	git pull && npm install && make build && sudo pm2 restart all

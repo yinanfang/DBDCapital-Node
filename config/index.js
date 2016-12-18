@@ -36,7 +36,7 @@ const LOGGLY_TOKEN = process.env.LOGGLY_TOKEN || 'ijdiwjci-d27d-jdjh-vdj2-ijdhu2
 
 // Parse server
 const PARSE_APP_NAME = 'DBD Capital';
-const PARSE_SERVER_BASE = `https://${IP}:${HTTPS_PORT}`; // Use IP to allow external access
+const PARSE_SERVER_BASE = IS_DEVELOPMENT ? `https://${IP}:${HTTPS_PORT}` : `https://${DOMAIN}:${HTTPS_PORT}`; // Use IP to allow external access
 const PARSE_SERVER_URL = `${PARSE_SERVER_BASE}/parse`; // Use IP to allow external access
 const PARSE_APP_ID = process.env.PARSE_APP_ID || 'a7e55968a1c7ad3dd3e5a';
 const PARSE_MASTER_KEY = process.env.PARSE_MASTER_KEY || '70c6093dba5a7e55968a1c7ad3dd3e5a74ef5cac';

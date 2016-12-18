@@ -18,7 +18,7 @@
     make build && make pm2    
 
     # Update & Restart
-    git pull && make build && sudo pm2 restart all
+    make updateAndRestart
 
     ##############################################################################
     # Options
