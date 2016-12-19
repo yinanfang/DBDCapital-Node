@@ -27,8 +27,8 @@ const register = {
 
 const login = {
   request: (username, password) => action(LOGIN.REQUEST, { username, password }),
-  success: (login, response) => action(LOGIN.SUCCESS, { user, response }),
-  failure: (login, error) => action(LOGIN.FAILURE, { user, error }),
+  success: (token) => action(LOGIN.SUCCESS, { token }),
+  failure: (username, error) => action(LOGIN.FAILURE, { username, error }),
 };
 
 export default {

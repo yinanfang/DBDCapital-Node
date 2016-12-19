@@ -5,28 +5,15 @@ import jwt from 'jsonwebtoken';
 import Parse from 'parse/node';
 
 import Config from '../../config';
+import Util from '../../utils';
 import logger from '../../utils/logger';
 
 /* ***************************************************************************
 Common
 *****************************************************************************/
 
-const getJWTFromRequest = (req) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader) {
-    const elements = authHeader.split(' ');
-    if (elements.length === 2) {
-      const scheme = elements[0];
-      if (scheme === 'Bearer') {
-        return elements[1];
-      }
-    }
-  }
-  return '';
-};
-
 const ParseJWT = (req, res, next) => {
-  const token = getJWTFromRequest(req);
+  const token = Util.getJWTFromHttpObject(req);
   if (token) {
     try {
       const decoded = jwt.verify(token, Config.JWT_SECRET);
@@ -76,6 +63,7 @@ const Register = (req, res, next) => {
 };
 
 const Login = (req, res, next) => {
+  logger.debug(`API/Login---->${JSON.stringify(req.body)}--${req.body.username}==>${req.body.password}`);
   Parse.User.logIn(req.body.username, req.body.password, {
     success: (user) => {
       logger.info(`Login success - ${user.constructor.name} - ${JSON.stringify(user)}`);
@@ -106,7 +94,6 @@ const DeleteUser = (req, res, next) => {
 };
 
 export default {
-  getJWTFromRequest,
   ParseJWT,
   RequireAuth,
   Register,

@@ -15,7 +15,7 @@
 ## Production Quick Start
 ```shell
     # Fresh start
-    make build && make pm2    
+    make build && make pm2
 
     # Update & Restart
     make updateAndRestart

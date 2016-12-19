@@ -4,6 +4,8 @@ import { routerReducer as routing } from 'react-router-redux';
 import { combineReducers } from 'redux';
 
 const entities = (state = 0, action) => {
+  console.log('action-->', action);
+
   switch (action.type) {
     case 'INCREMENT':
       return state + 1;

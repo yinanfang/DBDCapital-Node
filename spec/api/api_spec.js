@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 
 import logger from '../../utils/logger';
 import API from '../../api/v1.0';
+import Util from '../../utils';
 import Config from '../../config';
 import Path from '../../path';
 
@@ -67,7 +68,7 @@ describe('Node Sever API v1.0 Test', () => {
       .send(testUser)
       .expect(200)
       .expect((res) => {
-        receivedToken = API.getJWTFromRequest(res);
+        receivedToken = Util.getJWTFromHttpObject(res);
         const decoded = jwt.decode(receivedToken);
         logger.debug(`----------------${JSON.stringify(decoded)}`);
       })
