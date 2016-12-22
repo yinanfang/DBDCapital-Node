@@ -10,6 +10,7 @@ import bodyParser from 'body-parser';
 import favicon from 'serve-favicon';
 import errorHandler from 'errorhandler';
 import morgan from 'morgan';
+import notifier from 'node-notifier';
 
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -99,9 +100,6 @@ app.use(Path.Parse.Dashboard, dashboard);
 API v1.0
 *****************************************************************************/
 
-// Need to parse JWT before any Auth happens
-app.use('*', Router.Auth);
-
 app.use(`^${Path.API.basePath}`, Router.API);
 
 /* ***************************************************************************
@@ -136,9 +134,27 @@ Error handling after all routing
 *****************************************************************************/
 
 if (Config.IS_DEVELOPMENT) {
-  app.use(errorHandler());
+  logger.error('Dev errorHandler!');
+  app.use(errorHandler({ log: (err, message, req) => {
+    const title = `Error in ${req.method} ${req.url}`;
+    logger.error(`${title}\n  ${message}`);
+    notifier.notify({
+      title,
+      message,
+      sound: true,
+      wait: true,
+    });
+  } }));
 } else {
-  // TODO: Add Production handler
+  app.use((err, req, res, next) => {
+    if (err.name === 'UnauthorizedError') {
+      // express-jwt auth failure
+      logger.warn(`JWT parse error ${err.name} - ${err.message}`);
+      res.status(401).send('invalid token...');
+    } else {
+      res.status(400).send('Bad request...');
+    }
+  });
 }
 
 /* ***************************************************************************

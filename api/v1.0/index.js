@@ -5,38 +5,7 @@ import jwt from 'jsonwebtoken';
 import Parse from 'parse/node';
 
 import Config from '../../config';
-import Util from '../../utils';
 import logger from '../../utils/logger';
-
-/* ***************************************************************************
-Common
-*****************************************************************************/
-
-const ParseJWT = (req, res, next) => {
-  const token = Util.getJWTFromHttpObject(req);
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, Config.JWT_SECRET);
-      // logger.info(`----------------------------decoded: ${decoded}`);
-      req.jwt = decoded;
-    } catch (err) {
-      logger.warn(`ParseJWT ${err.name} - ${err.message}`);
-    }
-  } else {
-    // logger.debug('--------------no token ');
-  }
-  next();
-};
-
-const RequireAuth = (req, res, next) => {
-  if (req.jwt) {
-    next();
-  } else {
-    logger.info('User enter auth required path without JWT token');
-    res.redirect('/login');
-    res.end();
-  }
-};
 
 /* ***************************************************************************
 API
@@ -94,8 +63,6 @@ const DeleteUser = (req, res, next) => {
 };
 
 export default {
-  ParseJWT,
-  RequireAuth,
   Register,
   Login,
   User,

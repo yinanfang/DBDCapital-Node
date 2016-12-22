@@ -85,7 +85,7 @@ describe('Node Sever API v1.0 Test', () => {
   it('/user with wrong token', (done) => {
     requestNodeAPI.get('/user')
       .set('Authorization', 'Bearer wrong-toekn')
-      .expect(302)
+      .expect(401)
       .end((err, res) => errorHandler(err, res, done));
   });
 });

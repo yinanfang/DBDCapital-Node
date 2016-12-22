@@ -1,8 +1,9 @@
 // @flow
 
 import express from 'express';
+import jwtParserMiddleware from 'express-jwt';
 
-import Path from '../path';
+import Config from '../config';
 
 import API from '../api/v1.0';
 
@@ -10,19 +11,18 @@ import API from '../api/v1.0';
 API & Auth
 *****************************************************************************/
 
-const AuthRouter = express.Router();
-
-AuthRouter.use(API.ParseJWT);
+const Auth = jwtParserMiddleware({
+  secret: Config.JWT_SECRET,
+  userProperty: 'jwt',
+});
 
 const APIRouter = express.Router();
-
-APIRouter.use(Path.API.requireAuth, API.RequireAuth);
 
 APIRouter.post('/login', API.Login);
 
 APIRouter.post('/register', API.Register);
 
-APIRouter.get('/user', API.User);
+APIRouter.get('/user', Auth, API.User);
 
 APIRouter.delete('/deleteUser', API.DeleteUser);
 
@@ -32,5 +32,4 @@ Export
 
 export default {
   API: APIRouter,
-  Auth: AuthRouter,
 };
