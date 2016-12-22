@@ -68,7 +68,7 @@ describe('Node Sever API v1.0 Test', () => {
       .send(testUser)
       .expect(200)
       .expect((res) => {
-        receivedToken = Util.getJWTFromHttpObject(res);
+        receivedToken = res.body.token;
         const decoded = jwt.decode(receivedToken);
         logger.debug(`----------------${JSON.stringify(decoded)}`);
       })

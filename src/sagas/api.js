@@ -26,6 +26,24 @@ const login = (username, password) => {
   });
 };
 
+const user = (token) => {
+  console.log(`src/api.js-------> ${Path.API.basePath}/user`);
+  return fetch(`${Path.API.basePath}/user`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      token,
+    }),
+  })
+  .catch((ex) => {
+    console.log(' failed', ex);
+    return null;
+  });
+};
+
 export default {
   login,
 };
