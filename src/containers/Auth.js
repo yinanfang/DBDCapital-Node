@@ -40,7 +40,7 @@ const Auth = (props) => {
   };
 
   const registerOnclick = () => {
-    browserHistory.push('/');
+    event.preventDefault();
   };
 
   const formPair = (name, text) => ({ name, text });
@@ -60,7 +60,8 @@ const Auth = (props) => {
     },
   };
 
-  const loginOnclick = () => {
+  const loginOnclick = (event) => {
+    event.preventDefault();
     props.login(
       $(`form[name="${form.login.key}"] input[name="${form.login.username.name}"]`).val(),
       $(`form[name="${form.login.key}"] input[name="${form.login.password.name}"]`).val(),
@@ -85,7 +86,7 @@ const Auth = (props) => {
                 {textField(LIGHT, form.register.username)}
                 {textField(LIGHT, form.register.password, 'password')}
                 <br />
-                <FlatButton label="Sign Up" onClick={registerOnclick} style={styleJS.authButtonMain} />
+                <FlatButton label="Sign Up" onClick={registerOnclick} type="submit" style={styleJS.authButtonMain} />
                 <FlatButton onClick={moveRight} label="Log In" style={styleJS.authButtonSecondary} />
               </form>
             </div>
@@ -95,7 +96,7 @@ const Auth = (props) => {
                 {textField(DARK, form.login.username)}
                 {textField(DARK, form.login.password, 'password')}
                 <br />
-                <FlatButton label="Log In" onClick={loginOnclick} style={styleJS.authButtonMain} />
+                <FlatButton label="Log In" onClick={loginOnclick} type="submit" style={styleJS.authButtonMain} />
                 <FlatButton onClick={moveLeft} label="Sign Up" style={styleJS.authButtonSecondary} />
               </form>
             </div>

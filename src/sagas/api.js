@@ -1,7 +1,20 @@
 import 'isomorphic-fetch';
 
 import Path from '../../path';
-import Util from '../../utils';
+
+// https://github.com/github/fetch#caveats
+const checkStatus = (response) => {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  }
+  const error = new Error(response.statusText);
+  error.response = response;
+  throw error;
+};
+
+const parseJSON = (response) => {
+  return response.json();
+};
 
 const login = (username, password) => {
   console.log(`src/api.js-------> ${Path.API.basePath}/login`);
@@ -15,10 +28,10 @@ const login = (username, password) => {
       password,
     }),
   })
-  .then((response) => {
-    const token = Util.parseAuthHeader(response.headers.get('authorization'));
-    console.log('++++', token);
-    return token;
+  .then(checkStatus)
+  .then(parseJSON)
+  .then((data) => {
+    return data.token;
   })
   .catch((ex) => {
     console.log('parsing failed', ex);

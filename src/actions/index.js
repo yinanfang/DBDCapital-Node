@@ -14,6 +14,7 @@ const createRequestTypes = (base) => {
 const REGISTER = createRequestTypes('REGISTER');
 const LOGIN = createRequestTypes('LOGIN');
 const USER = createRequestTypes('USER');
+const NAVIGATE = 'NAVIGATE';
 
 const action = (type, payload = {}) => {
   return { type, ...payload };
@@ -27,13 +28,18 @@ const register = {
 
 const login = {
   request: (username, password) => action(LOGIN.REQUEST, { username, password }),
-  success: (token) => action(LOGIN.SUCCESS, { token }),
+  success: token => action(LOGIN.SUCCESS, { token }),
   failure: (username, error) => action(LOGIN.FAILURE, { username, error }),
 };
+
+const navigate = pathname => action(NAVIGATE, { pathname })
+
 
 export default {
   USER,
   LOGIN,
+  NAVIGATE,
   register,
   login,
+  navigate,
 };
