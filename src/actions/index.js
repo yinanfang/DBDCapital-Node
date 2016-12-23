@@ -14,6 +14,7 @@ const createRequestTypes = (base) => {
 const REGISTER = createRequestTypes('REGISTER');
 const LOGIN = createRequestTypes('LOGIN');
 const USER = createRequestTypes('USER');
+
 const NAVIGATE = 'NAVIGATE';
 
 const action = (type, payload = {}) => {

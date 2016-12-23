@@ -13,7 +13,7 @@ function* login() {
     const token = yield call(API.login, username, password);
     if (token) {
       yield put(actions.login.success(token));
-      yield put(actions.navigate('/'));
+      yield put(actions.navigate('/account'));
     } else {
       yield put(actions.login.failure(username, 'saga-api-failure'));
     }

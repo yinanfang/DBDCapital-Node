@@ -13,11 +13,12 @@ const errorHandler = (done, error, res = null) => {
   if (error) {
     notifier.notify({
       title: 'Unexpected Jasmine test error',
-      message: JSON.stringify(error),
+      message: error.stack,
       sound: true,
       wait: true,
     });
-    done.fail(JSON.stringify(error));
+    logger.error(error.stack);
+    done.fail(error);
   } else {
     done();
   }
