@@ -36,7 +36,7 @@ const getBrowser = (platform = DESKTOP) => {
   const nightmare = Nightmare({
     show: true,
     typeInterval: 1,
-    waitTimeout: 5000,
+    waitTimeout: 3000,
     switches: {
       'ignore-certificate-errors': true,
     },
@@ -142,7 +142,7 @@ describe('Automated browser Test', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
   });
 
-  it('Login flow should work fine', (done) => {
+  it('Web client Login flow should work fine', (done) => {
     const browser = getBrowser();
     browser
       .goto(Config.SERVER_URL)
@@ -152,7 +152,25 @@ describe('Automated browser Test', () => {
       .type('form[name="login"] input[name="username"]', testUser.username)
       .type('form[name="login"] input[name="password"]', testUser.password)
       .click('form[name="login"] button[type="submit"]')
-      .wait(3000)
+      .wait(2000)
+      .end()
+      .then(() => {
+        errorHandler(done);
+      })
+      .catch((err) => {
+        errorHandler(done, err);
+      });
+  });
+
+  it('Parse-dashboard should work fine', (done) => {
+    const browser = getBrowser();
+    browser
+      .goto(`${Config.PARSE_SERVER_BASE}/dashboard/login`)
+      .wait('form[action="/dashboard/login"]')
+      .type('form[action="/dashboard/login"] input[name="username"]', 'lucas')
+      .type('form[action="/dashboard/login"] input[name="password"]', 'test')
+      .click('form[action="/dashboard/login"] input[type="submit"]')
+      .wait(2000)
       .end()
       .then(() => {
         errorHandler(done);

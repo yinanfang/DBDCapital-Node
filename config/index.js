@@ -42,7 +42,7 @@ const PARSE_APP_ID = process.env.PARSE_APP_ID || 'a7e55968a1c7ad3dd3e5a';
 const PARSE_MASTER_KEY = process.env.PARSE_MASTER_KEY || '70c6093dba5a7e55968a1c7ad3dd3e5a74ef5cac';
 const PARSE_CLOUD_CODE_ENTRANCE = `${__dirname}/../cloud/main.js`;
 const PARSE_CLOUD_API_BASE = `${PARSE_SERVER_URL}/functions`;
-const PARSE_REMOTE_USERS = JSON.parse('[{"user":"lucas","pass":"test"}]');
+const PARSE_REMOTE_USERS = process.env.PARSE_REMOTE_USERS || JSON.parse('[{"user":"lucas","pass":"$2y$10$9icqewfavtUMlEDfqDj9EuNR9B6Le5qlJls9BLOtFTXKdsxf9hyHK"}]');
 // const DASHBOARD_AUTH = process.env.DASHBOARD_AUTH;
 
 export default {

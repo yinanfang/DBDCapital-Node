@@ -1,5 +1,8 @@
 // @flow
 
+// Reference 01: https://github.com/yelouafi/redux-saga/blob/master/examples/real-world/actions/index.js
+// Reference 02: https://engineering.haus.com/so-youve-screwed-up-your-redux-store-or-why-redux-makes-refactoring-easy-400e19606c71#4fed
+
 const REQUEST = 'REQUEST';
 const SUCCESS = 'SUCCESS';
 const FAILURE = 'FAILURE';

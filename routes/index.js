@@ -18,9 +18,6 @@ const Auth = jwtParserMiddleware({
 
 const APIRouter = express.Router();
 
-// Need to configure passport before use
-APIRouter.use(API.PassportLocal);
-
 APIRouter.post('/login', API.Login);
 
 APIRouter.post('/register', API.Register);

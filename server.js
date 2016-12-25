@@ -45,7 +45,7 @@ app.all('*', (req, res, next) => {
   if (req.secure) {
     return next();
   }
-  logger.info('insecure connection. Rerouting to https...');
+  logger.warn('insecure connection. Rerouting to https...');
   return res.redirect(`https://${Config.DOMAIN}:${Config.HTTPS_PORT}${req.path}`);
 });
 
@@ -86,7 +86,7 @@ const dashboard = new ParseDashboard({
     },
   ],
   users: Config.PARSE_REMOTE_USERS,
-  // useEncryptedPasswords: true, // Bcrypt password
+  useEncryptedPasswords: true, // Bcrypt password
 }, true // allowInsecureHTTP
 );
 
