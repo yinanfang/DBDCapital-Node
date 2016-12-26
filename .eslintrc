@@ -35,6 +35,9 @@
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     # "react/prefer-stateless-function": [0],
 
+    # Bug: https://github.com/yannickcr/eslint-plugin-react/issues/976
+    "react/no-unused-prop-types": [0],
+
     "flowtype/boolean-style": [
       2,
       "boolean"

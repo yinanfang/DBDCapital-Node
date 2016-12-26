@@ -12,6 +12,13 @@ const auth = (state = {}, action) => {
   return state;
 };
 
+const measure = (state = { isMobileDrawer: false, isMobileViewer: false }, action) => {
+  if (action.type === actions.MEASURE_UPDATE) {
+    return Object.assign(state, action.dimensions);
+  }
+  return state;
+};
+
 const entities = (state = 0, action) => {
   switch (action.type) {
     case 'INCREMENT':
@@ -25,6 +32,7 @@ const entities = (state = 0, action) => {
 
 const rootReducer = combineReducers({
   auth,
+  measure,
   entities,
   routing, // https://github.com/reactjs/react-router-redux
 });

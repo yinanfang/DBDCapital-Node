@@ -18,8 +18,6 @@ const REGISTER = createRequestTypes('REGISTER');
 const LOGIN = createRequestTypes('LOGIN');
 const USER = createRequestTypes('USER');
 
-const NAVIGATE = 'NAVIGATE';
-
 const action = (type, payload = {}) => {
   return { type, ...payload };
 };
@@ -36,14 +34,20 @@ const login = {
   failure: (username, error) => action(LOGIN.FAILURE, { username, error }),
 };
 
+const NAVIGATE = 'NAVIGATE';
 const navigate = pathname => action(NAVIGATE, { pathname })
+
+const MEASURE_UPDATE = 'MEASURE_UPDATE';
+const measureUpdate = dimensions => action(MEASURE_UPDATE, { dimensions })
 
 
 export default {
   USER,
   LOGIN,
   NAVIGATE,
+  MEASURE_UPDATE,
   register,
   login,
   navigate,
+  measureUpdate,
 };

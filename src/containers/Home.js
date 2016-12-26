@@ -18,8 +18,8 @@ import styleJS from '../style.css.js';
 const Home = (props) => {
   return (
     <div>
+      <Helmet title="Home" />
       <div className={styleCSS.homeMainSection}>
-        <Helmet title="Home" />
         <AppBar
           title={<span className={styleCSS.pageTitle}>DBD Capital</span>}
           iconElementLeft={<ActionHome style={styleJS.forceHide} />}

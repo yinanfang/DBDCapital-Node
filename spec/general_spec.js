@@ -74,16 +74,21 @@ describe('Website Monitoring Test - Synchronous', () => {
 
 let receivedToken = '';
 
-const testUser = {
+const testUserClient = {
   username: 'dbdcapital_test',
   password: 'password',
   email: 'dbdcapital_test@dbd-capital.com',
 };
 
+const testUserParse = {
+  username: 'lucas',
+  password: 'test',
+};
+
 describe('Node Sever API v1.0 Test', () => {
   it('/register', (done) => {
     requestNodeAPI.post('/register')
-      .send(testUser)
+      .send(testUserClient)
       .expect(200)
       .end((err, res) => {
         logger.info(res.body);
@@ -93,7 +98,7 @@ describe('Node Sever API v1.0 Test', () => {
 
   it('/login', (done) => {
     requestNodeAPI.post('/login')
-      .send(testUser)
+      .send(testUserClient)
       .expect(200)
       .expect((res) => {
         receivedToken = res.body.token;
@@ -149,8 +154,8 @@ describe('Automated browser Test', () => {
       .wait('a[href="/auth"]')
       .click('a[href="/auth"]')
       .wait('form[name="login"]')
-      .type('form[name="login"] input[name="username"]', testUser.username)
-      .type('form[name="login"] input[name="password"]', testUser.password)
+      .type('form[name="login"] input[name="username"]', testUserClient.username)
+      .type('form[name="login"] input[name="password"]', testUserClient.password)
       .click('form[name="login"] button[type="submit"]')
       .wait(2000)
       .end()
@@ -167,10 +172,12 @@ describe('Automated browser Test', () => {
     browser
       .goto(`${Config.PARSE_SERVER_BASE}/dashboard/login`)
       .wait('form[action="/dashboard/login"]')
-      .type('form[action="/dashboard/login"] input[name="username"]', 'lucas')
-      .type('form[action="/dashboard/login"] input[name="password"]', 'test')
+      .type('form[action="/dashboard/login"] input[name="username"]', testUserParse.username)
+      .type('form[action="/dashboard/login"] input[name="password"]', testUserParse.password)
       .click('form[action="/dashboard/login"] input[type="submit"]')
-      .wait(2000)
+      .wait('ul[class^="apps__"]')
+      .click('ul[class^="apps__"] a')
+      .wait('div[class^="toolbar__"]')
       .end()
       .then(() => {
         errorHandler(done);
@@ -189,7 +196,7 @@ describe('Parse-Sever API v1.0 Test', () => {
   it('/deleteUser delete test user with username', (done) => {
     requestParseCloudAPI.post('/deleteUser')
       .set('X-Parse-Application-Id', Config.PARSE_APP_ID)
-      .send(testUser)
+      .send(testUserClient)
       .expect(200)
       .end((err, res) => errorHandler(done, err));
   });
