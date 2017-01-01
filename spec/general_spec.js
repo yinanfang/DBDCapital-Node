@@ -1,5 +1,3 @@
-// @flow
-
 import request from 'supertest';
 import Nightmare from 'nightmare';
 import jwt from 'jsonwebtoken';

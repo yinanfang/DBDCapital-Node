@@ -12,9 +12,15 @@ const auth = (state = {}, action) => {
   return state;
 };
 
-const measure = (state = { isMobileDrawer: false, isMobileViewer: false }, action) => {
-  if (action.type === actions.MEASURE_UPDATE) {
-    return Object.assign(state, action.dimensions);
+const uiStoreDefault = {
+  isMobileViewer: false,
+  isMobileDrawer: false,
+  isDrawerOpen: false,
+  measure: {},
+};
+const uiStore = (state = uiStoreDefault, action) => {
+  if (action.type === actions.UI_UPDATE) {
+    return Object.assign({}, state, action.uiUpdates);
   }
   return state;
 };
@@ -32,7 +38,7 @@ const entities = (state = 0, action) => {
 
 const rootReducer = combineReducers({
   auth,
-  measure,
+  uiStore,
   entities,
   routing, // https://github.com/reactjs/react-router-redux
 });

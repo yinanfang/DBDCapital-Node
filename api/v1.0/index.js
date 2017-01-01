@@ -3,8 +3,6 @@
 import jwt from 'jsonwebtoken';
 
 import Parse from 'parse/node';
-import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
 
 import Config from '../../config';
 import logger from '../../utils/logger';

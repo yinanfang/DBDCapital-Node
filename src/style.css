@@ -185,3 +185,14 @@ Auth
 .authDialogueFormContainerRight {
   @apply --authDialogueFormContainer;
 }
+
+/* ***************************************************************************
+Account
+*****************************************************************************/
+
+.accountLogo {
+  line-height: 64px;
+  padding-left: 24px;
+  font-size: 24px;
+  font-weight: 300;
+}

@@ -35,19 +35,19 @@ const login = {
 };
 
 const NAVIGATE = 'NAVIGATE';
-const navigate = pathname => action(NAVIGATE, { pathname })
+const navigate = pathname => action(NAVIGATE, { pathname });
 
-const MEASURE_UPDATE = 'MEASURE_UPDATE';
-const measureUpdate = dimensions => action(MEASURE_UPDATE, { dimensions })
+const UI_UPDATE = 'UI_UPDATE';
+const uiUpdate = uiUpdates => action(UI_UPDATE, { uiUpdates });
 
 
 export default {
   USER,
   LOGIN,
   NAVIGATE,
-  MEASURE_UPDATE,
+  UI_UPDATE,
   register,
   login,
   navigate,
-  measureUpdate,
+  uiUpdate,
 };

@@ -15,21 +15,22 @@ const MOBILE_VIEWER_INCEPTION = 600;
 const App = (props) => {
   const handleMeasureUpdate = (measure) => {
     let hasCriticalUpdate = false;
+    const uiUpdates = {};
     const isMobileDrawer = measure.width < MOBILE_DRAWER_INCEPTION;
-    if (isMobileDrawer !== props.measure.isMobileDrawer) {
-      measure.isMobileDrawer = isMobileDrawer;
+    if (isMobileDrawer !== props.uiStore.isMobileDrawer) {
+      uiUpdates.isMobileDrawer = isMobileDrawer;
       hasCriticalUpdate = true;
     }
 
     const isMobileViewer = measure.width < MOBILE_VIEWER_INCEPTION;
-    if (isMobileViewer !== props.measure.isMobileViewer) {
-      measure.isMobileViewer = isMobileViewer;
+    if (isMobileViewer !== props.uiStore.isMobileViewer) {
+      uiUpdates.isMobileViewer = isMobileViewer;
       hasCriticalUpdate = true;
     }
-
     if (hasCriticalUpdate) {
       console.log('filre!!!');
-      props.measureUpdate(measure);
+      uiUpdates.measure = measure;
+      props.uiUpdate(uiUpdates);
     }
   };
 
@@ -54,15 +55,15 @@ App.propTypes = {
   // Injected by React Router
   children: PropTypes.node,
   // Injected by React Redux
-  measureUpdate: PropTypes.func.isRequired,
+  uiUpdate: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
-    measure: state.measure,
+    uiStore: state.uiStore,
   };
 };
 
 export default connect(mapStateToProps, {
-  measureUpdate: Actions.measureUpdate,
+  uiUpdate: Actions.uiUpdate,
 })(App);
