@@ -190,6 +190,10 @@ Auth
 Account
 *****************************************************************************/
 
+.accountBase a {
+  text-decoration: none;
+}
+
 .accountLogo {
   line-height: 64px;
   padding-left: 24px;

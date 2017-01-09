@@ -10,7 +10,7 @@ const Root = (props) => {
   const { store, history } = props;
   return (
     <Provider store={store}>
-        <Router history={history} routes={routes} />
+      <Router history={history} routes={routes} />
     </Provider>
   );
 };

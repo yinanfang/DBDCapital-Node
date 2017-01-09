@@ -2,25 +2,23 @@
 
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 import Helmet from 'react-helmet';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { cyan500, red50 } from 'material-ui/styles/colors';
+import { cyan500 } from 'material-ui/styles/colors';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import { List, ListItem } from 'material-ui/List';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
-import ContentSend from 'material-ui/svg-icons/content/send';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
-import IconButton from 'material-ui/IconButton';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import Home from 'material-ui/svg-icons/action/home';
+import Timeline from 'material-ui/svg-icons/action/timeline';
+import Receipt from 'material-ui/svg-icons/action/receipt';
+import VerifiedUser from 'material-ui/svg-icons/action/verified-user';
 import FlatButton from 'material-ui/FlatButton';
 
 import Actions from '../actions';
-
 import styleCSS from '../style.css';
 
 const Account = (props) => {
@@ -41,17 +39,31 @@ const Account = (props) => {
     updateDrawOpenState(!props.isDrawerOpen);
   };
 
+  const DRAWER_WIDTH = 256;
+  const sectionContainerStyle = () => {
+    return props.isMobileDrawer ? {} : {
+      marginLeft: DRAWER_WIDTH,
+    };
+  };
+  const sectionViewerStyle = () => {
+    return props.isMobileViewer ? {
+      margin: '24px',
+    } : {
+      margin: '48px 72px',
+    };
+  };
+
   return (
     <MuiThemeProvider muiTheme={muiTheme}>
-      <div>
+      <div className={styleCSS.accountBase}>
         <Helmet title="Account" />
         <AppBar
           onLeftIconButtonTouchTap={handleLeftIconButtonTouchTap}
           title={<span className={styleCSS.pageTitle}>Account</span>}
-          iconElementRight={<FlatButton label="Save" />}
+          iconElementRight={<FlatButton label="Log Out" />}
         />
         <Drawer
-          width={256}
+          width={DRAWER_WIDTH}
           docked={!props.isMobileDrawer}
           open={!props.isMobileDrawer || props.isDrawerOpen}
           onRequestChange={updateDrawOpenState}
@@ -60,13 +72,17 @@ const Account = (props) => {
             DBD Capital
           </div>
           <List>
-            <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />
-            <ListItem primaryText="Starred" leftIcon={<ActionGrade />} />
-            <ListItem primaryText="Sent mail" leftIcon={<ContentSend />} />
-            <ListItem primaryText="Drafts" leftIcon={<ContentDrafts />} />
-            <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />
+            <Link to="/account"><ListItem primaryText="Overview" leftIcon={<Home />} /></Link>
+            <Link to="/account/development"><ListItem primaryText="Development" leftIcon={<Timeline />} /></Link>
+            <Link to="/account/transactions"><ListItem primaryText="Transactions" leftIcon={<Receipt />} /></Link>
+            <Link to="/account/admin"><ListItem primaryText="Admin" leftIcon={<VerifiedUser />} /></Link>
           </List>
         </Drawer>
+        <div style={sectionContainerStyle()}>
+          <div style={sectionViewerStyle()}>
+            {props.children}
+          </div>
+        </div>
       </div>
     </MuiThemeProvider>
   );
@@ -74,8 +90,10 @@ const Account = (props) => {
 
 Account.propTypes = {
   // Injected by React Router
+  children: PropTypes.node,
   // Injected by React Redux
   isMobileDrawer: PropTypes.bool.isRequired,
+  isMobileViewer: PropTypes.bool.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   uiUpdate: PropTypes.func.isRequired,
 };
@@ -83,6 +101,7 @@ Account.propTypes = {
 const mapStateToProps = (state) => {
   return {
     isMobileDrawer: state.uiStore.isMobileDrawer,
+    isMobileViewer: state.uiStore.isMobileViewer,
     isDrawerOpen: state.uiStore.isDrawerOpen,
   };
 };

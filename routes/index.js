@@ -26,6 +26,8 @@ APIRouter.get('/user', Auth, API.User);
 
 APIRouter.delete('/deleteUser', API.DeleteUser);
 
+APIRouter.post('/quote', API.Quote);
+
 /* ***************************************************************************
 Export
 *****************************************************************************/

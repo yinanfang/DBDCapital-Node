@@ -1,8 +1,8 @@
 // @flow
 
 import jwt from 'jsonwebtoken';
-
 import Parse from 'parse/node';
+import yahooFinance from 'yahoo-finance';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
@@ -67,9 +67,28 @@ const DeleteUser = (req, res, next) => {
   res.send('Delete User!!!');
 };
 
+const Quote = (req, res, next) => {
+  yahooFinance.historical({
+    symbol: '600635.ss',
+    from: '2017-01-01',
+    to: '2017-01-08',
+    // period: 'd'  // 'd' (daily), 'w' (weekly), 'm' (monthly), 'v' (dividends only)
+  }, (err, quotes) => {
+    res.send(quotes);
+  });
+
+  // yahooFinance.snapshot({
+  //   symbol: 'AAPL',
+  //   fields: ['s', 'n', 'd1', 'l1', 'y', 'r'],
+  // }, function (err, snapshot) {
+  //   //...
+  // });
+};
+
 export default {
   Register,
   Login,
   User,
   DeleteUser,
+  Quote,
 };
