@@ -2,7 +2,8 @@
 
 import jwt from 'jsonwebtoken';
 import Parse from 'parse/node';
-import yahooFinance from 'yahoo-finance';
+import request from 'request';
+import iconv from 'iconv-lite';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
@@ -68,21 +69,39 @@ const DeleteUser = (req, res, next) => {
 };
 
 const Quote = (req, res, next) => {
-  yahooFinance.historical({
-    symbol: '600635.ss',
-    from: '2017-01-01',
-    to: '2017-01-08',
-    // period: 'd'  // 'd' (daily), 'w' (weekly), 'm' (monthly), 'v' (dividends only)
-  }, (err, quotes) => {
-    res.send(quotes);
+  request.get({
+    url: 'http://hq.sinajs.cn/list=sh600185,sh600183',
+    encoding: null,
+  }, (error, response, body) => {
+    if (!error && response.statusCode === 200) {
+      const converted = iconv.decode(body, 'GBK');
+      const stockInfoArray = [];
+      const stockList = converted.split('\n');
+      stockList.pop(); // pop the new line at the end
+      stockList.forEach((detailText) => {
+        const parts = detailText.split('=');
+        const symbol = parts[0].split('_').pop();
+        const data = parts[1].split('"')[1].split(',');
+        const stock = {
+          symbol,
+          name: data[0],
+          open: data[1],
+          close: data[2],
+          current: data[3],
+          high: data[4],
+          low: data[5],
+          bid: data[6],
+          ask: data[7],
+          volume: data[8],
+          transactionValue: data[9],
+          date: new Date(`${data[30]}T${data[31]}+08:00`), // Beijing(+8) -> UTC
+        };
+        console.log(stock);
+      });
+      console.log(stockInfoArray);
+      res.send(converted);
+    }
   });
-
-  // yahooFinance.snapshot({
-  //   symbol: 'AAPL',
-  //   fields: ['s', 'n', 'd1', 'l1', 'y', 'r'],
-  // }, function (err, snapshot) {
-  //   //...
-  // });
 };
 
 export default {

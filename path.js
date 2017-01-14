@@ -2,7 +2,7 @@
 
 const secure = (paths) => {
   return paths.map((item) => {
-    return `^${item}$`;
+    return `^${item}`;
   });
 };
 

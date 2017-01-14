@@ -210,3 +210,15 @@ Account
   font-size: 24px;
   font-weight: 300;
 }
+
+.accountSectionContainer {
+  padding: 20px;
+}
+
+.accountSectionContainer h2 {
+  margin: 0;
+}
+
+.accountFormColumnSelect {
+  width: 24px;
+}

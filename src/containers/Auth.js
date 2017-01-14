@@ -2,10 +2,10 @@
 
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import $ from 'jquery';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Helmet from 'react-helmet';
-import $ from 'jquery';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 

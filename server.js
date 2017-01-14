@@ -119,6 +119,7 @@ if (Config.IS_DEVELOPMENT) {
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
   app.use(Path.DBDCapital.Routes, (req, res) => {
+    // logger.debug('Serving React page');
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     res.end();
   });

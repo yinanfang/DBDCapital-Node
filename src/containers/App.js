@@ -28,7 +28,6 @@ const App = (props) => {
       hasCriticalUpdate = true;
     }
     if (hasCriticalUpdate) {
-      console.log('filre!!!');
       uiUpdates.measure = measure;
       props.uiUpdate(uiUpdates);
     }

@@ -12,7 +12,7 @@ const Error = (props) => {
   return (
     <div>
       <Helmet title="Error" />
-      Error
+      404 Error from React Error.js
     </div>
   );
 };
