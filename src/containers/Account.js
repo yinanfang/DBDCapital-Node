@@ -38,6 +38,9 @@ const Account = (props) => {
   const handleLeftIconButtonTouchTap = () => {
     updateDrawOpenState(!props.isDrawerOpen);
   };
+  const navTabOnClick = (event) => {
+    updateDrawOpenState(false);
+  };
 
   const DRAWER_WIDTH = 256;
   const sectionContainerStyle = () => {
@@ -72,10 +75,10 @@ const Account = (props) => {
             DBD Capital
           </div>
           <List>
-            <Link to="/account"><ListItem primaryText="Overview" leftIcon={<Home />} /></Link>
-            <Link to="/account/development"><ListItem primaryText="Development" leftIcon={<Timeline />} /></Link>
-            <Link to="/account/transactions"><ListItem primaryText="Transactions" leftIcon={<Receipt />} /></Link>
-            <Link to="/account/admin"><ListItem primaryText="Admin" leftIcon={<VerifiedUser />} /></Link>
+            <Link to="/account" onClick={navTabOnClick}><ListItem primaryText="Overview" leftIcon={<Home />} /></Link>
+            <Link to="/account/development" onClick={navTabOnClick}><ListItem primaryText="Development" leftIcon={<Timeline />} /></Link>
+            <Link to="/account/transactions" onClick={navTabOnClick}><ListItem primaryText="Transactions" leftIcon={<Receipt />} /></Link>
+            <Link to="/account/admin" onClick={navTabOnClick}><ListItem primaryText="Admin" leftIcon={<VerifiedUser />} /></Link>
           </List>
         </Drawer>
         <div style={sectionContainerStyle()}>

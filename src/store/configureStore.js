@@ -4,19 +4,23 @@ import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import createLogger from 'redux-logger';
 import createSagaMiddleware, { END } from 'redux-saga';
+
 import rootReducer from '../reducers';
 
 export default function configureStore(initialState) {
   const sagaMiddleware = createSagaMiddleware();
+  const middlewareList = [sagaMiddleware];
 
+  // TODO: use local storage to store dev/prod env
+  const IS_DEVELOPMENT = true;
+  if (IS_DEVELOPMENT) {
+    middlewareList.push(createLogger());
+  }
   const store = createStore(
     rootReducer,
     initialState,
     composeWithDevTools(
-      applyMiddleware(
-        sagaMiddleware,
-        createLogger()
-      )
+      applyMiddleware(...middlewareList)
     )
   );
 

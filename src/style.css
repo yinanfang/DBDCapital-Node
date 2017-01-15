@@ -213,12 +213,29 @@ Account
 
 .accountSectionContainer {
   padding: 20px;
+
+  /* Avoid jQuery toggle jump */
+  & h2 {
+    margin: 0;
+  }
 }
 
-.accountSectionContainer h2 {
-  margin: 0;
+.accountTransactionType {
+  width: 30px;
+
+  & > div {
+    left: -22px;
+  }
+}
+
+.accountInputLong {
+  width: 35%;
 }
 
 .accountFormColumnSelect {
   width: 24px;
+}
+
+.accountSummit {
+  float: right;
 }

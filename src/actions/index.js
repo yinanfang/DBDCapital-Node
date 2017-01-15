@@ -24,8 +24,8 @@ const action = (type, payload = {}) => {
 
 const register = {
   request: (username, password) => action(REGISTER.REQUEST, { username, password }),
-  success: (login, response) => action(REGISTER.SUCCESS, { user, response }),
-  failure: (login, error) => action(REGISTER.FAILURE, { user, error }),
+  success: (login, response) => action(REGISTER.SUCCESS, { login, response }),
+  failure: (login, error) => action(REGISTER.FAILURE, { login, error }),
 };
 
 const login = {
@@ -40,14 +40,18 @@ const navigate = pathname => action(NAVIGATE, { pathname });
 const UI_UPDATE = 'UI_UPDATE';
 const uiUpdate = uiUpdates => action(UI_UPDATE, { uiUpdates });
 
+const ACCOUNT_NEW_TRANSACTIONS_INPUT_UPDATE = 'ACCOUNT_NEW_TRANSACTIONS_INPUT_UPDATE';
+const accountNewTransactionsInputUpdate = newTransactions => action(ACCOUNT_NEW_TRANSACTIONS_INPUT_UPDATE, { newTransactions });
 
 export default {
   USER,
-  LOGIN,
   NAVIGATE,
   UI_UPDATE,
-  register,
-  login,
-  navigate,
   uiUpdate,
+  LOGIN,
+  login,
+  ACCOUNT_NEW_TRANSACTIONS_INPUT_UPDATE,
+  accountNewTransactionsInputUpdate,
+  navigate,
+  register,
 };

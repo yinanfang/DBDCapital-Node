@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import App from './containers/App';
@@ -18,7 +20,7 @@ export default (
       <IndexRoute component={AccountOverview} />
       <Route path="development" component={AccountDevelopment} />
       <Route path="transactions" component={AccountTransactions} />
-      <Route path="admin" component={AccountAdmin} />
+      <Route path="admin" component={AccountAdmin.component} />
     </Route>
     {/* Need to be enabled from server.js */}
     <Route path="*" component={Error} />
