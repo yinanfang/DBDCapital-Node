@@ -4,6 +4,7 @@ import { routerReducer as routing } from 'react-router-redux';
 import { combineReducers } from 'redux';
 
 import _cloneDeep from 'lodash/cloneDeep';
+import _merge from 'lodash/merge';
 
 import actions from '../actions';
 import AccountAdmin from '../containers/AccountAdmin';
@@ -28,29 +29,20 @@ const uiStore = (state = uiStoreDefault, action) => {
   return state;
 };
 
-
-const initNewTransactions = () => {
-  const result = {};
-  for (let i = 0; i < AccountAdmin.DEFAULT_NEW_TRANSACTIONS_COUNT; i++) {
-    result[i] = {
-      [AccountAdmin.SELECT.key]: AccountAdmin.SELECT.value,
-      [AccountAdmin.DROPDOWN_ACTION.key]: AccountAdmin.DROPDOWN_ACTION.BUY,
-    };
-  }
-  return result;
-};
 const accountDefault = {
   admin: {
-    newTransactions: initNewTransactions(),
+    newTransactions: AccountAdmin.DEFAULT_NEW_TRANSACTIONS,
   },
 };
 const account = (state = accountDefault, action) => {
   if (action.type === actions.ACCOUNT_NEW_TRANSACTIONS_INPUT_UPDATE) {
-    return _cloneDeep({
+    const copy = _cloneDeep(state);
+    _merge(copy, {
       admin: {
         newTransactions: action.newTransactions,
       },
     });
+    return copy;
   }
   return state;
 };

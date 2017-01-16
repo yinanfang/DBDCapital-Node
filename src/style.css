@@ -232,6 +232,10 @@ Account
   width: 35%;
 }
 
+.accountDatePicker {
+  width: 60px;
+}
+
 .accountFormColumnSelect {
   width: 24px;
 }
