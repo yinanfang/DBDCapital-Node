@@ -7,14 +7,8 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
 import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 import WebpackShellPlugin from 'webpack-shell-plugin';
-
 import postcssImport from 'postcss-import';
-// import precss from 'precss';
-// import simpleVar from 'postcss-simple-vars';
 import cssNext from 'postcss-cssnext';
-// import postcssNested from 'postcss-nested';
-// import postcssMixins from 'postcss-mixins';
-// import cssMQPacker from 'css-mqpacker';
 
 import Config from './config';
 
@@ -108,7 +102,6 @@ const cssLoader = Config.IS_DEVELOPMENT ? {
   loaders: [
     'style',
     'css?sourceMap&modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]',
-    // 'resolve-url',
     'postcss?sourceMap=inline',
   ],
 } : {

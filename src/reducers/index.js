@@ -35,7 +35,7 @@ const accountDefault = {
   },
 };
 const account = (state = accountDefault, action) => {
-  if (action.type === actions.ACCOUNT_NEW_TRANSACTIONS_INPUT_UPDATE) {
+  if (action.type === actions.ACCOUNT_NEW_TRANSACTIONS.UPDATE) {
     const copy = _cloneDeep(state);
     _merge(copy, {
       admin: {

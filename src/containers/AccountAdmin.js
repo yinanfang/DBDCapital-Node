@@ -6,9 +6,11 @@ import $ from 'jquery';
 import faker from 'faker';
 import _merge from 'lodash/merge';
 import _cloneDeep from 'lodash/cloneDeep';
+import _isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import Immutable from 'seamless-immutable';
 import validator from 'validator';
+import sweetAlert from 'sweetalert';
 
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
@@ -86,7 +88,7 @@ const AccountAdmin = (props) => {
 
   const newTransactionsAddEmptyRow = (event) => {
     newTransactionsDiff[newTransactionsCount] = initSingleNewTransaction();
-    props.newTransactionsInputUpdate(newTransactionsDiff);
+    props.newTransactionsUpdate(newTransactionsDiff);
   };
 
   const updateNewTransactions = (row = 0, inputName = '', content = '') => {
@@ -94,19 +96,42 @@ const AccountAdmin = (props) => {
       value: content,
       error: '',
     };
-    if (inputName === 'id') {
-      console.log('gotcha!!!!!!!!');
+    if (inputName === NewTransaction.id.key) {
       updates.error = validator.isAlphanumeric(content) ? '' : 'Format!';
+    } else if (inputName === NewTransaction.symbol.key) {
+      updates.error = validator.isNumeric(content) ? '' : 'Numbers only!';
+    } else if (inputName === NewTransaction.price.key) {
+      updates.error = validator.isCurrency(content) ? '' : 'Currency only!';
     }
     newTransactionsDiff = _merge(newTransactionsDiff, {
       [row]: {
         [inputName]: updates,
       },
     });
-    props.newTransactionsInputUpdate(newTransactionsDiff);
+    props.newTransactionsUpdate(newTransactionsDiff);
   };
 
-  const newTransactionColumnSelect = <TableRowColumn className={styleCSS.accountFormColumnSelect} style={{ padding: 0 }}><Checkbox /></TableRowColumn>;
+  const newTransactionSelectSingle = (event, isInputChecked) => {
+    const row = $(event.target).closest('tr').index();
+    updateNewTransactions(row, NewTransaction.select.key, isInputChecked);
+  };
+  const newTransactionSelectAll = (event, isInputChecked) => {
+    console.log(isInputChecked, $(event.target).parents());
+  };
+  const newTransactionColumnSelect = (col = null) => {
+    if (col) {
+      return (
+        <TableRowColumn className={styleCSS.accountFormColumnSelect} style={{ padding: 0 }}>
+          <Checkbox defaultChecked={col.value} onCheck={newTransactionSelectSingle} />
+        </TableRowColumn>
+      );
+    }
+    return (
+      <TableRowColumn className={styleCSS.accountFormColumnSelect} style={{ padding: 0 }}>
+        <Checkbox onCheck={newTransactionSelectAll} />
+      </TableRowColumn>
+    );
+  };
 
   const transactionInputOnChange = (event, text) => {
     const row = $(event.target).closest('tr').index();
@@ -172,7 +197,7 @@ const AccountAdmin = (props) => {
   const newTransactionRow = (row = 0, trans = {}) => {
     return (
       <TableRow selectable={false} key={row}>
-        {newTransactionColumnSelect}
+        {newTransactionColumnSelect(trans.select)}
         {newTransactionColumnTypeDropdown(row, trans.action)}
         {newTransactionColumnInput(trans.id)}
         {newTransactionColumnInput(trans.symbol)}
@@ -188,7 +213,7 @@ const AccountAdmin = (props) => {
       <Table selectable>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
-            {newTransactionColumnSelect}
+            {newTransactionColumnSelect()}
             <TableHeaderColumn className={styleCSS.accountTransactionType}>Action</TableHeaderColumn>
             <TableHeaderColumn>ID</TableHeaderColumn>
             <TableHeaderColumn>Symbol</TableHeaderColumn>
@@ -206,6 +231,32 @@ const AccountAdmin = (props) => {
     );
   };
 
+  const newTransactionSubmitOnClick = (event) => {
+    event.preventDefault();
+    // http://stackoverflow.com/questions/38750705/using-es6-to-filter-object-properties
+    const selectedTransactions = Object.keys(props.newTransactions)
+      .filter(index => props.newTransactions[index].select.value === true)
+      .reduce((obj, index) => {
+        obj[index] = props.newTransactions[index];
+        return obj;
+      }, {});
+    console.log(selectedTransactions);
+    const passSanityCheck = Object.keys(selectedTransactions)
+      .reduce((isValid, index) => {
+        const trans = selectedTransactions[index];
+        return isValid
+          && !_isEmpty(trans.id.value) && validator.isAlphanumeric(trans.id.value)
+          && !_isEmpty(trans.symbol.value) && validator.isNumeric(trans.symbol.value)
+          && !_isEmpty(trans.price.value) && validator.isCurrency(trans.price.value)
+          && !_isEmpty(trans.date.value) && validator.isDate(trans.date.value);
+      }, true);
+    if (passSanityCheck) {
+      // post result
+    } else {
+      sweetAlert('Oops...', 'Something went wrong!', 'error');
+    }
+  };
+
   return (
     <div>
       <Paper className={styleCSS.accountSectionContainer}>
@@ -216,7 +267,7 @@ const AccountAdmin = (props) => {
           {newTransactionsTable()}
         </form>
         <RaisedButton label="Add A Row" onClick={newTransactionsAddEmptyRow} />
-        <RaisedButton type="submit" label="Submit" className={styleCSS.accountSummit} />
+        <RaisedButton type="submit" onClick={newTransactionSubmitOnClick} label="Submit" className={styleCSS.accountSummit} />
       </Paper>
       <h2>Next</h2>
     </div>
@@ -228,7 +279,7 @@ AccountAdmin.propTypes = {
   children: PropTypes.node,
   // Injected by React Redux
   newTransactions: PropTypes.object.isRequired,
-  newTransactionsInputUpdate: PropTypes.func.isRequired,
+  newTransactionsUpdate: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -238,7 +289,7 @@ const mapStateToProps = (state) => {
 };
 
 const connectedComponent = connect(mapStateToProps, {
-  newTransactionsInputUpdate: Actions.accountNewTransactionsInputUpdate,
+  newTransactionsUpdate: Actions.accountNewTransactions.update,
 })(AccountAdmin);
 export default {
   component: connectedComponent,
