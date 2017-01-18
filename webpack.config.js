@@ -27,10 +27,7 @@ const plugins = Config.IS_DEVELOPMENT ? [
     filename: 'index.html',
     showErrors: true,
   }),
-  // new webpack.ProvidePlugin({
-  //   $: 'jquery',
-  //   jQuery: 'jquery',
-  // }),
+  new ExtractTextPlugin('[name]-[hash].min.css'),
   new webpack.HotModuleReplacementPlugin(),
   new BrowserSyncPlugin({ // BrowserSync options
     // Browse to http://localhost:3000 during dev
@@ -61,10 +58,6 @@ const plugins = Config.IS_DEVELOPMENT ? [
     inject: true,
     filename: 'index.html',
   }),
-  // new webpack.ProvidePlugin({
-  //   $: 'jquery',
-  //   jQuery: 'jquery',
-  // }),
   new ExtractTextPlugin('[name]-[hash].min.css'),
   // Disable React compressed production version warnings for UglifyJsPlugin with DefinePlugin
   // https://github.com/facebook/react/issues/6479#issuecomment-214590100
@@ -104,17 +97,14 @@ const cssLoader = Config.IS_DEVELOPMENT ? {
     'css?sourceMap&modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]',
     'postcss?sourceMap=inline',
   ],
+  include: path.join(__dirname, 'src'),
 } : {
   test: /\.css$/,
   loader: ExtractTextPlugin.extract(
     'style',
     'css?modules&importLoaders=1&localIdentName=[path][name]__[local]__[hash:base64:5]!postcss'
   ),
-  // This doesn't work for now: https://github.com/webpack/extract-text-webpack-plugin/issues/173
-  // loader: ExtractTextPlugin.extract({
-  //   notExtractLoader: 'style',
-  //   loader: 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss',
-  // }),
+  include: path.join(__dirname, 'src'),
 };
 
 module.exports = {
@@ -136,11 +126,19 @@ module.exports = {
         query: {
           presets: babelPresets,
         },
-      }, { // Json
+      },
+      { // Json
         test: /\.json?$/,
         loader: 'json',
       },
+      // Project CSS
       cssLoader,
+      // Vendor CSS imported in src/App.js
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract('style', 'css'),
+        exclude: path.join(__dirname, 'src'),
+      },
       { // Image: inline base64 URLs for <=8k images, direct URLs for the rest
         test: /\.(gif|jpe?g|png|svg)$/,
         loader: 'url-loader?limit=8192&name=[name]-[hash].[ext]',
@@ -150,12 +148,7 @@ module.exports = {
   postcss: () => {
     return [
       postcssImport,
-      // precss,
-      // simpleVar,
       cssNext, // Included autoprefixer
-      // postcssNested,
-      // postcssMixins,
-      // cssMQPacker,
     ];
   },
 };
