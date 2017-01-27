@@ -1,42 +1,24 @@
 import 'isomorphic-fetch';
+import request from 'axios';
+import Raven from 'raven-js';
 
 import Path from '../../path';
 
-// https://github.com/github/fetch#caveats
-const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-  const error = new Error(response.statusText);
-  error.response = response;
-  throw error;
-};
-
-const parseJSON = (response) => {
-  return response.json();
-};
-
 const login = (username, password) => {
   console.log(`src/api.js-------> ${Path.API.basePath}/login`);
-  return fetch(`${Path.API.basePath}/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+  return request
+    .post(`${Path.API.basePath}/login`, {
       username,
       password,
-    }),
-  })
-  .then(checkStatus)
-  .then(parseJSON)
-  .then((data) => {
-    return data.token;
-  })
-  .catch((ex) => {
-    console.log('parsing failed', ex);
-    return null;
-  });
+    })
+    .then((response) => {
+      return response.data.token;
+    })
+    .catch((error) => {
+      console.log('Login failed!');
+      Raven.captureException(error);
+      return null;
+    });
 };
 
 const user = (token) => {
@@ -57,6 +39,30 @@ const user = (token) => {
   });
 };
 
+const accountNewTransactionsSubmit = (newTransactions, authToken) => {
+  console.log('accountNewTransactionsSubmit...');
+  return request
+    .create({
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+    .post(`${Path.API.basePath}/account/newTransactions`, {
+      newTransactions,
+    })
+    .then((response) => {
+      console.log('back!');
+      console.log(response);
+      return response.data;
+    })
+    .catch((error) => {
+      console.log('accountNewTransactionsSubmit failed!');
+      Raven.captureException(error);
+      return null;
+    });
+};
+
 export default {
   login,
+  accountNewTransactionsSubmit,
 };

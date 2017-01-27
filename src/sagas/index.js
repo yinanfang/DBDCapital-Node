@@ -20,8 +20,15 @@ function* login() {
   }
 }
 
+function* accountNewTransactionsSubmit() {
+  while (true) {
+    const { newTransactions, authToken } = yield take(actions.ACCOUNT_NEW_TRANSACTIONS.SUBMIT);
+    const result = yield call(API.accountNewTransactionsSubmit, newTransactions, authToken);
+  }
+}
+
 /* ***************************************************************************
-Watchers
+Utility
 *****************************************************************************/
 
 // trigger router navigation via history
@@ -34,7 +41,10 @@ function* watchNavigate() {
 
 export default function* root() {
   yield [
+    // Feature
     fork(login),
+    fork(accountNewTransactionsSubmit),
+    // Utility
     fork(watchNavigate),
   ];
 }

@@ -36,6 +36,7 @@ const register = {
 const ACCOUNT_NEW_TRANSACTIONS = createRequestTypes('USER');
 const accountNewTransactions = {
   update: newTransactions => action(ACCOUNT_NEW_TRANSACTIONS.UPDATE, { newTransactions }),
+  submit: (newTransactions, authToken) => action(ACCOUNT_NEW_TRANSACTIONS.SUBMIT, { newTransactions, authToken }),
 };
 
 const USER = createRequestTypes('USER');

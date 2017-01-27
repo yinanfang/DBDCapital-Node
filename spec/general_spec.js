@@ -41,6 +41,10 @@ const getBrowser = (platform = DESKTOP) => {
   });
   if (platform === MOBILE) {
     nightmare.useragent('Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16');
+    nightmare.viewport(420, 740);
+  } else {
+    // nightmare.viewport(960, 660);
+    nightmare.viewport(1080, 860);
   }
   return nightmare;
 };
@@ -119,6 +123,12 @@ describe('Node Sever API v1.0 Test', () => {
       .expect(401)
       .end((err, res) => errorHandler(done, err));
   });
+
+  it('/non-existing-url should 404', (done) => {
+    requestNodeAPI.get('/non-existing-url')
+      .expect(404)
+      .end((err, res) => errorHandler(done, err));
+  });
 });
 
 describe('Parse server Test', () => {
@@ -135,7 +145,7 @@ describe('Parse server Test', () => {
   });
 });
 
-describe('Automated browser Test', () => {
+describe('Automated browser Test for Web Client', () => {
   const originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
@@ -145,16 +155,29 @@ describe('Automated browser Test', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
   });
 
-  it('Web client Login flow should work fine', (done) => {
+  it('Desktop Web Adam Login + Submit New Transactions + View Open Position should work fine', (done) => {
     const browser = getBrowser();
+    const patternFormNewTransactions = 'form[name="newTransactions"] div:nth-child(2) td:nth-child';
     browser
+      // Go to Home page
       .goto(Config.SERVER_URL)
       .wait('a[href="/auth"]')
+      // Go to Auth page and log in
       .click('a[href="/auth"]')
       .wait('form[name="login"]')
       .type('form[name="login"] input[name="username"]', testUserClient.username)
       .type('form[name="login"] input[name="password"]', testUserClient.password)
       .click('form[name="login"] button[type="submit"]')
+      // Go to Account/Admin, fill out first row, and submit
+      .wait('div[class*="__accountBase__"]')
+      .click('a[href="/account/admin"]')
+      .wait('form[name="newTransactions"]')
+      .click(`${patternFormNewTransactions}(1) input`)
+      .type(`${patternFormNewTransactions}(3) input`, '102d')
+      .type(`${patternFormNewTransactions}(4) input`, '600635')
+      .type(`${patternFormNewTransactions}(5) input`, '22')
+      .type(`${patternFormNewTransactions}(7) textarea:nth-child(2)`, 'Random note')
+      .click('div[class*="accountSectionContainer"]:nth-child(1) button[type="submit"]')
       .wait(2000)
       .end()
       .then(() => {
@@ -164,27 +187,38 @@ describe('Automated browser Test', () => {
         errorHandler(done, err);
       });
   });
-
-  it('Parse-dashboard should work fine', (done) => {
-    const browser = getBrowser();
-    browser
-      .goto(`${Config.PARSE_SERVER_BASE}/dashboard/login`)
-      .wait('form[action="/dashboard/login"]')
-      .type('form[action="/dashboard/login"] input[name="username"]', testUserParse.username)
-      .type('form[action="/dashboard/login"] input[name="password"]', testUserParse.password)
-      .click('form[action="/dashboard/login"] input[type="submit"]')
-      .wait('ul[class^="apps__"]')
-      .click('ul[class^="apps__"] a')
-      .wait('div[class^="toolbar__"]')
-      .end()
-      .then(() => {
-        errorHandler(done);
-      })
-      .catch((err) => {
-        errorHandler(done, err);
-      });
-  });
 });
+
+// describe('Automated browser Test for Parse Dashboard', () => {
+//   const originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+//   beforeAll(() => {
+//     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+//   });
+//
+//   afterAll(() => {
+//     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+//   });
+//
+//   it('Parse Dashboard should work fine', (done) => {
+//     const browser = getBrowser();
+//     browser
+//       .goto(`${Config.PARSE_SERVER_BASE}/dashboard/login`)
+//       .wait('form[action="/dashboard/login"]')
+//       .type('form[action="/dashboard/login"] input[name="username"]', testUserParse.username)
+//       .type('form[action="/dashboard/login"] input[name="password"]', testUserParse.password)
+//       .click('form[action="/dashboard/login"] input[type="submit"]')
+//       .wait('ul[class^="apps__"]')
+//       .click('ul[class^="apps__"] a')
+//       .wait('div[class^="toolbar__"]')
+//       .end()
+//       .then(() => {
+//         errorHandler(done);
+//       })
+//       .catch((err) => {
+//         errorHandler(done, err);
+//       });
+//   });
+// });
 
 /* ***************************************************************************
 Cleanup - Delete test user

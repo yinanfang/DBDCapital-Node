@@ -9,7 +9,7 @@ import Config from '../../config';
 import logger from '../../utils/logger';
 
 /* ***************************************************************************
-API
+Auth
 *****************************************************************************/
 
 const Register = (req, res, next) => {
@@ -68,6 +68,19 @@ const DeleteUser = (req, res, next) => {
   res.send('Delete User!!!');
 };
 
+/* ***************************************************************************
+Account
+*****************************************************************************/
+
+const AccountNewTransactionsSubmit = (req, res, next) => {
+  console.log(req.body);
+  res.send('User!!!');
+};
+
+/* ***************************************************************************
+Common
+*****************************************************************************/
+
 const Quote = (req, res, next) => {
   request.get({
     url: 'http://hq.sinajs.cn/list=sh600185,sh600183',
@@ -104,10 +117,16 @@ const Quote = (req, res, next) => {
   });
 };
 
+const Error = (req, res, next) => {
+  res.sendStatus(404);
+};
+
 export default {
   Register,
   Login,
   User,
   DeleteUser,
+  AccountNewTransactionsSubmit,
   Quote,
+  Error,
 };

@@ -28,6 +28,10 @@ APIRouter.delete('/deleteUser', API.DeleteUser);
 
 APIRouter.post('/quote', API.Quote);
 
+APIRouter.post('/account/newTransactions', Auth, API.AccountNewTransactionsSubmit);
+
+APIRouter.use('*', API.Error);
+
 /* ***************************************************************************
 Export
 *****************************************************************************/

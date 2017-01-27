@@ -58,12 +58,25 @@ const NewTransaction = Immutable({
     multiLine: true,
   },
 });
+const getPreviousWorkday = () => {
+  const today = moment();
+  const day = today.day();
+  let diff = 0;
+  if (day === 6) {
+    diff = 1;
+  } else if (day === 0) {
+    diff = 2;
+  }
+  return today.subtract(diff, 'days');
+};
 const initSingleNewTransaction = () => {
   const copy = _cloneDeep(NewTransaction);
   copy.id.hint = `${faker.random.arrayElement([86, 168, 355, 173, 853, '225b', '115c', '352d'])}`;
   copy.symbol.hint = faker.random.number({ min: 600000, max: 699999 });
   copy.price.hint = faker.commerce.price();
-  copy.date.hint = moment(faker.date.recent()).format('YYYY-MM-DD');
+  const previousWorkday = getPreviousWorkday();
+  copy.date.defaultValue = previousWorkday.toDate();
+  copy.date.value = previousWorkday.format('YYYY-MM-DD');
   copy.note.hint = faker.lorem.words();
   return copy;
 };
@@ -186,10 +199,10 @@ const AccountAdmin = (props) => {
   const newTransactionDateOnChange = (event, date) => {
     updateNewTransactions(newTransactionDatePickerRow, 'date', moment(date).format('YYYY-MM-DD'));
   };
-  const newTransactionColumnDatePicket = (name = '', hint = '') => {
+  const newTransactionColumnDatePicket = (name = '', defaultValue = new Date()) => {
     return (
       <TableRowColumn className={styleCSS.accountDatePicker}>
-        <DatePicker name={name} hintText={hint} autoOk shouldDisableDate={disableWeekends} onTouchTap={newTransactionDateOnTouchTap} onChange={newTransactionDateOnChange} />
+        <DatePicker name={name} autoOk defaultDate={defaultValue} shouldDisableDate={disableWeekends} onTouchTap={newTransactionDateOnTouchTap} onChange={newTransactionDateOnChange} />
       </TableRowColumn>
     );
   };
@@ -202,7 +215,7 @@ const AccountAdmin = (props) => {
         {newTransactionColumnInput(trans.id)}
         {newTransactionColumnInput(trans.symbol)}
         {newTransactionColumnInput(trans.price)}
-        {newTransactionColumnDatePicket(trans.date.key, trans.date.hint)}
+        {newTransactionColumnDatePicket(trans.date.key, trans.date.defaultValue)}
         {newTransactionColumnInput(trans.note)}
       </TableRow>
     );
@@ -244,14 +257,15 @@ const AccountAdmin = (props) => {
     const passSanityCheck = Object.keys(selectedTransactions)
       .reduce((isValid, index) => {
         const trans = selectedTransactions[index];
+        console.log(isValid);
         return isValid
           && !_isEmpty(trans.id.value) && validator.isAlphanumeric(trans.id.value)
           && !_isEmpty(trans.symbol.value) && validator.isNumeric(trans.symbol.value)
           && !_isEmpty(trans.price.value) && validator.isCurrency(trans.price.value)
           && !_isEmpty(trans.date.value) && validator.isDate(trans.date.value);
       }, true);
-    if (passSanityCheck) {
-      // post result
+    if (Object.keys(selectedTransactions).length !== 0 && passSanityCheck) {
+      props.newTransactionsSubmit(props.newTransactions, props.authToken);
     } else {
       sweetAlert('Oops...', 'Something went wrong!', 'error');
     }
@@ -278,19 +292,23 @@ AccountAdmin.propTypes = {
   // Injected by React Router
   children: PropTypes.node,
   // Injected by React Redux
+  authToken: PropTypes.string.isRequired,
   newTransactions: PropTypes.object.isRequired,
   newTransactionsUpdate: PropTypes.func.isRequired,
+  newTransactionsSubmit: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
+    authToken: state.auth.token,
     newTransactions: state.account.admin.newTransactions,
   };
 };
-
-const connectedComponent = connect(mapStateToProps, {
+const mapDispatchToProps = {
   newTransactionsUpdate: Actions.accountNewTransactions.update,
-})(AccountAdmin);
+  newTransactionsSubmit: Actions.accountNewTransactions.submit,
+};
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(AccountAdmin);
 export default {
   component: connectedComponent,
   DEFAULT_NEW_TRANSACTIONS: initNewTransactions(),
