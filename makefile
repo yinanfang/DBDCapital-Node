@@ -16,6 +16,14 @@ setup:
 dev:
 	NODE_ENV=development nodemon --exec ./node_modules/babel-cli/bin/babel-node.js server
 
+# Experimental feature after Node v6.3+ & Chrome 55+
+# https://github.com/yinanfang/DBDCapital-Node/issues/47
+debug:
+	NODE_ENV=development babel-node --inspect server
+
+debugWithWithBreak:
+	NODE_ENV=development babel-node --inspect --debug-brk server
+
 ##############################################################################
 # Production
 ##############################################################################

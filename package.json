@@ -68,6 +68,7 @@
     "postcss-simple-vars": "^3.0.0",
     "precss": "^1.4.0",
     "radium": "^0.18.1",
+    "raven-js": "^3.9.2",
     "react": "^15.3.2",
     "react-css-modules": "^4.0.3",
     "react-dom": "^15.0.2",
