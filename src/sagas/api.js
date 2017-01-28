@@ -39,14 +39,9 @@ const user = (token) => {
   });
 };
 
-const accountNewTransactionsSubmit = (newTransactions, authToken) => {
+const accountNewTransactionsSubmit = (newTransactions) => {
   console.log('accountNewTransactionsSubmit...');
   return request
-    .create({
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    })
     .post(`${Path.API.basePath}/account/newTransactions`, {
       newTransactions,
     })

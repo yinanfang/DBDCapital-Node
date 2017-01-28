@@ -265,7 +265,7 @@ const AccountAdmin = (props) => {
           && !_isEmpty(trans.date.value) && validator.isDate(trans.date.value);
       }, true);
     if (Object.keys(selectedTransactions).length !== 0 && passSanityCheck) {
-      props.newTransactionsSubmit(props.newTransactions, props.authToken);
+      props.newTransactionsSubmit(selectedTransactions);
     } else {
       sweetAlert('Oops...', 'Something went wrong!', 'error');
     }

@@ -22,8 +22,8 @@ function* login() {
 
 function* accountNewTransactionsSubmit() {
   while (true) {
-    const { newTransactions, authToken } = yield take(actions.ACCOUNT_NEW_TRANSACTIONS.SUBMIT);
-    const result = yield call(API.accountNewTransactionsSubmit, newTransactions, authToken);
+    const { newTransactions } = yield take(actions.ACCOUNT_NEW_TRANSACTIONS.SUBMIT);
+    const result = yield call(API.accountNewTransactionsSubmit, newTransactions);
   }
 }
 

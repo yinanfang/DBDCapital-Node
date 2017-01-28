@@ -7,6 +7,7 @@ import express from 'express';
 import http from 'http';
 import https from 'https';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import favicon from 'serve-favicon';
 import errorHandler from 'errorhandler';
 import morgan from 'morgan';
@@ -57,9 +58,10 @@ app.use(favicon(path.join(__dirname, '/src/images/favicon.ico')));
 //   '/favicon-192.ico': __dirname+'/images/favicon.ico', // Apple
 // }));
 
-// Body parser
+// Express Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 /* ***************************************************************************
 Parse Server

@@ -189,36 +189,36 @@ describe('Automated browser Test for Web Client', () => {
   });
 });
 
-// describe('Automated browser Test for Parse Dashboard', () => {
-//   const originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-//   beforeAll(() => {
-//     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-//   });
-//
-//   afterAll(() => {
-//     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-//   });
-//
-//   it('Parse Dashboard should work fine', (done) => {
-//     const browser = getBrowser();
-//     browser
-//       .goto(`${Config.PARSE_SERVER_BASE}/dashboard/login`)
-//       .wait('form[action="/dashboard/login"]')
-//       .type('form[action="/dashboard/login"] input[name="username"]', testUserParse.username)
-//       .type('form[action="/dashboard/login"] input[name="password"]', testUserParse.password)
-//       .click('form[action="/dashboard/login"] input[type="submit"]')
-//       .wait('ul[class^="apps__"]')
-//       .click('ul[class^="apps__"] a')
-//       .wait('div[class^="toolbar__"]')
-//       .end()
-//       .then(() => {
-//         errorHandler(done);
-//       })
-//       .catch((err) => {
-//         errorHandler(done, err);
-//       });
-//   });
-// });
+describe('Automated browser Test for Parse Dashboard', () => {
+  const originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+  beforeAll(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  });
+
+  afterAll(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
+  it('Parse Dashboard should work fine', (done) => {
+    const browser = getBrowser();
+    browser
+      .goto(`${Config.PARSE_SERVER_BASE}/dashboard/login`)
+      .wait('form[action="/dashboard/login"]')
+      .type('form[action="/dashboard/login"] input[name="username"]', testUserParse.username)
+      .type('form[action="/dashboard/login"] input[name="password"]', testUserParse.password)
+      .click('form[action="/dashboard/login"] input[type="submit"]')
+      .wait('ul[class^="apps__"]')
+      .click('ul[class^="apps__"] a')
+      .wait('div[class^="toolbar__"]')
+      .end()
+      .then(() => {
+        errorHandler(done);
+      })
+      .catch((err) => {
+        errorHandler(done, err);
+      });
+  });
+});
 
 /* ***************************************************************************
 Cleanup - Delete test user

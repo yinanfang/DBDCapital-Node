@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import Parse from 'parse/node';
 import request from 'request';
 import iconv from 'iconv-lite';
+import prettyjson from 'prettyjson';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
@@ -44,6 +45,7 @@ const Login = (req, res, next) => {
       };
       logger.info(`----------jwt payload: ${JSON.stringify(originalJWTPayload)}`);
       const token = jwt.sign(originalJWTPayload, Config.JWT_SECRET);
+      res.cookie('token', token, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: true });
       res.status(200);
       res.json({
         message: 'Login successfully!!!',
@@ -73,7 +75,8 @@ Account
 *****************************************************************************/
 
 const AccountNewTransactionsSubmit = (req, res, next) => {
-  console.log(req.body);
+  console.log(prettyjson.render(req.body));
+  console.log(req.jwt);
   res.send('User!!!');
 };
 

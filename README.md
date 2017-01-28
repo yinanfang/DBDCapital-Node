@@ -84,6 +84,8 @@
   - https://github.com/michaelzoidl/babel-root-import#dont-let-eslint-be-confused
 - flow-type
  - https://github.com/gajus/eslint-plugin-flowtype#configuration
+- Store jwt in Cookie according to
+  - https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage
 
 - Todo
   - https://camjackson.net/post/9-things-every-reactjs-beginner-should-know
