@@ -2,9 +2,8 @@
 
 import jwt from 'jsonwebtoken';
 import Parse from 'parse/node';
-import request from 'request';
+import request from 'request-promise';
 import iconv from 'iconv-lite';
-import prettyjson from 'prettyjson';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
@@ -45,7 +44,7 @@ const Login = (req, res, next) => {
       };
       logger.info(`----------jwt payload: ${JSON.stringify(originalJWTPayload)}`);
       const token = jwt.sign(originalJWTPayload, Config.JWT_SECRET);
-      res.cookie('token', token, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: true });
+      res.cookie('token', token, { maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
       res.status(200);
       res.json({
         message: 'Login successfully!!!',
@@ -73,51 +72,87 @@ const DeleteUser = (req, res, next) => {
 /* ***************************************************************************
 Account
 *****************************************************************************/
-
-const AccountNewTransactionsSubmit = (req, res, next) => {
-  console.log(prettyjson.render(req.body));
-  console.log(req.jwt);
-  res.send('User!!!');
+const parseStockData = (symbol, data) => {
+  return {
+    symbol,
+    name: data[0],
+    open: data[1],
+    close: data[2],
+    current: data[3],
+    high: data[4],
+    low: data[5],
+    bid: data[6],
+    ask: data[7],
+    volume: data[8],
+    transactionValue: data[9],
+    date: new Date(`${data[30]}T${data[31]}+08:00`), // Beijing(+8) -> UTC
+  };
 };
+
+const SinaStock = {
+  // Return stock array
+  lookup: async function lookup(symbolList) {
+    const url = `http://hq.sinajs.cn/list=${symbolList.join(',')}`;
+    // Wait for promise and use promise result
+    return await request.get({
+      url,
+      encoding: null,
+    })
+    .then((response) => {
+      const converted = iconv.decode(response, 'GBK').split('\n');
+      converted.pop(); // pop the new line at the end
+      const stockList = converted.map((detailText) => {
+        const parts = detailText.split('=');
+        const symbol = parts[0].split('_').pop();
+        const data = parts[1].split('"')[1].split(',');
+        logger.debug('parseStockData(symbol, data)', parseStockData(symbol, data));
+        return parseStockData(symbol, data);
+      });
+      return stockList;
+    })
+    .catch((error) => {
+      logger.error('SinaStock error: ', error.message);
+    });
+  },
+};
+
+// Prefix market string for API call
+const getFixedSymbol = (symbol) => {
+  if (symbol.match(/^(600|601|603|900)\d{3}$/)) {
+    return `sh${symbol}`;
+  } else if (symbol.match(/^(000|002|200|300)\d{3}$/)) {
+    return `sz${symbol}`;
+  }
+  return null;
+};
+
+async function AccountNewTransactionsSubmit(req, res, next) {
+  const allTrans = req.body.newTransactions;
+  logger.debug(allTrans);
+  const symbolList = Object.keys(allTrans)
+    .reduce((prev, key) => {
+      const fixedSymbol = getFixedSymbol(allTrans[key].symbol);
+      if (fixedSymbol) {
+        return [fixedSymbol, ...prev];
+      }
+      return prev;
+    }, []);
+
+  if (symbolList.length > 0) {
+    const stockList = await SinaStock.lookup(symbolList);
+    logger.debug('AccountNewTransactionsSubmit.stockList------>', stockList);
+    res.send(stockList);
+  } else {
+    res.sendStatus(404);
+  }
+}
 
 /* ***************************************************************************
 Common
 *****************************************************************************/
 
 const Quote = (req, res, next) => {
-  request.get({
-    url: 'http://hq.sinajs.cn/list=sh600185,sh600183',
-    encoding: null,
-  }, (error, response, body) => {
-    if (!error && response.statusCode === 200) {
-      const converted = iconv.decode(body, 'GBK');
-      const stockInfoArray = [];
-      const stockList = converted.split('\n');
-      stockList.pop(); // pop the new line at the end
-      stockList.forEach((detailText) => {
-        const parts = detailText.split('=');
-        const symbol = parts[0].split('_').pop();
-        const data = parts[1].split('"')[1].split(',');
-        const stock = {
-          symbol,
-          name: data[0],
-          open: data[1],
-          close: data[2],
-          current: data[3],
-          high: data[4],
-          low: data[5],
-          bid: data[6],
-          ask: data[7],
-          volume: data[8],
-          transactionValue: data[9],
-          date: new Date(`${data[30]}T${data[31]}+08:00`), // Beijing(+8) -> UTC
-        };
-        console.log(stock);
-      });
-      console.log(stockInfoArray);
-      res.send(converted);
-    }
-  });
+
 };
 
 const Error = (req, res, next) => {

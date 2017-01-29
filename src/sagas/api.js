@@ -40,13 +40,13 @@ const user = (token) => {
 };
 
 const accountNewTransactionsSubmit = (newTransactions) => {
-  console.log('accountNewTransactionsSubmit...');
+  console.log('accountNewTransactionsSubmitted...');
   return request
     .post(`${Path.API.basePath}/account/newTransactions`, {
       newTransactions,
     })
     .then((response) => {
-      console.log('back!');
+      console.log('accountNewTransactionsSubmit response');
       console.log(response);
       return response.data;
     })

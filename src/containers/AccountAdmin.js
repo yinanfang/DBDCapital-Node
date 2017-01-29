@@ -247,22 +247,28 @@ const AccountAdmin = (props) => {
   const newTransactionSubmitOnClick = (event) => {
     event.preventDefault();
     // http://stackoverflow.com/questions/38750705/using-es6-to-filter-object-properties
-    const selectedTransactions = Object.keys(props.newTransactions)
-      .filter(index => props.newTransactions[index].select.value === true)
-      .reduce((obj, index) => {
-        obj[index] = props.newTransactions[index];
+    const allTrans = props.newTransactions;
+    const selectedTransactions = Object.keys(allTrans)
+      .filter(key => allTrans[key].select.value === true)
+      .reduce((obj, key) => {
+        const singleTrans = allTrans[key];
+        const simplified = Object.keys(singleTrans)
+          .reduce((transItem, transKey) => {
+            transItem[transKey] = singleTrans[transKey].value;
+            return transItem;
+          }, {});
+        obj[key] = simplified;
         return obj;
       }, {});
-    console.log(selectedTransactions);
+    console.log('selectedTransactions', selectedTransactions);
     const passSanityCheck = Object.keys(selectedTransactions)
-      .reduce((isValid, index) => {
-        const trans = selectedTransactions[index];
-        console.log(isValid);
+      .reduce((isValid, key) => {
+        const trans = selectedTransactions[key];
         return isValid
-          && !_isEmpty(trans.id.value) && validator.isAlphanumeric(trans.id.value)
-          && !_isEmpty(trans.symbol.value) && validator.isNumeric(trans.symbol.value)
-          && !_isEmpty(trans.price.value) && validator.isCurrency(trans.price.value)
-          && !_isEmpty(trans.date.value) && validator.isDate(trans.date.value);
+          && !_isEmpty(trans.id) && validator.isAlphanumeric(trans.id)
+          && !_isEmpty(trans.symbol) && validator.isNumeric(trans.symbol)
+          && !_isEmpty(trans.price) && validator.isCurrency(trans.price)
+          && !_isEmpty(trans.date) && validator.isDate(trans.date);
       }, true);
     if (Object.keys(selectedTransactions).length !== 0 && passSanityCheck) {
       props.newTransactionsSubmit(selectedTransactions);
@@ -292,7 +298,6 @@ AccountAdmin.propTypes = {
   // Injected by React Router
   children: PropTypes.node,
   // Injected by React Redux
-  authToken: PropTypes.string.isRequired,
   newTransactions: PropTypes.object.isRequired,
   newTransactionsUpdate: PropTypes.func.isRequired,
   newTransactionsSubmit: PropTypes.func.isRequired,
@@ -300,7 +305,6 @@ AccountAdmin.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    authToken: state.auth.token,
     newTransactions: state.account.admin.newTransactions,
   };
 };

@@ -34,7 +34,7 @@ APIRouter.get('/user', Auth, API.User);
 
 APIRouter.delete('/deleteUser', API.DeleteUser);
 
-APIRouter.post('/quote', API.Quote);
+APIRouter.get('/quote', API.Quote);
 
 APIRouter.post('/account/newTransactions', Auth, API.AccountNewTransactionsSubmit);
 

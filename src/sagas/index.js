@@ -11,6 +11,7 @@ function* login() {
   while (true) {
     const { username, password } = yield take(actions.LOGIN.REQUEST);
     const token = yield call(API.login, username, password);
+    console.log('here!');
     if (token) {
       yield put(actions.login.success(token));
       yield put(actions.navigate('/account'));

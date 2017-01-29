@@ -32,7 +32,7 @@ const DESKTOP = 'desktop';
 
 const getBrowser = (platform = DESKTOP) => {
   const nightmare = Nightmare({
-    show: true,
+    // show: true,
     typeInterval: 1,
     waitTimeout: 3000,
     switches: {
