@@ -287,7 +287,7 @@ const AccountAdmin = (props) => {
           {newTransactionsTable()}
         </form>
         <RaisedButton label="Add A Row" onClick={newTransactionsAddEmptyRow} />
-        <RaisedButton type="submit" onClick={newTransactionSubmitOnClick} label="Submit" className={styleCSS.accountSummit} />
+        <RaisedButton type="submit" onClick={newTransactionSubmitOnClick} label="Submit" className={styleCSS.accountSubmit} />
       </Paper>
       <h2>Next</h2>
     </div>

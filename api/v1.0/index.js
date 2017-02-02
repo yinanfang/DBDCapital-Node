@@ -7,6 +7,7 @@ import iconv from 'iconv-lite';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
+import GCStock, { GCStockUtil } from './GCStock';
 
 /* ***************************************************************************
 Auth
@@ -34,8 +35,8 @@ const Register = (req, res, next) => {
 
 const Login = (req, res, next) => {
   logger.debug(`API/Login---->${JSON.stringify(req.body)}--${req.body.username}==>${req.body.password}`);
-  Parse.User.logIn(req.body.username, req.body.password, {
-    success: (user) => {
+  Parse.User.logIn(req.body.username, req.body.password)
+    .then((user) => {
       logger.info(`Login success - ${user.constructor.name} - ${JSON.stringify(user)}`);
       const originalJWTPayload = {
         username: user.getUsername(),
@@ -50,15 +51,14 @@ const Login = (req, res, next) => {
         message: 'Login successfully!!!',
         token,
       });
-    },
-    error: (user, error) => {
+    }, (user, error) => {
       logger.error(`Login fail - ${JSON.stringify(user)} - ${JSON.stringify(error)}`);
       res.status(401).json({
         message: 'Login failed...',
         error,
       });
-    },
-  });
+    }
+  );
 };
 
 const User = (req, res, next) => {
@@ -72,21 +72,23 @@ const DeleteUser = (req, res, next) => {
 /* ***************************************************************************
 Account
 *****************************************************************************/
+
 const parseStockData = (symbol, data) => {
-  return {
+  const props = {
     symbol,
     name: data[0],
     open: data[1],
-    close: data[2],
-    current: data[3],
-    high: data[4],
-    low: data[5],
-    bid: data[6],
-    ask: data[7],
-    volume: data[8],
-    transactionValue: data[9],
+    previousClose: Number.parseFloat(data[2]),
+    lastPrice: Number.parseFloat(data[3]),
+    high: Number.parseFloat(data[4]),
+    low: Number.parseFloat(data[5]),
+    bid: Number.parseFloat(data[6]),
+    ask: Number.parseFloat(data[7]),
+    volume: Number(data[8]),
+    transactionValue: Number.parseFloat(data[9]),
     date: new Date(`${data[30]}T${data[31]}+08:00`), // Beijing(+8) -> UTC
   };
+  return new GCStock(props);
 };
 
 const SinaStock = {
@@ -94,7 +96,7 @@ const SinaStock = {
   lookup: async function lookup(symbolList) {
     const url = `http://hq.sinajs.cn/list=${symbolList.join(',')}`;
     // Wait for promise and use promise result
-    return await request.get({
+    return request.get({
       url,
       encoding: null,
     })
@@ -105,7 +107,6 @@ const SinaStock = {
         const parts = detailText.split('=');
         const symbol = parts[0].split('_').pop();
         const data = parts[1].split('"')[1].split(',');
-        logger.debug('parseStockData(symbol, data)', parseStockData(symbol, data));
         return parseStockData(symbol, data);
       });
       return stockList;
@@ -118,9 +119,11 @@ const SinaStock = {
 
 // Prefix market string for API call
 const getFixedSymbol = (symbol) => {
-  if (symbol.match(/^(600|601|603|900)\d{3}$/)) {
+  if (symbol.match(/^((600|601|603|900)\d{3})|(204(001|002|003|004|007|014|028|091|182))$/)) {
+    // 沪市 - A股: 600, 601, 603; B股: 900; 国债回购: 204
     return `sh${symbol}`;
-  } else if (symbol.match(/^(000|002|200|300)\d{3}$/)) {
+  } else if (symbol.match(/^((000|002|200|300)\d{3})|(1318([01][0123569]))$/)) {
+    // 深市 - A股: 000; 中小板: 002; B股: 200; 创业板: 300; 国债回购: 1318
     return `sz${symbol}`;
   }
   return null;
@@ -141,9 +144,22 @@ async function AccountNewTransactionsSubmit(req, res, next) {
   if (symbolList.length > 0) {
     const stockList = await SinaStock.lookup(symbolList);
     logger.debug('AccountNewTransactionsSubmit.stockList------>', stockList);
+    logger.debug('AccountNewTransactionsSubmit.jwt------>', req.jwt);
+
+    await Promise.all(stockList.map(async (stock) => {
+      const results = await GCStockUtil.find(stock.symbol);
+      if (results.length > 1) {
+        logger.debug('Found duplicates. Remove old ones.');
+        await GCStockUtil.deleteAll(results.slice(1));
+      }
+      const target = results[0];
+      await GCStockUtil.update(target, stock);
+    }));
+    logger.debug('finished all!!!');
+
     res.send(stockList);
   } else {
-    res.sendStatus(404);
+    res.sendStatus(400);
   }
 }
 
