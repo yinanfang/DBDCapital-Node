@@ -4,6 +4,8 @@
     "stage-2"
   ],
   "plugins": [
-    "babel-root-import"
+    "babel-root-import",
+    "syntax-flow",
+    "transform-flow-strip-types"
   ]
 }

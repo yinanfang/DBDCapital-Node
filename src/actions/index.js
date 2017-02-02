@@ -21,31 +21,31 @@ const action = (type, payload = {}) => {
 
 const LOGIN = createRequestTypes('LOGIN');
 const login = {
-  request: (username, password) => action(LOGIN.REQUEST, { username, password }),
-  success: token => action(LOGIN.SUCCESS, { token }),
-  failure: (username, error) => action(LOGIN.FAILURE, { username, error }),
+  request: (username: string, password: string) => action(LOGIN.REQUEST, { username, password }),
+  success: (token: string) => action(LOGIN.SUCCESS, { token }),
+  failure: (username: string, error: Error) => action(LOGIN.FAILURE, { username, error }),
 };
 
 const REGISTER = createRequestTypes('REGISTER');
 const register = {
-  request: (username, password) => action(REGISTER.REQUEST, { username, password }),
-  success: (login, response) => action(REGISTER.SUCCESS, { login, response }),
-  failure: (login, error) => action(REGISTER.FAILURE, { login, error }),
+  request: (username: string, password: string) => action(REGISTER.REQUEST, { username, password }),
+  success: (login: {}, response: {}) => action(REGISTER.SUCCESS, { login, response }),
+  failure: (login: {}, error: Error) => action(REGISTER.FAILURE, { login, error }),
 };
 
 const ACCOUNT_NEW_TRANSACTIONS = createRequestTypes('USER');
 const accountNewTransactions = {
-  update: newTransactions => action(ACCOUNT_NEW_TRANSACTIONS.UPDATE, { newTransactions }),
-  submit: (newTransactions) => action(ACCOUNT_NEW_TRANSACTIONS.SUBMIT, { newTransactions }),
+  update: (newTransactions: {}) => action(ACCOUNT_NEW_TRANSACTIONS.UPDATE, { newTransactions }),
+  submit: (newTransactions: {}) => action(ACCOUNT_NEW_TRANSACTIONS.SUBMIT, { newTransactions }),
 };
 
 const USER = createRequestTypes('USER');
 
 const NAVIGATE = 'NAVIGATE';
-const navigate = pathname => action(NAVIGATE, { pathname });
+const navigate = (pathname: string) => action(NAVIGATE, { pathname });
 
 const UI_UPDATE = 'UI_UPDATE';
-const uiUpdate = uiUpdates => action(UI_UPDATE, { uiUpdates });
+const uiUpdate = (uiUpdates: {}) => action(UI_UPDATE, { uiUpdates });
 
 export default {
   USER,

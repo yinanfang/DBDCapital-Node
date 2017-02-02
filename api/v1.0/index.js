@@ -4,16 +4,17 @@ import jwt from 'jsonwebtoken';
 import Parse from 'parse/node';
 import request from 'request-promise';
 import iconv from 'iconv-lite';
+import { Request, Response, NextFunction } from 'express';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
-import GCStock, { GCStockUtil } from './GCStock';
+import GCSecurity, { GCSecurityUtil } from './GCSecurity';
 
 /* ***************************************************************************
 Auth
 *****************************************************************************/
 
-const Register = (req, res, next) => {
+const Register = (req: Request, res: Response, next: NextFunction) => {
   logger.debug(`in register...${JSON.stringify(req.body)}`);
 
   const newUser = new Parse.User();
@@ -33,7 +34,7 @@ const Register = (req, res, next) => {
   });
 };
 
-const Login = (req, res, next) => {
+const Login = (req: Request, res: Response, next: NextFunction) => {
   logger.debug(`API/Login---->${JSON.stringify(req.body)}--${req.body.username}==>${req.body.password}`);
   Parse.User.logIn(req.body.username, req.body.password)
     .then((user) => {
@@ -61,11 +62,11 @@ const Login = (req, res, next) => {
   );
 };
 
-const User = (req, res, next) => {
+const User = (req: Request, res: Response, next: NextFunction) => {
   res.send('User!!!');
 };
 
-const DeleteUser = (req, res, next) => {
+const DeleteUser = (req: Request, res: Response, next: NextFunction) => {
   res.send('Delete User!!!');
 };
 
@@ -74,7 +75,7 @@ Account
 *****************************************************************************/
 
 const parseStockData = (symbol, data) => {
-  const props = {
+  return new GCSecurity({
     symbol,
     name: data[0],
     open: data[1],
@@ -87,8 +88,7 @@ const parseStockData = (symbol, data) => {
     volume: Number(data[8]),
     transactionValue: Number.parseFloat(data[9]),
     date: new Date(`${data[30]}T${data[31]}+08:00`), // Beijing(+8) -> UTC
-  };
-  return new GCStock(props);
+  });
 };
 
 const SinaStock = {
@@ -129,7 +129,7 @@ const getFixedSymbol = (symbol) => {
   return null;
 };
 
-async function AccountNewTransactionsSubmit(req, res, next) {
+async function AccountNewTransactionsSubmit(req: Request, res: Response, next: NextFunction) {
   const allTrans = req.body.newTransactions;
   logger.debug(allTrans);
   const symbolList = Object.keys(allTrans)
@@ -147,15 +147,20 @@ async function AccountNewTransactionsSubmit(req, res, next) {
     logger.debug('AccountNewTransactionsSubmit.jwt------>', req.jwt);
 
     await Promise.all(stockList.map(async (stock) => {
-      const results = await GCStockUtil.find(stock.symbol);
-      if (results.length > 1) {
+      const results = await GCSecurityUtil.find(stock.symbol);
+      if (results.length === 0) {
+        await GCSecurityUtil.add(stock);
+        return;
+      } else if (results.length > 1) {
         logger.debug('Found duplicates. Remove old ones.');
-        await GCStockUtil.deleteAll(results.slice(1));
+        await GCSecurityUtil.deleteAll(results.slice(1));
       }
       const target = results[0];
-      await GCStockUtil.update(target, stock);
+      await GCSecurityUtil.update(target, stock);
     }));
     logger.debug('finished all!!!');
+
+    // Save to OpenPosition
 
     res.send(stockList);
   } else {
@@ -167,11 +172,11 @@ async function AccountNewTransactionsSubmit(req, res, next) {
 Common
 *****************************************************************************/
 
-const Quote = (req, res, next) => {
+const Quote = (req: Request, res: Response, next: NextFunction) => {
 
 };
 
-const Error = (req, res, next) => {
+const Error = (req: Request, res: Response, next: NextFunction) => {
   res.sendStatus(404);
 };
 
