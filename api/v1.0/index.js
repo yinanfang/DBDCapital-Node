@@ -40,6 +40,7 @@ const Login = (req: Request, res: Response, next: NextFunction) => {
     .then((user) => {
       logger.info(`Login success - ${user.constructor.name} - ${JSON.stringify(user)}`);
       const originalJWTPayload = {
+        userId: user.id,
         username: user.getUsername(),
         parseSessionToken: user.getSessionToken(),
         email: user.getEmail(),
@@ -74,8 +75,8 @@ const DeleteUser = (req: Request, res: Response, next: NextFunction) => {
 Account
 *****************************************************************************/
 
-const parseStockData = (symbol, data) => {
-  return new GCSecurity({
+const parseSecurityData = (symbol, data) => {
+  const security = new GCSecurity({
     symbol,
     name: data[0],
     open: data[1],
@@ -89,6 +90,7 @@ const parseStockData = (symbol, data) => {
     transactionValue: Number.parseFloat(data[9]),
     date: new Date(`${data[30]}T${data[31]}+08:00`), // Beijing(+8) -> UTC
   });
+  return security;
 };
 
 const SinaStock = {
@@ -103,13 +105,23 @@ const SinaStock = {
     .then((response) => {
       const converted = iconv.decode(response, 'GBK').split('\n');
       converted.pop(); // pop the new line at the end
-      const stockList = converted.map((detailText) => {
+      const stockList = [];
+      const errorList = [];
+      converted.forEach((detailText) => {
         const parts = detailText.split('=');
         const symbol = parts[0].split('_').pop();
         const data = parts[1].split('"')[1].split(',');
-        return parseStockData(symbol, data);
+
+        const security = parseSecurityData(symbol, data);
+        const validation = security.validate();
+        if (validation.error) {
+          logger.debug('validation error->', validation.error.details);
+          errorList.push(security);
+        } else {
+          stockList.push(security);
+        }
       });
-      return stockList;
+      return { stockList, errorList };
     })
     .catch((error) => {
       logger.error('SinaStock error: ', error.message);
@@ -142,10 +154,21 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
     }, []);
 
   if (symbolList.length > 0) {
-    const stockList = await SinaStock.lookup(symbolList);
-    logger.debug('AccountNewTransactionsSubmit.stockList------>', stockList);
+    const lookupResult = await SinaStock.lookup(symbolList);
+    const stockList = lookupResult.stockList;
+    // const errorList = lookupResult.errorList;
+    // logger.debug('AccountNewTransactionsSubmit.stockList------>', stockList[0].simple());
+    // logger.debug('AccountNewTransactionsSubmit.errorList------>', errorList[0].simple());
     logger.debug('AccountNewTransactionsSubmit.jwt------>', req.jwt);
 
+    // 400 with error list
+    if (lookupResult.errorList.length > 0) {
+      res.status(400).send(lookupResult.errorList).end();
+      return;
+    }
+
+    // Proceed if successfully parsed all securities
+    // Update Security table
     await Promise.all(stockList.map(async (stock) => {
       const results = await GCSecurityUtil.find(stock.symbol);
       if (results.length === 0) {
@@ -158,9 +181,11 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
       const target = results[0];
       await GCSecurityUtil.update(target, stock);
     }));
-    logger.debug('finished all!!!');
 
     // Save to OpenPosition
+
+
+    logger.debug('finished all!!!');
 
     res.send(stockList);
   } else {

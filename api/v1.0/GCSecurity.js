@@ -2,6 +2,7 @@
 
 import Parse, { ParseObject } from 'parse/node';
 import Promise from 'bluebird';
+import Joi from 'joi';
 
 import logger from '../../utils/logger';
 
@@ -47,6 +48,31 @@ export default class GCSecurity {
     this.volume = volume;
     this.transactionValue = transactionValue;
     this.date = date;
+  }
+
+  schema = Joi.object().keys({
+    symbol: Joi.string().alphanum().required(),
+    name: Joi.string().required(),
+    open: Joi.number().required(),
+    previousClose: Joi.number().required(),
+    lastPrice: Joi.number().required(),
+    high: Joi.number().required(),
+    low: Joi.number().required(),
+    bid: Joi.number().required(),
+    ask: Joi.number().required(),
+    volume: Joi.number().required(),
+    transactionValue: Joi.number().required(),
+    date: Joi.date().required(),
+    schema: Joi.object().required(),
+  });
+
+  validate() {
+    return Joi.validate(this, this.schema);
+  }
+
+  simple() {
+    const { schema: _, ...otherKeys } = this;
+    return otherKeys;
   }
 }
 
