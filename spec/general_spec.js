@@ -176,9 +176,10 @@ describe('Automated browser Test for Web Client', () => {
       .type(`${patternFormNewTransactions}(3) input`, '102d')
       .type(`${patternFormNewTransactions}(4) input`, '600635')
       .type(`${patternFormNewTransactions}(5) input`, '22')
-      .type(`${patternFormNewTransactions}(7) textarea:nth-child(2)`, 'Random note')
+      .type(`${patternFormNewTransactions}(6) input`, '100')
+      .type(`${patternFormNewTransactions}(8) textarea:nth-child(2)`, 'Random note')
       .click('div[class*="accountSectionContainer"]:nth-child(1) button[type="submit"]')
-      .wait(2000)
+      // .wait(2000)
       .end()
       .then(() => {
         errorHandler(done);

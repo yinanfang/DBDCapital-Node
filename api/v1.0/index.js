@@ -8,7 +8,9 @@ import { Request, Response, NextFunction } from 'express';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
-import GCSecurity, { GCSecurityUtil } from './GCSecurity';
+import { GCSecurityUtil } from './GCAPIUtil';
+import GCSecurity from '../../model/GCSecurity';
+import GCTransaction from '../../model/GCTransaction';
 
 /* ***************************************************************************
 Auth
@@ -45,7 +47,6 @@ const Login = (req: Request, res: Response, next: NextFunction) => {
         parseSessionToken: user.getSessionToken(),
         email: user.getEmail(),
       };
-      logger.info(`----------jwt payload: ${JSON.stringify(originalJWTPayload)}`);
       const token = jwt.sign(originalJWTPayload, Config.JWT_SECRET);
       res.cookie('token', token, { maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
       res.status(200);
@@ -129,26 +130,15 @@ const SinaStock = {
   },
 };
 
-// Prefix market string for API call
-const getFixedSymbol = (symbol) => {
-  if (symbol.match(/^((600|601|603|900)\d{3})|(204(001|002|003|004|007|014|028|091|182))$/)) {
-    // 沪市 - A股: 600, 601, 603; B股: 900; 国债回购: 204
-    return `sh${symbol}`;
-  } else if (symbol.match(/^((000|002|200|300)\d{3})|(1318([01][0123569]))$/)) {
-    // 深市 - A股: 000; 中小板: 002; B股: 200; 创业板: 300; 国债回购: 1318
-    return `sz${symbol}`;
-  }
-  return null;
-};
-
 async function AccountNewTransactionsSubmit(req: Request, res: Response, next: NextFunction) {
   const allTrans = req.body.newTransactions;
-  logger.debug(allTrans);
+  logger.debug(typeof allTrans, allTrans);
   const symbolList = Object.keys(allTrans)
     .reduce((prev, key) => {
-      const fixedSymbol = getFixedSymbol(allTrans[key].symbol);
-      if (fixedSymbol) {
-        return [fixedSymbol, ...prev];
+      const symbol = allTrans[key].symbol;
+      // No null or duplicates
+      if (symbol && !prev.includes(symbol)) {
+        return [symbol, ...prev];
       }
       return prev;
     }, []);
@@ -169,21 +159,59 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
 
     // Proceed if successfully parsed all securities
     // Update Security table
-    await Promise.all(stockList.map(async (stock) => {
+    const securityObjectList = await Promise.all(stockList.map(async (stock) => {
       const results = await GCSecurityUtil.find(stock.symbol);
       if (results.length === 0) {
-        await GCSecurityUtil.add(stock);
-        return;
+        const security = await GCSecurityUtil.add(stock);
+        return { key: [stock.symbol], value: security };
       } else if (results.length > 1) {
         logger.debug('Found duplicates. Remove old ones.');
         await GCSecurityUtil.deleteAll(results.slice(1));
       }
       const target = results[0];
-      await GCSecurityUtil.update(target, stock);
-    }));
+      const security = await GCSecurityUtil.update(target, stock);
+      return { key: [stock.symbol], value: security };
+    }))
+    // Turn array into a map
+    .then((result) => {
+      return result.reduce((map, obj) => {
+        map[obj.key] = obj.value;
+        return map;
+      }, {});
+    });
+    logger.debug('securityObjectList: ', securityObjectList);
+
+    // Get the user
+    const queryUser = new Parse.Query(Parse.User);
+    const user = await queryUser.get(req.jwt.userId)
+      .then((obj) => {
+        logger.debug('get user done: ', obj);
+        return obj;
+      }, (error) => {
+        logger.debug('get user failed: ', error);
+      });
 
     // Save to OpenPosition
-
+    const OpenPosition = Parse.Object.extend('OpenPosition');
+    await Promise.all(Object.keys(allTrans).map((key) => {
+      const trans = new GCTransaction(allTrans[key]);
+      logger.debug('trans==>', trans.simple());
+      const openPosition = new OpenPosition();
+      openPosition.set('security', securityObjectList[trans.symbol]);
+      openPosition.set('buyingPrice', trans.price);
+      openPosition.set('quantity', trans.quantity);
+      openPosition.set('date', trans.date);
+      openPosition.set('note', trans.note);
+      openPosition.set('owner', user);
+      return openPosition.save(null)
+      .then((obj) => {
+        logger.debug('openPosition added: ', obj);
+        return obj;
+      }, (error) => {
+        logger.debug('openPosition add error:', error);
+      });
+      // logger.debug('openPosition-->', openPosition);
+    }));
 
     logger.debug('finished all!!!');
 

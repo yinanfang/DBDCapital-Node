@@ -3,10 +3,11 @@
   "watch": [
     "server.js",
     "webpack.config.js",
-    "utils/*.js",
-    "config/*.js",
-    "constant/*.js",
-    "routes/*.js",
+    "utils/**/*.js",
+    "config/**/*.js",
+    "constant/**/*.js",
+    "model/**/*.js",
+    "routes/**/*.js",
     "api/**/*.js",
     "path.js",
     "cloud/**/*.js"

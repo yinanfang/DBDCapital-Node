@@ -24,6 +24,9 @@ import DatePicker from 'material-ui/DatePicker';
 import Actions from '../actions';
 import styleCSS from '../style.css';
 
+import GCTransaction from '../../model/GCTransaction';
+import GCUtil from '../../utils';
+
 const DEFAULT_NEW_TRANSACTIONS_COUNT = 3;
 const NewTransaction = Immutable({
   select: {
@@ -47,6 +50,10 @@ const NewTransaction = Immutable({
   price: {
     key: 'price',
     name: 'Price',
+  },
+  quantity: {
+    key: 'quantity',
+    name: 'Quantity',
   },
   date: {
     key: 'date',
@@ -74,6 +81,7 @@ const initSingleNewTransaction = () => {
   copy.id.hint = `${faker.random.arrayElement([86, 168, 355, 173, 853, '225b', '115c', '352d'])}`;
   copy.symbol.hint = faker.random.number({ min: 600000, max: 699999 });
   copy.price.hint = faker.commerce.price();
+  copy.quantity.hint = faker.random.number({ min: 100, max: 1000 });
   const previousWorkday = getPreviousWorkday();
   copy.date.defaultValue = previousWorkday.toDate();
   copy.date.value = previousWorkday.format('YYYY-MM-DD');
@@ -215,6 +223,7 @@ const AccountAdmin = (props) => {
         {newTransactionColumnInput(trans.id)}
         {newTransactionColumnInput(trans.symbol)}
         {newTransactionColumnInput(trans.price)}
+        {newTransactionColumnInput(trans.quantity)}
         {newTransactionColumnDatePicket(trans.date.key, trans.date.defaultValue)}
         {newTransactionColumnInput(trans.note)}
       </TableRow>
@@ -231,6 +240,7 @@ const AccountAdmin = (props) => {
             <TableHeaderColumn>ID</TableHeaderColumn>
             <TableHeaderColumn>Symbol</TableHeaderColumn>
             <TableHeaderColumn>Price</TableHeaderColumn>
+            <TableHeaderColumn>Quantity</TableHeaderColumn>
             <TableHeaderColumn className={styleCSS.accountDatePicker}>Date</TableHeaderColumn>
             <TableHeaderColumn className={styleCSS.accountInputLong}>Note</TableHeaderColumn>
           </TableRow>
@@ -254,26 +264,38 @@ const AccountAdmin = (props) => {
         const singleTrans = allTrans[key];
         const simplified = Object.keys(singleTrans)
           .reduce((transItem, transKey) => {
-            transItem[transKey] = singleTrans[transKey].value;
+            let value = singleTrans[transKey].value;
+            if (transKey === NewTransaction.symbol.key) {
+              value = GCUtil.getFixedSymbol(value);
+            }
+            transItem[transKey] = isNaN(value) || transKey === NewTransaction.id.key || transKey === NewTransaction.note.key
+                                  ? value
+                                  : Number(value);
             return transItem;
           }, {});
-        obj[key] = simplified;
+        obj[key] = new GCTransaction(simplified);
         return obj;
       }, {});
     console.log('selectedTransactions', selectedTransactions);
-    const passSanityCheck = Object.keys(selectedTransactions)
-      .reduce((isValid, key) => {
-        const trans = selectedTransactions[key];
-        return isValid
-          && !_isEmpty(trans.id) && validator.isAlphanumeric(trans.id)
-          && !_isEmpty(trans.symbol) && validator.isNumeric(trans.symbol)
-          && !_isEmpty(trans.price) && validator.isCurrency(trans.price)
-          && !_isEmpty(trans.date) && validator.isDate(trans.date);
-      }, true);
-    if (Object.keys(selectedTransactions).length !== 0 && passSanityCheck) {
-      props.newTransactionsSubmit(selectedTransactions);
+    if (Object.keys(selectedTransactions).length !== 0) {
+      let errorMessage = '';
+      const passSanityCheck = Object.keys(selectedTransactions)
+        .reduce((isValid, key) => {
+          const validation = selectedTransactions[key].validate();
+          if (validation.error) {
+            errorMessage += JSON.stringify(validation.error.details);
+            return false;
+          }
+          return isValid;
+        }, true);
+      if (passSanityCheck) {
+        const simplified = Object.keys(selectedTransactions).map(key => selectedTransactions[key].simple());
+        props.newTransactionsSubmit(simplified);
+      } else {
+        sweetAlert('Oops...', errorMessage, 'error');
+      }
     } else {
-      sweetAlert('Oops...', 'Something went wrong!', 'error');
+      sweetAlert('Oops...', 'You need to select something!', 'error');
     }
   };
 
