@@ -6,7 +6,6 @@ import $ from 'jquery';
 import faker from 'faker';
 import _merge from 'lodash/merge';
 import _cloneDeep from 'lodash/cloneDeep';
-import _isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import Immutable from 'seamless-immutable';
 import validator from 'validator';
@@ -24,47 +23,10 @@ import DatePicker from 'material-ui/DatePicker';
 import Actions from '../actions';
 import styleCSS from '../style.css';
 
-import GCTransaction from '../../model/GCTransaction';
+import GCTransaction, { NewTransaction } from '../../model/GCTransaction';
 import GCUtil from '../../utils';
 
 const DEFAULT_NEW_TRANSACTIONS_COUNT = 3;
-const NewTransaction = Immutable({
-  select: {
-    key: 'select',
-    value: false,
-  },
-  action: {
-    key: 'action',
-    BUY: 'Buy',
-    SELL: 'Sell',
-    value: 'Buy',
-  },
-  id: {
-    key: 'id',
-    name: 'ID',
-  },
-  symbol: {
-    key: 'symbol',
-    name: 'Symbol',
-  },
-  price: {
-    key: 'price',
-    name: 'Price',
-  },
-  quantity: {
-    key: 'quantity',
-    name: 'Quantity',
-  },
-  date: {
-    key: 'date',
-    name: 'Date',
-  },
-  note: {
-    key: 'note',
-    name: 'Note',
-    multiLine: true,
-  },
-});
 const getPreviousWorkday = () => {
   const today = moment();
   const day = today.day();
@@ -119,7 +81,7 @@ const AccountAdmin = (props) => {
     };
     if (inputName === NewTransaction.id.key) {
       updates.error = validator.isAlphanumeric(content) ? '' : 'Format!';
-    } else if (inputName === NewTransaction.symbol.key) {
+    } else if (inputName === NewTransaction.symbol.key || inputName === NewTransaction.quantity.key) {
       updates.error = validator.isNumeric(content) ? '' : 'Numbers only!';
     } else if (inputName === NewTransaction.price.key) {
       updates.error = validator.isCurrency(content) ? '' : 'Currency only!';

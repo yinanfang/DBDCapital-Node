@@ -16,4 +16,16 @@ export default class GCObject {
     const { schema: _, ...otherKeys } = this;
     return otherKeys;
   }
+
+  static printSimpleArray(array) {
+    array.forEach((item) => {
+      console.log(item.simple());
+    });
+  }
+
+  static printSimpleObject(obj) {
+    Object.keys(obj).forEach((key) => {
+      console.log(obj[key].simple());
+    });
+  }
 }

@@ -1,15 +1,15 @@
 // @flow
 
-import { default as DB } from 'mongoose';
+import DB from 'mongoose';
 
 import logger from '../../../utils/logger';
-import { DATABASE_URI } from '../../../config';
+import Config from '../../../config';
 
-DB.connect(DATABASE_URI);
+DB.connect(Config.DATABASE_URI);
 
 // CONNECTION EVENTS
 DB.connection.on('connected', () => {
-  logger.info(`Mongoose connected to ${DATABASE_URI}`);
+  logger.info(`Mongoose connected to ${Config.DATABASE_URI}`);
 });
 
 DB.connection.on('error', (err) => {
@@ -48,7 +48,5 @@ process.on('SIGTERM', () => {
     process.exit(0);
   });
 });
-
-// const DB = mongoose;
 
 export default DB;

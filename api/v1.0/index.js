@@ -5,12 +5,15 @@ import Parse from 'parse/node';
 import request from 'request-promise';
 import iconv from 'iconv-lite';
 import { Request, Response, NextFunction } from 'express';
+import _ from 'lodash';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
 import { GCSecurityUtil } from './GCAPIUtil';
+import GCObject from '../../model/GCObject';
 import GCSecurity from '../../model/GCSecurity';
 import GCTransaction from '../../model/GCTransaction';
+import DBOpenPosition from './db/DBOpenPosition';
 
 /* ***************************************************************************
 Auth
@@ -131,6 +134,7 @@ const SinaStock = {
 };
 
 async function AccountNewTransactionsSubmit(req: Request, res: Response, next: NextFunction) {
+  logger.debug('AccountNewTransactionsSubmit start with jwt------>', req.jwt);
   const allTrans = req.body.newTransactions;
   logger.debug(typeof allTrans, allTrans);
   const symbolList = Object.keys(allTrans)
@@ -146,14 +150,17 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
   if (symbolList.length > 0) {
     const lookupResult = await SinaStock.lookup(symbolList);
     const stockList = lookupResult.stockList;
-    // const errorList = lookupResult.errorList;
-    // logger.debug('AccountNewTransactionsSubmit.stockList------>', stockList[0].simple());
-    // logger.debug('AccountNewTransactionsSubmit.errorList------>', errorList[0].simple());
-    logger.debug('AccountNewTransactionsSubmit.jwt------>', req.jwt);
+
+    // logging
+    // logger.debug('lookupResult.stockList-------->');
+    // GCObject.printSimpleArray(lookupResult.stockList);
+    // logger.debug('lookupResult.errorList-------->');
+    // GCObject.printSimpleArray(lookupResult.errorList);
 
     // 400 with error list
     if (lookupResult.errorList.length > 0) {
       res.status(400).send(lookupResult.errorList).end();
+      logger.warn('lookupResult.errorList.length > 0. Returning 400');
       return;
     }
 
@@ -204,14 +211,34 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
       openPosition.set('note', trans.note);
       openPosition.set('owner', user);
       return openPosition.save(null)
-      .then((obj) => {
-        logger.debug('openPosition added: ', obj);
-        return obj;
-      }, (error) => {
-        logger.debug('openPosition add error:', error);
-      });
-      // logger.debug('openPosition-->', openPosition);
+        .then((obj) => {
+          logger.debug('openPosition added: ', obj);
+          return obj;
+        }, (error) => {
+          logger.debug('openPosition add error:', error);
+        });
     }));
+
+    // Check OpenPosition table and move closed positions
+    const openPositionCheckQuery = new Parse.Query(OpenPosition);
+    openPositionCheckQuery.equalTo('owner', user);
+
+    // await openPositionCheckQuery.find()
+    //   .then((results) => {
+    //     logger.debug('openPositionCheckQuery.results: ', results);
+    //     const uniqueKeys = _.uniqBy(results, 'security');
+    //     logger.debug('openPositionCheckQuery.uniqueKeys: ', uniqueKeys);
+    //   }, (error) => {
+    //   });
+
+    await DBOpenPosition.find({ _p_owner: `_User$${user.id}` })
+      .then((rrr) => {
+        // logger.debug('openPositionCheckQuery.rrr: ', rrr[0]._id);
+        console.log(rrr);
+      })
+      .catch((err) => {
+        logger.debug('Mongoose.error: ', err);
+      });
 
     logger.debug('finished all!!!');
 
