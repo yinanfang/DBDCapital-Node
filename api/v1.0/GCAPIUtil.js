@@ -3,6 +3,7 @@
 import Parse, { ParseObject } from 'parse/node';
 import Promise from 'bluebird';
 
+import GCSecurity from '../../model/GCSecurity';
 import logger from '../../utils/logger';
 
 const GCSecurityUtil = {

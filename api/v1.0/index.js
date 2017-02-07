@@ -290,11 +290,35 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
     }
 
     // Close all position where currentShares = 0
-    // const closedPositions
+    const securitiesToClose = validPositions
+      .filter(position => position.currentShares === 0)
+      .map(position => position._id);
+    console.log('securitiesToClose: ', securitiesToClose);
+    if (securitiesToClose.length > 0) {
+      await DBPosition
+        .update({
+          _p_owner: `_User$${user.id}`,
+          closed: false,
+          _p_security: { $in: securitiesToClose },
+        }, {
+          $set: {
+            closed: true,
+            _updated_at: new Date(),
+          },
+        }, {
+          multi: true,
+        })
+        .then((results) => {
+          console.log('update results: ', results);
+        })
+        .catch((err) => {
+          logger.debug('Mongoose.error: ', err);
+        });
+    }
 
     logger.debug('finished all!!!');
 
-    res.send(stockList);
+    res.status(200).send({ message: 'Success!' });
   } else {
     res.sendStatus(400);
   }
