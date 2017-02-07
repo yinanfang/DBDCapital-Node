@@ -40,7 +40,7 @@ const getPreviousWorkday = () => {
 };
 const initSingleNewTransaction = () => {
   const copy = _cloneDeep(NewTransaction);
-  copy.id.hint = `${faker.random.arrayElement([86, 168, 355, 173, 853, '225b', '115c', '352d'])}`;
+  copy.transId.hint = `${faker.random.arrayElement([86, 168, 355, 173, 853, '225b', '115c', '352d'])}`;
   copy.symbol.hint = faker.random.number({ min: 600000, max: 699999 });
   copy.price.hint = faker.commerce.price();
   copy.quantity.hint = faker.random.number({ min: 100, max: 1000 });
@@ -65,8 +65,6 @@ const AccountAdmin = (props) => {
   const toggleSection = (event) => {
     const formElement = $(event.target).closest(`.${styleCSS.accountSectionContainer}`);
     formElement.find('form').first().slideToggle();
-    const testElement = formElement.find('input[name="transactionId"]').first();
-    console.log(testElement.val());
   };
 
   const newTransactionsAddEmptyRow = (event) => {
@@ -79,7 +77,7 @@ const AccountAdmin = (props) => {
       value: content,
       error: '',
     };
-    if (inputName === NewTransaction.id.key) {
+    if (inputName === NewTransaction.transId.key) {
       updates.error = validator.isAlphanumeric(content) ? '' : 'Format!';
     } else if (inputName === NewTransaction.symbol.key || inputName === NewTransaction.quantity.key) {
       updates.error = validator.isNumeric(content) ? '' : 'Numbers only!';
@@ -182,7 +180,7 @@ const AccountAdmin = (props) => {
       <TableRow selectable={false} key={row}>
         {newTransactionColumnSelect(trans.select)}
         {newTransactionColumnTypeDropdown(row, trans.action)}
-        {newTransactionColumnInput(trans.id)}
+        {newTransactionColumnInput(trans.transId)}
         {newTransactionColumnInput(trans.symbol)}
         {newTransactionColumnInput(trans.price)}
         {newTransactionColumnInput(trans.quantity)}
@@ -230,7 +228,7 @@ const AccountAdmin = (props) => {
             if (transKey === NewTransaction.symbol.key) {
               value = GCUtil.getFixedSymbol(value);
             }
-            transItem[transKey] = isNaN(value) || transKey === NewTransaction.id.key || transKey === NewTransaction.note.key
+            transItem[transKey] = isNaN(value) || transKey === NewTransaction.transId.key || transKey === NewTransaction.note.key
                                   ? value
                                   : Number(value);
             return transItem;

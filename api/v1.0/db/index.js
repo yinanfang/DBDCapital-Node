@@ -1,9 +1,13 @@
 // @flow
 
 import DB from 'mongoose';
+import Promise from 'bluebird';
 
 import logger from '../../../utils/logger';
 import Config from '../../../config';
+
+// Replace Mongoose Promise
+DB.Promise = Promise;
 
 DB.connect(Config.DATABASE_URI);
 

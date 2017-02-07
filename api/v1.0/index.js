@@ -6,6 +6,7 @@ import request from 'request-promise';
 import iconv from 'iconv-lite';
 import { Request, Response, NextFunction } from 'express';
 import _ from 'lodash';
+import Promise from 'bluebird';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
@@ -13,7 +14,7 @@ import { GCSecurityUtil } from './GCAPIUtil';
 import GCObject from '../../model/GCObject';
 import GCSecurity from '../../model/GCSecurity';
 import GCTransaction from '../../model/GCTransaction';
-import DBOpenPosition from './db/DBOpenPosition';
+import DBPosition from './db/DBPosition';
 
 /* ***************************************************************************
 Auth
@@ -198,30 +199,33 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
         logger.debug('get user failed: ', error);
       });
 
-    // Save to OpenPosition
-    const OpenPosition = Parse.Object.extend('OpenPosition');
+    // Add open positions
+    const Position = Parse.Object.extend('Position');
     await Promise.all(Object.keys(allTrans).map((key) => {
       const trans = new GCTransaction(allTrans[key]);
       logger.debug('trans==>', trans.simple());
-      const openPosition = new OpenPosition();
-      openPosition.set('security', securityObjectList[trans.symbol]);
-      openPosition.set('buyingPrice', trans.price);
-      openPosition.set('quantity', trans.quantity);
-      openPosition.set('date', trans.date);
-      openPosition.set('note', trans.note);
-      openPosition.set('owner', user);
-      return openPosition.save(null)
+      const position = new Position();
+      position.set('closed', false);
+      position.set('transId', trans.transId);
+      position.set('action', trans.action);
+      position.set('security', securityObjectList[trans.symbol]);
+      position.set('price', trans.price);
+      position.set('quantity', trans.quantity);
+      position.set('date', trans.date);
+      position.set('note', trans.note);
+      position.set('owner', user);
+      return position.save(null)
         .then((obj) => {
-          logger.debug('openPosition added: ', obj);
+          logger.debug('position added: ', obj);
           return obj;
         }, (error) => {
-          logger.debug('openPosition add error:', error);
+          logger.debug('position add error:', error);
         });
     }));
 
-    // Check OpenPosition table and move closed positions
-    const openPositionCheckQuery = new Parse.Query(OpenPosition);
-    openPositionCheckQuery.equalTo('owner', user);
+    // Check Position table and move closed positions
+    const positionCheckQuery = new Parse.Query(Position);
+    positionCheckQuery.equalTo('owner', user);
 
     // await openPositionCheckQuery.find()
     //   .then((results) => {
@@ -231,14 +235,62 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
     //   }, (error) => {
     //   });
 
-    await DBOpenPosition.find({ _p_owner: `_User$${user.id}` })
-      .then((rrr) => {
-        // logger.debug('openPositionCheckQuery.rrr: ', rrr[0]._id);
-        console.log(rrr);
+    // await DBOpenPosition.find({ _p_owner: `_User$${user.id}` })
+    //   .then((rrr) => {
+    //     // logger.debug('openPositionCheckQuery.rrr: ', rrr[0]._id);
+    //     console.log(rrr);
+    //   })
+    //   .catch((err) => {
+    //     logger.debug('Mongoose.error: ', err);
+    //   });
+
+    // Get open positions
+    const positions = await DBPosition
+      .aggregate({
+        $match: {
+          _p_owner: `_User$${user.id}`,
+          closed: false,
+        },
+      }, {
+        $group: {
+          _id: '$_p_security',
+          currentShares: { $sum: '$quantity' },
+        } }
+      )
+      .then((results) => {
+        console.log('Get open positions: ', results);
+        return results;
       })
       .catch((err) => {
         logger.debug('Mongoose.error: ', err);
       });
+
+    // Validation
+    const { validPositions, invalidPositions } = positions.reduce((map, position) => {
+      if (position.currentShares >= 0) {
+        map.validPositions.push(position);
+      } else {
+        map.invalidPositions.push(position);
+      }
+      return map;
+    }, {
+      validPositions: [],
+      invalidPositions: [],
+    });
+    console.log('after validation: ', validPositions, invalidPositions);
+
+    // Make sure no negative
+    if (invalidPositions.length > 0) {
+      res.status(400).send({
+        message: 'Open positions quantity <= 0',
+        payload: invalidPositions,
+      }).end();
+      logger.warn('lookupResult.errorList.length > 0. Returning 400');
+      return;
+    }
+
+    // Close all position where currentShares = 0
+    // const closedPositions
 
     logger.debug('finished all!!!');
 

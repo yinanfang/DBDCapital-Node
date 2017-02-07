@@ -17,8 +17,8 @@ const NewTransaction = Immutable({
     SELL: 'Sell',
     value: 'Buy',
   },
-  id: {
-    key: 'id',
+  transId: {
+    key: 'transId',
     name: 'ID',
   },
   symbol: {
@@ -46,7 +46,7 @@ const NewTransaction = Immutable({
 
 type GCTransactionType = {
   action: string,
-  id: string,
+  transId: string,
   symbol: string,
   price: number,
   quantity: number,
@@ -56,17 +56,17 @@ type GCTransactionType = {
 
 class GCTransaction extends GCObject {
   action: string;
-  id: string;
+  transId: string;
   symbol: string;
   price: number;
   quantity: number;
   date: Date;
   note: string;
 
-  constructor({ action = '', id = '', symbol = '', price = 0.00, quantity = 0, date = new Date(), note = '' }: GCTransactionType) {
+  constructor({ action = '', transId = '', symbol = '', price = 0.00, quantity = 0, date = new Date(), note = '' }: GCTransactionType) {
     super();
     this.action = action;
-    this.id = id;
+    this.transId = transId;
     this.symbol = symbol;
     this.price = price;
     // Use positive for Buy & negative for Sell
@@ -87,7 +87,7 @@ class GCTransaction extends GCObject {
 
   schema = Joi.object().keys({
     action: Joi.string().required(),
-    id: Joi.string().required(),
+    transId: Joi.string().required(),
     symbol: Joi.string().alphanum().required(),
     price: Joi.number().required(),
     quantity: Joi.number().required(),

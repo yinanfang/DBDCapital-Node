@@ -4,7 +4,7 @@ import DB from './index';
 // var crypto = require('crypto');
 // var jwt = require('jsonwebtoken');
 
-const OpenPositionSchema = new DB.Schema({
+const PositionSchema = new DB.Schema({
   _id: {
     type: String,
     unique: true,
@@ -19,7 +19,7 @@ const OpenPositionSchema = new DB.Schema({
     required: true,
   },
 }, {
-  collection: 'OpenPosition',
+  collection: 'Position', // DB table name
 });
 
-export default DB.model('OpenPosition', OpenPositionSchema);
+export default DB.model('Position', PositionSchema);
