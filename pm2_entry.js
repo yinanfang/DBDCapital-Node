@@ -2,4 +2,5 @@
 // https://github.com/Unitech/pm2/issues/1643#issuecomment-144087967
 
 require('babel-register');
+require('babel-polyfill');
 require('./server.js');

@@ -37,6 +37,9 @@ build: clean
 pm2:
 	sudo pm2 start pm2_config.json
 
+debug_pm2:
+	sudo pm2 start pm2_config.json --no-daemon
+
 # Test
 jasmine:
 	sleep 15
@@ -47,4 +50,4 @@ webClientTestDebug:
 	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development babel-node --inspect --debug-brk jasmine.js
 
 updateAndRestart:
-	git pull && npm install --dev && make build && sudo pm2 restart all
+	git pull && npm install && make build && sudo pm2 restart all
