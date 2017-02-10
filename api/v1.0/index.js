@@ -303,7 +303,7 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
         }, {
           $set: {
             closed: true,
-            _updated_at: new Date(),
+            _updated_at: new Date(), // UTC
           },
         }, {
           multi: true,

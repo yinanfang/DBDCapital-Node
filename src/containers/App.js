@@ -38,19 +38,19 @@ const App = (props) => {
   };
 
   return (
-    <div className={styleCSS.appBase}>
-      <Helmet
-        defaultTitle="DBD Capital"
-        titleTemplate="%s - DBD Capital"
-      />
-      <Measure
-        onMeasure={(measure) => {
-          handleMeasureUpdate(measure);
-        }}
-      >
+    <Measure
+      onMeasure={(measure) => {
+        handleMeasureUpdate(measure);
+      }}
+    >
+      <div className={styleCSS.appBase}>
+        <Helmet
+          defaultTitle="DBD Capital"
+          titleTemplate="%s - DBD Capital"
+        />
         {props.children}
-      </Measure>
-    </div>
+      </div>
+    </Measure>
   );
 };
 
