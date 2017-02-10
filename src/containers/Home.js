@@ -24,7 +24,7 @@ const Home = (props) => {
         <Helmet title="Home" />
         <div className={styleCSS.homeMainSection}>
           <AppBar
-            title={<span className={styleCSS.pageTitle}>DBD Capital</span>}
+            title={<span><h1 className={styleCSS.pageTitle}>DBD Capital</h1></span>}
             iconElementLeft={<ActionHome style={styleJS.forceHide} />}
             iconElementRight={<Link to="/auth"><FlatButton label="Sign In" type="text/html" hoverColor={styleJS.homeSignUpBox.hoverColor} backgroundColor={styleJS.homeSignUpBox.backgroundColor} style={styleJS.boxShadow} /></Link>}
             style={styleJS.homeNavBar}
@@ -35,17 +35,12 @@ const Home = (props) => {
           </video>
         </div>
         <div className={styleCSS.showcase}>
-          {[...Array(5)].map((x, i) =>
-            <p key={i + 1}>Showcase 1-{i + 1} - {loremipsum({ count: 5 })}</p>
-          )}
-        </div>
-        <div className={styleCSS.showcase}>
-          {[...Array(5)].map((x, i) =>
-            <p key={i + 1}>Showcase 2-{i + 1} - {loremipsum({ count: 5 })}</p>
-          )}
+          <h2>
+            Best financial solution
+          </h2>
         </div>
         <div className={styleCSS.footer}>
-          <p>Footer</p>
+          <p>DBD Capial @ 2017</p>
         </div>
       </div>
     </MuiThemeProvider>
