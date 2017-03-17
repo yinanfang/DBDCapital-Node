@@ -6,7 +6,27 @@ import Immutable from 'seamless-immutable';
 import GCObject from './GCObject';
 
 // Default object structure
-const NewTransaction = Immutable({
+export type GCNewTransactionInputDetailType = {
+  key: string,
+  value: boolean | string | number | Date,
+  name?: string,
+  BUY?: string,
+  SELL?: string,
+  multiLine?: boolean
+};
+
+export type GCNewTransactionInputType = {
+  select: GCNewTransactionInputDetailType,
+  action: GCNewTransactionInputDetailType,
+  transId: GCNewTransactionInputDetailType,
+  symbol: GCNewTransactionInputDetailType,
+  price: GCNewTransactionInputDetailType,
+  quantity: GCNewTransactionInputDetailType,
+  date: GCNewTransactionInputDetailType,
+  note: GCNewTransactionInputDetailType
+};
+
+const NewTransaction: GCNewTransactionInputType = Immutable({
   select: {
     key: 'select',
     value: false,
@@ -44,7 +64,7 @@ const NewTransaction = Immutable({
   },
 });
 
-type GCTransactionType = {
+export type GCTransactionType = {
   action: string,
   transId: string,
   symbol: string,
@@ -83,6 +103,18 @@ class GCTransaction extends GCObject {
       this.date = date;
     }
     this.note = note;
+  }
+
+  static default() {
+    return {
+      action: '',
+      transId: '',
+      symbol: '',
+      price: 0,
+      quantity: 0,
+      date: new Date(),
+      note: '',
+    };
   }
 
   schema = Joi.object().keys({

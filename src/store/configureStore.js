@@ -7,7 +7,7 @@ import createSagaMiddleware, { END } from 'redux-saga';
 
 import rootReducer from '../reducers';
 
-export default function configureStore(initialState) {
+export default function configureStore(initialState: {}) {
   const sagaMiddleware = createSagaMiddleware();
   const middlewareList = [sagaMiddleware];
 

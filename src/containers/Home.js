@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Radium from 'radium';
 
 import Helmet from 'react-helmet';
 

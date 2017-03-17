@@ -23,6 +23,7 @@ import Actions from '../actions';
 import styleCSS from '../style.css';
 
 import GCTransaction, { NewTransaction } from '../../model/GCTransaction';
+import type { GCTransactionType, GCNewTransactionInputType } from '../../model/GCTransaction';
 import GCUtil from '../../utils';
 
 const DEFAULT_NEW_TRANSACTIONS_COUNT = 3;
@@ -220,9 +221,9 @@ const AccountAdmin = (props) => {
     const selectedTransactions = Object.keys(allTrans)
       .filter(key => allTrans[key].select.value === true)
       .reduce((obj, key) => {
-        const singleTrans = allTrans[key];
-        const simplified = Object.keys(singleTrans)
-          .reduce((transItem, transKey) => {
+        const singleTrans: GCNewTransactionInputType = allTrans[key];
+        const simplified: GCTransactionType = (Object.keys(singleTrans): string[])
+          .reduce((transItem, transKey): GCTransactionType => {
             let value = singleTrans[transKey].value;
             if (transKey === NewTransaction.symbol.key) {
               value = GCUtil.getFixedSymbol(value);
@@ -231,7 +232,7 @@ const AccountAdmin = (props) => {
                                   ? value
                                   : Number(value);
             return transItem;
-          }, {});
+          }, GCTransaction.default());
         obj[key] = new GCTransaction(simplified);
         return obj;
       }, {});

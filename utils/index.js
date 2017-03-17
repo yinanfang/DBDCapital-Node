@@ -1,6 +1,6 @@
 // @flow
 
-const parseAuthHeader = (authHeader) => {
+const parseAuthHeader = (authHeader: string) => {
   const elements = authHeader.split(' ');
   if (elements.length === 2) {
     const scheme = elements[0];
@@ -11,7 +11,7 @@ const parseAuthHeader = (authHeader) => {
   return '';
 };
 
-const getJWTFromHttpObject = (httpObject) => {
+const getJWTFromHttpObject = (httpObject: Request) => {
   const authHeader = httpObject.headers.authorization;
   if (authHeader) {
     return parseAuthHeader(authHeader);
@@ -20,7 +20,7 @@ const getJWTFromHttpObject = (httpObject) => {
 };
 
 // Prefix market string for API call
-const getFixedSymbol = (symbol) => {
+const getFixedSymbol = (symbol: string) => {
   if (symbol) {
     if (symbol.match(/^((600|601|603|900)\d{3})|(204(001|002|003|004|007|014|028|091|182))$/)) {
       // 沪市 - A股: 600, 601, 603; B股: 900; 国债回购: 204
