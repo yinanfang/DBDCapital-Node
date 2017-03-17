@@ -21,6 +21,13 @@ function* login() {
   }
 }
 
+function* accountOverviewRequest() {
+  while (true) {
+    yield take(actions.ACCOUNT_NEW_OVERVIEW.REQUEST);
+    console.log('---->sss');
+  }
+}
+
 function* accountNewTransactionsSubmit() {
   while (true) {
     const { newTransactions } = yield take(actions.ACCOUNT_NEW_TRANSACTIONS.SUBMIT);
@@ -44,6 +51,7 @@ export default function* root() {
   yield [
     // Feature
     fork(login),
+    fork(accountOverviewRequest),
     fork(accountNewTransactionsSubmit),
     // Utility
     fork(watchNavigate),

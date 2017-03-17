@@ -3,6 +3,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import $ from 'jquery';
 
 import Helmet from 'react-helmet';
 
@@ -39,6 +40,9 @@ const Account = (props) => {
     updateDrawOpenState(!props.isDrawerOpen);
   };
   const navTabOnClick = (event) => {
+    if ($(event.target).closest('a').attr('href') === '/account') {
+      props.accountOverviewRequest();
+    }
     updateDrawOpenState(false);
   };
 
@@ -99,6 +103,7 @@ Account.propTypes = {
   isMobileViewer: PropTypes.bool.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   uiUpdate: PropTypes.func.isRequired,
+  accountOverviewRequest: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -106,9 +111,11 @@ const mapStateToProps = (state) => {
     isMobileDrawer: state.uiStore.isMobileDrawer,
     isMobileViewer: state.uiStore.isMobileViewer,
     isDrawerOpen: state.uiStore.isDrawerOpen,
+    accountOverview: state.account.overview,
   };
 };
 
 export default connect(mapStateToProps, {
   uiUpdate: Actions.uiUpdate,
+  accountOverviewRequest: Actions.accountOverview.request,
 })(Account);

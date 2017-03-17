@@ -20,13 +20,13 @@ const App = (props) => {
   const handleMeasureUpdate = (measure) => {
     let hasCriticalUpdate = false;
     const uiUpdates = {};
-    const isMobileDrawer = measure.width < MOBILE_DRAWER_INCEPTION;
+    const isMobileDrawer = measure.width <= MOBILE_DRAWER_INCEPTION;
     if (isMobileDrawer !== props.uiStore.isMobileDrawer) {
       uiUpdates.isMobileDrawer = isMobileDrawer;
       hasCriticalUpdate = true;
     }
 
-    const isMobileViewer = measure.width < MOBILE_VIEWER_INCEPTION;
+    const isMobileViewer = measure.width <= MOBILE_VIEWER_INCEPTION;
     if (isMobileViewer !== props.uiStore.isMobileViewer) {
       uiUpdates.isMobileViewer = isMobileViewer;
       hasCriticalUpdate = true;

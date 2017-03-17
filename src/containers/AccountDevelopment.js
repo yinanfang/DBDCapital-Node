@@ -6,13 +6,16 @@ import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 
 import Actions from '../actions';
-import styleCSS from '../style.css';
+// import styleCSS from '../style.css';
 
 const AccountDevelopment = (props) => {
   return (
     <div>
       <Helmet title="Account" />
-      AccountDevelopment
+      <div>Charts</div>
+      <div>Portfolio Value</div>
+      <div>Weekly Variation</div>
+      <div>Total Variation</div>
     </div>
   );
 };

@@ -29,11 +29,17 @@ const login = {
 const REGISTER = createRequestTypes('REGISTER');
 const register = {
   request: (username: string, password: string) => action(REGISTER.REQUEST, { username, password }),
-  success: (login: {}, response: {}) => action(REGISTER.SUCCESS, { login, response }),
-  failure: (login: {}, error: Error) => action(REGISTER.FAILURE, { login, error }),
+  success: (userInfo: {}, response: {}) => action(REGISTER.SUCCESS, { userInfo, response }),
+  failure: (userInfo: {}, error: Error) => action(REGISTER.FAILURE, { userInfo, error }),
 };
 
-const ACCOUNT_NEW_TRANSACTIONS = createRequestTypes('USER');
+const ACCOUNT_NEW_OVERVIEW = createRequestTypes('ACCOUNT_NEW_OVERVIEW');
+const accountOverview = {
+  request: () => action(ACCOUNT_NEW_OVERVIEW.REQUEST, { }),
+  success: (payload: {}) => action(ACCOUNT_NEW_OVERVIEW.SUCCESS, { payload }),
+};
+
+const ACCOUNT_NEW_TRANSACTIONS = createRequestTypes('ACCOUNT_NEW_TRANSACTIONS');
 const accountNewTransactions = {
   update: (newTransactions: {}) => action(ACCOUNT_NEW_TRANSACTIONS.UPDATE, { newTransactions }),
   submit: (newTransactions: {}) => action(ACCOUNT_NEW_TRANSACTIONS.SUBMIT, { newTransactions }),
@@ -54,6 +60,8 @@ export default {
   uiUpdate,
   LOGIN,
   login,
+  ACCOUNT_NEW_OVERVIEW,
+  accountOverview,
   ACCOUNT_NEW_TRANSACTIONS,
   accountNewTransactions,
   navigate,

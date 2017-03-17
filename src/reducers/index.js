@@ -30,6 +30,8 @@ const uiStore = (state = uiStoreDefault, action) => {
 };
 
 const accountDefault = {
+  overview: {
+  },
   admin: {
     newTransactions: AccountAdmin.DEFAULT_NEW_TRANSACTIONS,
   },

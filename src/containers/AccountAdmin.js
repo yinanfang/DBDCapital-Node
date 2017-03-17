@@ -7,7 +7,6 @@ import faker from 'faker';
 import _merge from 'lodash/merge';
 import _cloneDeep from 'lodash/cloneDeep';
 import moment from 'moment';
-import Immutable from 'seamless-immutable';
 import validator from 'validator';
 import sweetAlert from 'sweetalert';
 
@@ -277,8 +276,6 @@ const AccountAdmin = (props) => {
 };
 
 AccountAdmin.propTypes = {
-  // Injected by React Router
-  children: PropTypes.node,
   // Injected by React Redux
   newTransactions: PropTypes.object.isRequired,
   newTransactionsUpdate: PropTypes.func.isRequired,

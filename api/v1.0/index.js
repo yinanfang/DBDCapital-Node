@@ -80,6 +80,13 @@ const DeleteUser = (req: Request, res: Response, next: NextFunction) => {
 Account
 *****************************************************************************/
 
+async function AccountOverview(req: Request, res: Response, next: NextFunction) {
+  logger.debug('finished all!!!');
+
+
+
+}
+
 const parseSecurityData = (symbol, data) => {
   const security = new GCSecurity({
     symbol,
@@ -341,6 +348,7 @@ export default {
   Login,
   User,
   DeleteUser,
+  AccountOverview,
   AccountNewTransactionsSubmit,
   Quote,
   Error,

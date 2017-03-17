@@ -13,21 +13,22 @@ DB.connect(Config.DATABASE_URI);
 
 // CONNECTION EVENTS
 DB.connection.on('connected', () => {
-  logger.info(`Mongoose connected to ${Config.DATABASE_URI}`);
+  logger.info('Mongoose connected to db');
+  logger.debug(`Mongoose current db: ${Config.DATABASE_URI}`);
 });
 
 DB.connection.on('error', (err) => {
   logger.error(`Mongoose connection error: ${err}`);
 });
 DB.connection.on('disconnected', () => {
-  logger.info('Mongoose disconnected');
+  logger.warn('Mongoose disconnected');
 });
 
 // CAPTURE APP TERMINATION / RESTART EVENTS
 // To be called when process is restarted or terminated
 const gracefulShutdown = (msg, callback) => {
   DB.connection.close(() => {
-    logger.info(`Mongoose disconnected through ${msg}`);
+    logger.warn(`Mongoose disconnected through ${msg}`);
     callback();
   });
 };
