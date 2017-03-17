@@ -9,6 +9,9 @@ copy-config:
 setup:
 	# sudo mongod --dbpath /data/db/ --port 27017 --fork --logpath ./logg/mongodb.log
 
+installAirbnbESLint:
+	# https://www.npmjs.com/package/eslint-config-airbnb#eslint-config-airbnb-1
+
 ##############################################################################
 # Dev
 ##############################################################################
@@ -41,11 +44,15 @@ debug_pm2:
 	sudo pm2 start pm2_config.json --no-daemon
 
 # Test
-jasmine:
+jasmineOnce:
+	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development ./node_modules/babel-cli/bin/babel-node.js jasmine.js
+delay15Seconds:
 	sleep 15
-	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development nodemon --config nodemon_jasmine.json --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js
+jasmineInstant:
+	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development nodemon --delay 10 --config nodemon_jasmine.json --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js
+jasmine: delay15Seconds jasmineInstant
 webClientTest:
-	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development nodemon --config nodemon_webClientTest.json --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js
+	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development nodemon --config nodemon_jasmine.json --delay 10 --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js
 webClientTestDebug:
 	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development babel-node --inspect --debug-brk jasmine.js
 

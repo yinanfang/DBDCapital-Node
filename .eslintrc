@@ -16,7 +16,9 @@
     "React": true
   },
   "plugins": [
-    "react", "flowtype",
+    "react",
+    "flowtype",
+    "jsx-a11y",
   ],
   "rules": {
     "arrow-body-style": [0],

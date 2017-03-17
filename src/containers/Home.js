@@ -8,7 +8,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Radium from 'radium';
 
 import Helmet from 'react-helmet';
-import loremipsum from 'lorem-ipsum';
 
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
@@ -47,4 +46,4 @@ const Home = (props) => {
   );
 };
 
-export default connect()(Radium(Home, styleJS));
+export default connect()(Home);
