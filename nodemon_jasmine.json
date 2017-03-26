@@ -8,7 +8,7 @@
     "constant/**/*.js",
     "model/**/*.js",
     "routes/**/*.js",
-    "spec/**/*_spec.js",
+    "spec/**/*.js",
     "api/**/*.js",
     "path.js",
     "cloud/**/*.js"

@@ -1,8 +1,3 @@
-// import { Map } from 'immutable';
-//
-// import rootReducer from '../src/reducers';
-// import actions from '../src/actions';
-
 describe('Reducer Test', () => {
   it('Testing A', (done) => {
     // const stateAuthBefore = Map({

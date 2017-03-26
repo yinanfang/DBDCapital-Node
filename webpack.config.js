@@ -18,7 +18,6 @@ const entry = Config.IS_DEVELOPMENT ? {
 };
 
 const plugins = Config.IS_DEVELOPMENT ? [
-  new webpack.optimize.OccurrenceOrderPlugin(),
   new HtmlWebpackPlugin({
     template: 'src/index.html',
     inject: true,
@@ -50,7 +49,6 @@ const plugins = Config.IS_DEVELOPMENT ? [
   }),
   new webpack.NoEmitOnErrorsPlugin(),
 ] : [
-  new webpack.optimize.OccurrenceOrderPlugin(),
   new HtmlWebpackPlugin({
     template: 'src/index.html',
     inject: true,
@@ -84,7 +82,8 @@ const plugins = Config.IS_DEVELOPMENT ? [
   new webpack.NoEmitOnErrorsPlugin(),
 ];
 
-const babelPresets = Config.IS_DEVELOPMENT ? ['react', 'es2015', 'stage-2', 'react-hmre'] : ['react', 'es2015', 'stage-2'];
+let babelPresets = ['react', 'es2015', 'stage-2'];
+babelPresets = Config.IS_DEVELOPMENT ? [...babelPresets, 'react-hmre'] : babelPresets;
 
 // Prefer react-css-modules over css-loader
 // Source: https://github.com/gajus/react-css-modules#usage
@@ -124,10 +123,6 @@ module.exports = {
         options: {
           presets: babelPresets,
         },
-      },
-      { // Json
-        test: /\.json?$/,
-        loader: 'json-loader',
       },
       // Project CSS
       cssLoader,

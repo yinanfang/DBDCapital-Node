@@ -27,6 +27,18 @@ debug:
 debugWithWithBreak:
 	NODE_ENV=development babel-node --inspect --debug-brk server
 
+# Test
+jasmineOnce:
+	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development ./node_modules/babel-cli/bin/babel-node.js jasmine.js
+delay15Seconds:
+	sleep 15
+jasmineWithNodemon:
+	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development nodemon --delay 10 --config nodemon_jasmine.json --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js
+jasmine: delay15Seconds jasmineWithNodemon
+webClientTestDebug:
+	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development babel-node --inspect --debug-brk jasmine.js
+
+
 ##############################################################################
 # Production
 ##############################################################################
@@ -43,18 +55,6 @@ pm2:
 debug_pm2:
 	sudo pm2 start pm2_config.json --no-daemon
 
-# Test
-jasmineOnce:
-	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development ./node_modules/babel-cli/bin/babel-node.js jasmine.js
-delay15Seconds:
-	sleep 15
-jasmineInstant:
-	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development nodemon --delay 10 --config nodemon_jasmine.json --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js
-jasmine: delay15Seconds jasmineInstant
-webClientTest:
-	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development nodemon --config nodemon_jasmine.json --delay 10 --exec ./node_modules/babel-cli/bin/babel-node.js jasmine.js
-webClientTestDebug:
-	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development babel-node --inspect --debug-brk jasmine.js
-
+# Deploy
 updateAndRestart:
 	git pull && npm install && make build && sudo pm2 restart all
