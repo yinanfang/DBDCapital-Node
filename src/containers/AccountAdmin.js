@@ -10,18 +10,10 @@ import moment from 'moment';
 import validator from 'validator';
 import sweetAlert from 'sweetalert';
 
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-import Checkbox from 'material-ui/Checkbox';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
-import DatePicker from 'material-ui/DatePicker';
-
 import Actions from '../actions';
 import styleCSS from '../style.css';
 
+import GCNewTransactionsTable from '../components/tables/GCNewTransactionsTable';
 import GCTransaction, { NewTransaction } from '../../model/GCTransaction';
 import type { GCTransactionType, GCNewTransactionInputType } from '../../model/GCTransaction';
 import GCUtil from '../../utils';
@@ -92,49 +84,24 @@ const AccountAdmin = (props) => {
     props.newTransactionsUpdate(newTransactionsDiff);
   };
 
-  const newTransactionSelectSingle = (event, isInputChecked) => {
-    const row = $(event.target).closest('tr').index();
-    updateNewTransactions(row, NewTransaction.select.key, isInputChecked);
-  };
-  const newTransactionSelectAll = (event, isInputChecked) => {
-    console.log(isInputChecked, $(event.target).parents());
-  };
-  const newTransactionColumnSelect = (col = null) => {
-    if (col) {
-      return (
-        <TableRowColumn className={styleCSS.accountFormColumnSelect} style={{ padding: 0 }}>
-          <Checkbox defaultChecked={col.value} onCheck={newTransactionSelectSingle} />
-        </TableRowColumn>
-      );
+  const newTransactionsTableRowOnCheck = (event, isInputChecked: boolean) => {
+    // First table is TableHeader. Second table is TableBody
+    if ($(event.target).closest('table').closest('div').index() === 0) {
+      // TODO: Implement check all method
+      console.log(isInputChecked, $(event.target).parents());
+    } else {
+      const row = $(event.target).closest('tr').index();
+      updateNewTransactions(row, NewTransaction.select.key, isInputChecked);
     }
-    return (
-      <TableRowColumn className={styleCSS.accountFormColumnSelect} style={{ padding: 0 }}>
-        <Checkbox onCheck={newTransactionSelectAll} />
-      </TableRowColumn>
-    );
   };
 
-  const transactionInputOnChange = (event, text) => {
+  const newTransactionInputOnChange = (event, text) => {
     const row = $(event.target).closest('tr').index();
     const inputName = $(event.target).attr('name');
     updateNewTransactions(row, inputName, text);
   };
-  const newTransactionColumnInput = (col = {}) => {
-    if (col.multiLine) {
-      return (
-        <TableRowColumn className={styleCSS.accountInputLong}>
-          <TextField fullWidth name={col.key} hintText={col.hint} errorText={col.error} onChange={transactionInputOnChange} multiLine />
-        </TableRowColumn>
-      );
-    }
-    return (
-      <TableRowColumn>
-        <TextField fullWidth name={col.key} hintText={col.hint} errorText={col.error} onChange={transactionInputOnChange} />
-      </TableRowColumn>
-    );
-  };
 
-  const transactionTypeOnChange = (event, index, payload) => {
+  const newTransactionTypeOnChange = (event, index, payload) => {
     console.log(index, payload);
     $('form[name="newTransactions"] table:eq(1)')
       .find('tr')
@@ -143,81 +110,11 @@ const AccountAdmin = (props) => {
       .text(payload.value);
     updateNewTransactions(payload.row, NewTransaction.action.key, payload.value);
   };
-  const newTransactionColumnTypeDropdown = (row = 0, col = { value: NewTransaction.action.BUY }) => {
-    const dropdownBuy = { row, value: NewTransaction.action.BUY };
-    const dropdownSell = { row, value: NewTransaction.action.SELL };
-    const dropdownValue = col.value === NewTransaction.action.BUY ? dropdownBuy : dropdownSell;
-    return (
-      <TableRowColumn className={styleCSS.accountTransactionType}>
-        <DropDownMenu id="type" value={dropdownValue} onChange={transactionTypeOnChange}>
-          <MenuItem value={dropdownBuy} primaryText="Buy" />
-          <MenuItem value={dropdownSell} primaryText="Sell" />
-        </DropDownMenu>
-      </TableRowColumn>
-    );
-  };
-
-  const disableWeekends = (date) => {
-    return date.getDay() === 0 || date.getDay() === 6;
-  };
-  let newTransactionDatePickerRow = 0;
-  const newTransactionDateOnTouchTap = (event) => {
-    newTransactionDatePickerRow = $(event.target).closest('tr').index();
-  };
-  const newTransactionDateOnChange = (event, date) => {
-    updateNewTransactions(newTransactionDatePickerRow, 'date', moment(date).format('YYYY-MM-DD'));
-  };
-  const newTransactionColumnDatePicket = (name = '', defaultValue = new Date()) => {
-    return (
-      <TableRowColumn className={styleCSS.accountDatePicker}>
-        <DatePicker name={name} autoOk defaultDate={defaultValue} shouldDisableDate={disableWeekends} onTouchTap={newTransactionDateOnTouchTap} onChange={newTransactionDateOnChange} />
-      </TableRowColumn>
-    );
-  };
-
-  const newTransactionRow = (row = 0, trans = {}) => {
-    return (
-      <TableRow selectable={false} key={row}>
-        {newTransactionColumnSelect(trans.select)}
-        {newTransactionColumnTypeDropdown(row, trans.action)}
-        {newTransactionColumnInput(trans.transId)}
-        {newTransactionColumnInput(trans.symbol)}
-        {newTransactionColumnInput(trans.price)}
-        {newTransactionColumnInput(trans.quantity)}
-        {newTransactionColumnDatePicket(trans.date.key, trans.date.defaultValue)}
-        {newTransactionColumnInput(trans.note)}
-      </TableRow>
-    );
-  };
-
-  const newTransactionsTable = () => {
-    return (
-      <Table selectable>
-        <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-          <TableRow>
-            {newTransactionColumnSelect()}
-            <TableHeaderColumn className={styleCSS.accountTransactionType}>Action</TableHeaderColumn>
-            <TableHeaderColumn>ID</TableHeaderColumn>
-            <TableHeaderColumn>Symbol</TableHeaderColumn>
-            <TableHeaderColumn>Price</TableHeaderColumn>
-            <TableHeaderColumn>Quantity</TableHeaderColumn>
-            <TableHeaderColumn className={styleCSS.accountDatePicker}>Date</TableHeaderColumn>
-            <TableHeaderColumn className={styleCSS.accountInputLong}>Note</TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody displayRowCheckbox={false}>
-          {[...Array(newTransactionsCount)].map((_, index) => {
-            return newTransactionRow(index, props.newTransactions[index]);
-          })}
-        </TableBody>
-      </Table>
-    );
-  };
 
   const newTransactionSubmitOnClick = (event) => {
     event.preventDefault();
     // http://stackoverflow.com/questions/38750705/using-es6-to-filter-object-properties
-    const allTrans = props.newTransactions;
+    const allTrans: { [key: string]: GCNewTransactionInputType } = props.newTransactions;
     const selectedTransactions = Object.keys(allTrans)
       .filter(key => allTrans[key].select.value === true)
       .reduce((obj, key) => {
@@ -261,16 +158,18 @@ const AccountAdmin = (props) => {
 
   return (
     <div>
-      <Paper className={styleCSS.accountSectionContainer}>
-        <div onTouchTap={toggleSection}>
-          <h2>New Transactions</h2>
-        </div>
-        <form name="newTransactions">
-          {newTransactionsTable()}
-        </form>
-        <RaisedButton label="Add A Row" onClick={newTransactionsAddEmptyRow} />
-        <RaisedButton type="submit" onClick={newTransactionSubmitOnClick} label="Submit" className={styleCSS.accountSubmit} />
-      </Paper>
+      <GCNewTransactionsTable
+        // data
+        newTransactions={props.newTransactions}
+        // function
+        toggleSection={toggleSection}
+        newTransactionsAddEmptyRow={newTransactionsAddEmptyRow}
+        newTransactionSubmitOnClick={newTransactionSubmitOnClick}
+        newTransactionsTableRowOnCheck={newTransactionsTableRowOnCheck}
+        newTransactionTypeOnChange={newTransactionTypeOnChange}
+        newTransactionInputOnChange={newTransactionInputOnChange}
+        updateNewTransactions={updateNewTransactions}
+      />
       <h2>Next</h2>
     </div>
   );

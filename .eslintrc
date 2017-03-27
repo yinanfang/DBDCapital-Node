@@ -56,7 +56,9 @@
       2,
       "never"
     ],
-    "flowtype/no-weak-types": 2,
+    "flowtype/no-weak-types": [2, {
+      "any": false,
+    }],
     "flowtype/require-parameter-type": 0,
     "flowtype/semi": [
       2,

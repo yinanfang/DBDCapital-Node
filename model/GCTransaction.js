@@ -9,10 +9,13 @@ import GCObject from './GCObject';
 export type GCNewTransactionInputDetailType = {
   key: string,
   value: boolean | string | number | Date,
+  defaultValue?: Date,
   name?: string,
   BUY?: string,
   SELL?: string,
-  multiLine?: boolean
+  multiLine?: boolean,
+  hint?: string,
+  error?: string
 };
 
 export type GCNewTransactionInputType = {
