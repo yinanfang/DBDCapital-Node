@@ -32,13 +32,15 @@ const getPreviousWorkday = () => {
 };
 const initSingleNewTransaction = () => {
   const copy = _cloneDeep(NewTransaction);
-  copy.transId.hint = `${faker.random.arrayElement([86, 168, 355, 173, 853, '225b', '115c', '352d'])}`;
-  copy.symbol.hint = faker.random.number({ min: 600000, max: 699999 });
-  copy.price.hint = faker.commerce.price();
-  copy.quantity.hint = faker.random.number({ min: 100, max: 1000 });
   const previousWorkday = getPreviousWorkday();
   copy.date.defaultValue = previousWorkday.toDate();
   copy.date.value = previousWorkday.format('YYYY-MM-DD');
+  copy.transId.hint = `${faker.random.arrayElement([86, 168, 355, 173, 853, '225b', '115c', '352d'])}`;
+  copy.symbol.hint = faker.random.number({ min: 600000, max: 699999 });
+  copy.name.value = 'N/A';
+  copy.price.hint = faker.commerce.price();
+  copy.quantity.hint = faker.random.number({ min: 100, max: 10000 });
+  copy.fee.hint = faker.random.number({ min: 1, max: 10 });
   copy.note.hint = faker.lorem.words();
   return copy;
 };
@@ -72,6 +74,7 @@ const AccountAdmin = (props) => {
     if (inputName === NewTransaction.transId.key) {
       updates.error = validator.isAlphanumeric(content) ? '' : 'Format!';
     } else if (inputName === NewTransaction.symbol.key || inputName === NewTransaction.quantity.key) {
+      console.log(content, typeof content);
       updates.error = validator.isNumeric(content) ? '' : 'Numbers only!';
     } else if (inputName === NewTransaction.price.key) {
       updates.error = validator.isCurrency(content) ? '' : 'Currency only!';

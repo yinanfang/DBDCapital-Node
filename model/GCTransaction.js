@@ -10,22 +10,25 @@ export type GCNewTransactionInputDetailType = {
   key: string,
   value: boolean | string | number | Date,
   defaultValue?: Date,
-  name?: string,
+  displayName?: string,
   BUY?: string,
   SELL?: string,
   multiLine?: boolean,
+  disabled?: boolean,
   hint?: string,
   error?: string
 };
 
 export type GCNewTransactionInputType = {
   select: GCNewTransactionInputDetailType,
-  action: GCNewTransactionInputDetailType,
+  date: GCNewTransactionInputDetailType,
   transId: GCNewTransactionInputDetailType,
   symbol: GCNewTransactionInputDetailType,
+  name: GCNewTransactionInputDetailType,
+  action: GCNewTransactionInputDetailType,
   price: GCNewTransactionInputDetailType,
   quantity: GCNewTransactionInputDetailType,
-  date: GCNewTransactionInputDetailType,
+  fee: GCNewTransactionInputDetailType,
   note: GCNewTransactionInputDetailType
 };
 
@@ -34,11 +37,9 @@ const NewTransaction: GCNewTransactionInputType = Immutable({
     key: 'select',
     value: false,
   },
-  action: {
-    key: 'action',
-    BUY: 'Buy',
-    SELL: 'Sell',
-    value: 'Buy',
+  date: {
+    key: 'date',
+    name: 'Date',
   },
   transId: {
     key: 'transId',
@@ -48,6 +49,17 @@ const NewTransaction: GCNewTransactionInputType = Immutable({
     key: 'symbol',
     name: 'Symbol',
   },
+  name: {
+    key: 'name',
+    name: 'Name',
+    disabled: true,
+  },
+  action: {
+    key: 'action',
+    BUY: 'Buy',
+    SELL: 'Sell',
+    value: 'Buy',
+  },
   price: {
     key: 'price',
     name: 'Price',
@@ -56,9 +68,9 @@ const NewTransaction: GCNewTransactionInputType = Immutable({
     key: 'quantity',
     name: 'Quantity',
   },
-  date: {
-    key: 'date',
-    name: 'Date',
+  fee: {
+    key: 'quantity',
+    name: 'Quantity',
   },
   note: {
     key: 'note',
@@ -68,25 +80,27 @@ const NewTransaction: GCNewTransactionInputType = Immutable({
 });
 
 export type GCTransactionType = {
-  action: string,
+  date: Date,
   transId: string,
   symbol: string,
+  action: string,
   price: number,
   quantity: number,
-  date: Date,
+  fee?: number,
   note: string
 };
 
 class GCTransaction extends GCObject {
-  action: string;
+  date: Date;
   transId: string;
   symbol: string;
+  action: string;
   price: number;
   quantity: number;
-  date: Date;
+  fee: number;
   note: string;
 
-  constructor({ action = '', transId = '', symbol = '', price = 0.00, quantity = 0, date = new Date(), note = '' }: GCTransactionType) {
+  constructor({ date = new Date(), transId = '', symbol = '', action = '', price = 0.00, fee = 0.00, quantity = 0, note = '' }: GCTransactionType) {
     super();
     this.action = action;
     this.transId = transId;
@@ -110,23 +124,25 @@ class GCTransaction extends GCObject {
 
   static default() {
     return {
-      action: '',
+      date: new Date(),
       transId: '',
       symbol: '',
+      action: '',
       price: 0,
       quantity: 0,
-      date: new Date(),
+      fee: 0,
       note: '',
     };
   }
 
   schema = Joi.object().keys({
-    action: Joi.string().required(),
+    date: Joi.date().required(),
     transId: Joi.string().required(),
     symbol: Joi.string().alphanum().required(),
+    action: Joi.string().required(),
     price: Joi.number().required(),
     quantity: Joi.number().required(),
-    date: Joi.date().required(),
+    fee: Joi.number().required(),
     note: Joi.string().required(),
     schema: Joi.object().required(),
   });

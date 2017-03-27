@@ -46,7 +46,7 @@ const Account = (props) => {
     updateDrawOpenState(false);
   };
 
-  const DRAWER_WIDTH = 256;
+  const DRAWER_WIDTH = 220;
   const sectionContainerStyle = () => {
     return props.isMobileDrawer ? {} : {
       marginLeft: DRAWER_WIDTH,
@@ -56,7 +56,7 @@ const Account = (props) => {
     return props.isMobileViewer ? {
       margin: '24px',
     } : {
-      margin: '48px 72px',
+      margin: '35px 40px',
     };
   };
 

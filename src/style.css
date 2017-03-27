@@ -220,24 +220,48 @@ Account
   }
 }
 
+.accountFormColumnSelect {
+  width: 24px;
+}
+
+.accountDatePicker {
+  width: 15%;
+}
+
+.accountInputId {
+  width: 8%;
+}
+
+.accountSymbol {
+  width: 10%;
+}
+
+.accountInputName {
+  width: 10%;
+}
+
 .accountTransactionType {
-  width: 30px;
+  width: 10%;
 
   & > div {
     left: -22px;
   }
 }
 
+.accountInputPrice {
+  width: 10%;
+}
+
+.accountInputQuantity {
+  width: 10%;
+}
+
+.accountInputFee {
+  width: 8%;
+}
+
 .accountInputLong {
-  width: 35%;
-}
-
-.accountDatePicker {
-  width: 60px;
-}
-
-.accountFormColumnSelect {
-  width: 24px;
+  width: 30%;
 }
 
 .accountSubmit {
