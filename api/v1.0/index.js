@@ -9,7 +9,7 @@ import Promise from 'bluebird';
 import Config from '../../config';
 import logger from '../../utils/logger';
 import GCSecurity from '../../model/GCSecurity';
-import { GCSecurityUtil, SinaStock } from './GCAPIUtil';
+import { GCSecurityUtil, GCUserUtil, SinaStock } from './GCAPIUtil';
 import GCTransaction from '../../model/GCTransaction';
 import DBPosition from './db/DBPosition';
 
@@ -110,39 +110,14 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
       return;
     }
 
-    // Proceed if successfully parsed all securities
     // Update Security table
-    const securityObjectList = await Promise.all(stockList.map(async (stock) => {
-      const results = await GCSecurityUtil.find(stock.symbol);
-      if (results.length === 0) {
-        const security = await GCSecurityUtil.add(stock);
-        return { key: [stock.symbol], value: security };
-      } else if (results.length > 1) {
-        logger.debug('Found duplicates. Remove old ones.');
-        await GCSecurityUtil.deleteAll(results.slice(1));
-      }
-      const target = results[0];
-      const security = await GCSecurityUtil.update(target, stock);
-      return { key: [stock.symbol], value: security };
-    }))
-    // Turn array into a map
-    .then((result) => {
-      return result.reduce((map, obj) => {
-        map[obj.key] = obj.value;
-        return map;
-      }, {});
-    });
+    const securityObjectList: {key: string, value: any} = await GCSecurityUtil.updateAll(stockList);
     logger.debug('securityObjectList: ', securityObjectList);
 
+    // TODO: return 400 if GCSecurityUtil.updateAll fails
+
     // Get the user
-    const queryUser = new Parse.Query(Parse.User);
-    const user = await queryUser.get(req.jwt.userId)
-      .then((obj) => {
-        logger.debug('get user done: ', obj);
-        return obj;
-      }, (error) => {
-        logger.debug('get user failed: ', error);
-      });
+    const user = await GCUserUtil.find(req.jwt.userId);
 
     // Add open positions
     const Position = Parse.Object.extend('Position');
@@ -168,6 +143,8 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
           logger.debug('position add error:', error);
         });
     }));
+
+    // TODO: Close Position accoding to account, not user
 
     // Check Position table and move closed positions
     const positionCheckQuery = new Parse.Query(Position);

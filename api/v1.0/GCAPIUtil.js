@@ -52,7 +52,28 @@ const GCSecurityUtil = {
         logger.debug('GCSecurity.update', error);
       });
   },
-
+  updateAll: async function _updateAll(stockList: GCSecurity[]): Promise<{key: string, value: any}> {
+    return Promise.all(stockList.map(async (stock) => {
+      const results = await GCSecurityUtil.find(stock.symbol);
+      if (results.length === 0) {
+        const security = await GCSecurityUtil.add(stock);
+        return { key: [stock.symbol], value: security };
+      } else if (results.length > 1) {
+        logger.debug('Found duplicates. Remove old ones.');
+        await GCSecurityUtil.deleteAll(results.slice(1));
+      }
+      const target = results[0];
+      const security = await GCSecurityUtil.update(target, stock);
+      return { key: [stock.symbol], value: security };
+    }))
+    // Turn array into a map
+    .then((result) => {
+      return result.reduce((map, obj) => {
+        map[obj.key] = obj.value;
+        return map;
+      }, {});
+    });
+  },
   delete: async function _delete(security: ParseObject) {
     await security.destroy()
       .then((obj) => {
@@ -65,6 +86,19 @@ const GCSecurityUtil = {
     await Promise.all(stockList.map(async (stock) => {
       await GCSecurityUtil.delete(stock);
     }));
+  },
+};
+
+const GCUserUtil = {
+  find: async function _find(userId: string) {
+    const queryUser = new Parse.Query(Parse.User);
+    return queryUser.get(userId)
+      .then((obj) => {
+        logger.debug('get user done: ', obj);
+        return obj;
+      }, (error) => {
+        logger.debug('get user failed: ', error);
+      });
   },
 };
 
@@ -131,5 +165,6 @@ const SinaStock = {
 
 export {
   GCSecurityUtil,
+  GCUserUtil,
   SinaStock,
 };
