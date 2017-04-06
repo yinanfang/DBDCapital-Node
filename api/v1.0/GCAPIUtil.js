@@ -2,6 +2,8 @@
 
 import Parse, { ParseObject } from 'parse/node';
 import Promise from 'bluebird';
+import request from 'request-promise';
+import iconv from 'iconv-lite';
 
 import GCSecurity from '../../model/GCSecurity';
 import logger from '../../utils/logger';
@@ -66,9 +68,68 @@ const GCSecurityUtil = {
   },
 };
 
-const GCTestUtil = {};
+const SinaStock = {
+  // TODO: find out why Array<string|number> doesn't work?
+  parseSecurityData: (symbol: string, data: Array<any>): GCSecurity => {
+    const security = new GCSecurity({
+      symbol,
+      name: data[0],
+      open: data[1],
+      previousClose: Number.parseFloat(data[2]),
+      lastPrice: Number.parseFloat(data[3]),
+      high: Number.parseFloat(data[4]),
+      low: Number.parseFloat(data[5]),
+      bid: Number.parseFloat(data[6]),
+      ask: Number.parseFloat(data[7]),
+      volume: Number(data[8]),
+      transactionValue: Number.parseFloat(data[9]),
+      date: new Date(`${data[30]}T${data[31]}+08:00`), // Beijing(+8) -> UTC
+    });
+    return security;
+  },
+  // Return stock array
+  lookup: async function lookup(symbolList: string[]): Promise<{stockList: GCSecurity[], errorList: GCSecurity[]}> {
+    const url = `http://hq.sinajs.cn/list=${symbolList.join(',')}`;
+    // Wait for promise and use promise result
+    return request.get({
+      url,
+      encoding: null,
+    })
+    .then((response) => {
+      const converted = iconv.decode(response, 'GBK').split('\n');
+      converted.pop(); // pop the new line at the end
+      const stockList = [];
+      const errorList = [];
+      converted.forEach((detailText) => {
+        const parts = detailText.split('=');
+        const symbol = parts[0].split('_').pop();
+        const data = parts[1].split('"')[1].split(',');
+
+        const security = SinaStock.parseSecurityData(symbol, data);
+        const validation = security.validate();
+        if (validation.error) {
+          logger.debug('validation error->', validation.error.details);
+          errorList.push(security);
+        } else {
+          stockList.push(security);
+        }
+      });
+
+      // debug
+      // logger.debug('stockList-------->');
+      // GCObject.printSimpleArray(stockList);
+      // logger.debug('errorList-------->');
+      // GCObject.printSimpleArray(errorList);
+
+      return { stockList, errorList };
+    })
+    .catch((error) => {
+      logger.error('SinaStock error: ', error.message);
+    });
+  },
+};
 
 export {
   GCSecurityUtil,
-  GCTestUtil,
+  SinaStock,
 };

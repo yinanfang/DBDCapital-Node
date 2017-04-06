@@ -1,10 +1,13 @@
+// @flow
+
 import 'isomorphic-fetch';
 import request from 'axios';
 import Raven from 'raven-js';
 
 import Path from '../../path';
+import type { GCNewTransactionInputType } from '../../model/GCTransaction';
 
-const login = (username, password) => {
+const login = (username: string, password: string) => {
   console.log(`src/api.js-------> ${Path.API.basePath}/login`);
   return request
     .post(`${Path.API.basePath}/login`, {
@@ -21,7 +24,7 @@ const login = (username, password) => {
     });
 };
 
-const user = (token) => {
+const user = (token: string) => {
   console.log(`src/api.js-------> ${Path.API.basePath}/user`);
   return fetch(`${Path.API.basePath}/user`, {
     method: 'GET',
@@ -39,19 +42,26 @@ const user = (token) => {
   });
 };
 
-const accountNewTransactionsSubmit = (newTransactions) => {
+const accountNewTransactionsSubmit = (newTransactions: { [key: string]: GCNewTransactionInputType }) => {
   console.log('accountNewTransactionsSubmitted...');
   return request
     .post(`${Path.API.basePath}/account/newTransactions`, {
       newTransactions,
     })
     .then((response) => {
-      console.log('accountNewTransactionsSubmit response');
-      console.log(response);
+      if (response.status === 200) {
+        console.log('accountNewTransactionsSubmit succeed!');
+      } else {
+        console.log('accountNewTransactionsSubmit response');
+        console.log(response);
+      }
       return response.data;
     })
     .catch((error) => {
       console.log('accountNewTransactionsSubmit failed!');
+
+      // TODO: handle auth fail situation. Add User message
+
       Raven.captureException(error);
       return null;
     });
@@ -59,5 +69,6 @@ const accountNewTransactionsSubmit = (newTransactions) => {
 
 export default {
   login,
+  user,
   accountNewTransactionsSubmit,
 };

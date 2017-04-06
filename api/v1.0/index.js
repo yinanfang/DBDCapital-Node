@@ -2,17 +2,14 @@
 
 import jwt from 'jsonwebtoken';
 import Parse from 'parse/node';
-import request from 'request-promise';
-import iconv from 'iconv-lite';
 import { Request, Response, NextFunction } from 'express';
 // import _ from 'lodash';
 import Promise from 'bluebird';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
-import { GCSecurityUtil } from './GCAPIUtil';
-// import GCObject from '../../model/GCObject';
 import GCSecurity from '../../model/GCSecurity';
+import { GCSecurityUtil, SinaStock } from './GCAPIUtil';
 import GCTransaction from '../../model/GCTransaction';
 import DBPosition from './db/DBPosition';
 
@@ -84,60 +81,6 @@ async function AccountOverview(req: Request, res: Response, next: NextFunction) 
   logger.debug('finished all!!!');
 }
 
-const parseSecurityData = (symbol, data) => {
-  const security = new GCSecurity({
-    symbol,
-    name: data[0],
-    open: data[1],
-    previousClose: Number.parseFloat(data[2]),
-    lastPrice: Number.parseFloat(data[3]),
-    high: Number.parseFloat(data[4]),
-    low: Number.parseFloat(data[5]),
-    bid: Number.parseFloat(data[6]),
-    ask: Number.parseFloat(data[7]),
-    volume: Number(data[8]),
-    transactionValue: Number.parseFloat(data[9]),
-    date: new Date(`${data[30]}T${data[31]}+08:00`), // Beijing(+8) -> UTC
-  });
-  return security;
-};
-
-const SinaStock = {
-  // Return stock array
-  lookup: async function lookup(symbolList) {
-    const url = `http://hq.sinajs.cn/list=${symbolList.join(',')}`;
-    // Wait for promise and use promise result
-    return request.get({
-      url,
-      encoding: null,
-    })
-    .then((response) => {
-      const converted = iconv.decode(response, 'GBK').split('\n');
-      converted.pop(); // pop the new line at the end
-      const stockList = [];
-      const errorList = [];
-      converted.forEach((detailText) => {
-        const parts = detailText.split('=');
-        const symbol = parts[0].split('_').pop();
-        const data = parts[1].split('"')[1].split(',');
-
-        const security = parseSecurityData(symbol, data);
-        const validation = security.validate();
-        if (validation.error) {
-          logger.debug('validation error->', validation.error.details);
-          errorList.push(security);
-        } else {
-          stockList.push(security);
-        }
-      });
-      return { stockList, errorList };
-    })
-    .catch((error) => {
-      logger.error('SinaStock error: ', error.message);
-    });
-  },
-};
-
 async function AccountNewTransactionsSubmit(req: Request, res: Response, next: NextFunction) {
   if (!req.body.newTransactions) {
     res.sendStatus(400).send({ message: 'Client-side error. Missing transactions' });
@@ -157,14 +100,8 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
     }, []);
 
   if (symbolList.length > 0) {
-    const lookupResult = await SinaStock.lookup(symbolList);
+    const lookupResult: {stockList: GCSecurity[], errorList: GCSecurity[]} = await SinaStock.lookup(symbolList);
     const stockList = lookupResult.stockList;
-
-    // logging
-    // logger.debug('lookupResult.stockList-------->');
-    // GCObject.printSimpleArray(lookupResult.stockList);
-    // logger.debug('lookupResult.errorList-------->');
-    // GCObject.printSimpleArray(lookupResult.errorList);
 
     // 400 with error list
     if (lookupResult.errorList.length > 0) {
@@ -214,14 +151,15 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
       logger.debug('trans==>', trans.simple());
       const position = new Position();
       position.set('closed', false);
+      position.set('date', trans.date);
       position.set('transId', trans.transId);
-      position.set('action', trans.action);
       position.set('security', securityObjectList[trans.symbol]);
+      position.set('action', trans.action);
       position.set('price', trans.price);
       position.set('quantity', trans.quantity);
-      position.set('date', trans.date);
+      position.set('fee', trans.fee);
       position.set('note', trans.note);
-      position.set('owner', user); // TODO: change to account
+      // position.set('account', 'account'); // TODO: retrieve the right account
       return position.save(null)
         .then((obj) => {
           logger.debug('position added: ', obj);
@@ -234,23 +172,6 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
     // Check Position table and move closed positions
     const positionCheckQuery = new Parse.Query(Position);
     positionCheckQuery.equalTo('owner', user);
-
-    // await openPositionCheckQuery.find()
-    //   .then((results) => {
-    //     logger.debug('openPositionCheckQuery.results: ', results);
-    //     const uniqueKeys = _.uniqBy(results, 'security');
-    //     logger.debug('openPositionCheckQuery.uniqueKeys: ', uniqueKeys);
-    //   }, (error) => {
-    //   });
-
-    // await DBOpenPosition.find({ _p_owner: `_User$${user.id}` })
-    //   .then((rrr) => {
-    //     // logger.debug('openPositionCheckQuery.rrr: ', rrr[0]._id);
-    //     console.log(rrr);
-    //   })
-    //   .catch((err) => {
-    //     logger.debug('Mongoose.error: ', err);
-    //   });
 
     // Get open positions
     const positions = await DBPosition

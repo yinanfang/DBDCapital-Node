@@ -4,7 +4,7 @@ import Joi from 'joi-browser';
 
 import GCObject from './GCObject';
 
-type GCSecurityType = {
+export type GCSecurityType = {
   symbol: string,
   name: string,
   open: number,
@@ -69,7 +69,7 @@ export default class GCSecurity extends GCObject {
     schema: Joi.object().required(),
   });
 
-  validate() {
+  validate(): boolean {
     return Joi.validate(this, this.schema);
   }
 }

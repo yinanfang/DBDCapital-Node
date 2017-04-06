@@ -59,7 +59,7 @@ const NewTransaction: GCNewTransactionInputType = Immutable({
     BUY: 'Buy',
     SELL: 'Sell',
     value: 'Buy',
-    name: 'Action'
+    name: 'Action',
   },
   price: {
     key: 'price',

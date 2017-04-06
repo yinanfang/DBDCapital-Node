@@ -95,6 +95,8 @@ describe('Node Sever API v1.0 Test - Admin Submission Test - /account/newTransac
       .end((err, res) => TestUtil.GeneralErrorHandler(done, err));
   }, 10 * 1000);
 
+  // TODO: insert a few more. Test close & open position
+
   it('the new transaction should be in Position Table', async (done) => {
     DBPosition.find({
       transId: testPosition.transId,
