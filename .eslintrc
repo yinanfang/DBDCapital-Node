@@ -31,7 +31,7 @@
     "comma-dangle": [2, "always-multiline"],
     "no-unused-vars": [2, {"vars": "all", "args": "none"}],
     "no-plusplus": [0],
-    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "no-underscore-dangle": ["error", { "allow": ["_id", "_created_at", "_updated_at"] }],
 
     "import/no-unresolved": [2, { ignore: ["^[~]"] }],
     "import/no-named-as-default-member": [0],

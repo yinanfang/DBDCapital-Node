@@ -111,15 +111,15 @@ const GCNewTransactionsTable = ({
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>
               {newTransactionColumnSelect()}
-              <TableHeaderColumn className={styleCSS.accountDatePicker} style={tableRowColumnStyle}>Date</TableHeaderColumn>
-              <TableHeaderColumn className={styleCSS.accountInputId} style={tableRowColumnStyle}>ID</TableHeaderColumn>
-              <TableHeaderColumn className={styleCSS.accountSymbol} style={tableRowColumnStyle}>Symbol</TableHeaderColumn>
-              <TableHeaderColumn className={styleCSS.accountInputName} style={tableRowColumnStyle}>Name</TableHeaderColumn>
-              <TableHeaderColumn className={styleCSS.accountTransactionType} style={tableRowColumnStyle}>Action</TableHeaderColumn>
-              <TableHeaderColumn className={styleCSS.accountInputPrice} style={tableRowColumnStyle}>Price</TableHeaderColumn>
-              <TableHeaderColumn className={styleCSS.accountInputQuantity} style={tableRowColumnStyle}>Quantity</TableHeaderColumn>
-              <TableHeaderColumn className={styleCSS.accountInputFee} style={tableRowColumnStyle}>Fee</TableHeaderColumn>
-              <TableHeaderColumn className={styleCSS.accountInputLong} style={tableRowColumnStyle}>Note</TableHeaderColumn>
+              <TableHeaderColumn className={styleCSS.accountDatePicker} style={tableRowColumnStyle}>{NewTransaction.date.name}</TableHeaderColumn>
+              <TableHeaderColumn className={styleCSS.accountInputId} style={tableRowColumnStyle}>{NewTransaction.transId.name}</TableHeaderColumn>
+              <TableHeaderColumn className={styleCSS.accountSymbol} style={tableRowColumnStyle}>{NewTransaction.symbol.name}</TableHeaderColumn>
+              <TableHeaderColumn className={styleCSS.accountInputName} style={tableRowColumnStyle}>{NewTransaction.name.name}</TableHeaderColumn>
+              <TableHeaderColumn className={styleCSS.accountTransactionType} style={tableRowColumnStyle}>{NewTransaction.action.name}</TableHeaderColumn>
+              <TableHeaderColumn className={styleCSS.accountInputPrice} style={tableRowColumnStyle}>{NewTransaction.price.name}</TableHeaderColumn>
+              <TableHeaderColumn className={styleCSS.accountInputQuantity} style={tableRowColumnStyle}>{NewTransaction.quantity.name}</TableHeaderColumn>
+              <TableHeaderColumn className={styleCSS.accountInputFee} style={tableRowColumnStyle}>{NewTransaction.fee.name}</TableHeaderColumn>
+              <TableHeaderColumn className={styleCSS.accountInputLong} style={tableRowColumnStyle}>{NewTransaction.note.name}</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>

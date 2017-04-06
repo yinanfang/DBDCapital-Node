@@ -26,7 +26,7 @@ const GCSecurityUtil = {
     security.set('name', stock.name);
     security.set('lastPrice', stock.lastPrice);
     security.set('date', stock.date);
-    return await security.save(null)
+    return security.save(null)
       .then((obj) => {
         logger.debug(obj, 'is added');
         return obj;
@@ -35,14 +35,14 @@ const GCSecurityUtil = {
       });
   },
   addAll: async function _addAll(stockList: GCSecurity[]) {
-    return await Promise.all(stockList.map(async (stock) => {
-      return await GCSecurityUtil.add(stock);
+    return Promise.all(stockList.map(async (stock) => {
+      return GCSecurityUtil.add(stock);
     }));
   },
   update: async function _update(security: ParseObject, stock: GCSecurity) {
     security.set('lastPrice', stock.lastPrice);
     security.set('date', stock.date);
-    return await security.save(null)
+    return security.save(null)
       .then((obj) => {
         logger.debug(obj, 'is updated');
         return obj;
@@ -66,6 +66,9 @@ const GCSecurityUtil = {
   },
 };
 
+const GCTestUtil = {};
+
 export {
   GCSecurityUtil,
+  GCTestUtil,
 };

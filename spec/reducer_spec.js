@@ -1,3 +1,5 @@
+// @flow
+
 describe('Reducer Test', () => {
   it('Testing A', (done) => {
     // const stateAuthBefore = Map({

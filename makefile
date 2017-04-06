@@ -38,6 +38,9 @@ jasmine: delay15Seconds jasmineWithNodemon
 webClientTestDebug:
 	NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development babel-node --inspect --debug-brk jasmine.js
 
+# flow-typed
+updateFlowTyped:
+	flow-typed install jasmine@2.5.3
 
 ##############################################################################
 # Production

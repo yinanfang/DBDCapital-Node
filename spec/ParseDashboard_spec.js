@@ -1,3 +1,6 @@
+// @flow
+
+import jasmine from 'jasmine';
 import request from 'supertest';
 
 import TestUtil from './TestUtil';

@@ -1,8 +1,6 @@
 // @flow
 
 import DB from './index';
-// var crypto = require('crypto');
-// var jwt = require('jsonwebtoken');
 
 const PositionSchema = new DB.Schema({
   _id: {
@@ -34,11 +32,15 @@ const PositionSchema = new DB.Schema({
     type: Number,
     required: true,
   },
+  fee: {
+    type: Number,
+    required: true,
+  },
   note: {
     type: String,
     required: true,
   },
-  _p_owner: {
+  _p_account: {
     type: String,
     required: true,
   },
@@ -58,4 +60,4 @@ const PositionSchema = new DB.Schema({
   collection: 'Position', // DB table name
 });
 
-export default DB.model('Position', PositionSchema);
+export default DB.model('Position', PositionSchema); // Mongoose name

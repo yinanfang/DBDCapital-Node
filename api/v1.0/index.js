@@ -5,13 +5,13 @@ import Parse from 'parse/node';
 import request from 'request-promise';
 import iconv from 'iconv-lite';
 import { Request, Response, NextFunction } from 'express';
-import _ from 'lodash';
+// import _ from 'lodash';
 import Promise from 'bluebird';
 
 import Config from '../../config';
 import logger from '../../utils/logger';
 import { GCSecurityUtil } from './GCAPIUtil';
-import GCObject from '../../model/GCObject';
+// import GCObject from '../../model/GCObject';
 import GCSecurity from '../../model/GCSecurity';
 import GCTransaction from '../../model/GCTransaction';
 import DBPosition from './db/DBPosition';
@@ -82,9 +82,6 @@ Account
 
 async function AccountOverview(req: Request, res: Response, next: NextFunction) {
   logger.debug('finished all!!!');
-
-
-
 }
 
 const parseSecurityData = (symbol, data) => {
@@ -142,6 +139,10 @@ const SinaStock = {
 };
 
 async function AccountNewTransactionsSubmit(req: Request, res: Response, next: NextFunction) {
+  if (!req.body.newTransactions) {
+    res.sendStatus(400).send({ message: 'Client-side error. Missing transactions' });
+  }
+
   logger.debug('AccountNewTransactionsSubmit start with jwt------>', req.jwt);
   const allTrans = req.body.newTransactions;
   logger.debug(typeof allTrans, allTrans);
@@ -220,7 +221,7 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
       position.set('quantity', trans.quantity);
       position.set('date', trans.date);
       position.set('note', trans.note);
-      position.set('owner', user);
+      position.set('owner', user); // TODO: change to account
       return position.save(null)
         .then((obj) => {
           logger.debug('position added: ', obj);

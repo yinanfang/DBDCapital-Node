@@ -1,3 +1,5 @@
+// @flow
+
 import request from 'supertest';
 
 import Path from '../path';

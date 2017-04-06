@@ -10,7 +10,7 @@ export type GCNewTransactionInputDetailType = {
   key: string,
   value: boolean | string | number | Date,
   defaultValue?: Date,
-  displayName?: string,
+  name: string,
   BUY?: string,
   SELL?: string,
   multiLine?: boolean,
@@ -59,6 +59,7 @@ const NewTransaction: GCNewTransactionInputType = Immutable({
     BUY: 'Buy',
     SELL: 'Sell',
     value: 'Buy',
+    name: 'Action'
   },
   price: {
     key: 'price',
@@ -69,8 +70,8 @@ const NewTransaction: GCNewTransactionInputType = Immutable({
     name: 'Quantity',
   },
   fee: {
-    key: 'quantity',
-    name: 'Quantity',
+    key: 'fee',
+    name: 'Fee',
   },
   note: {
     key: 'note',
@@ -102,16 +103,6 @@ class GCTransaction extends GCObject {
 
   constructor({ date = new Date(), transId = '', symbol = '', action = '', price = 0.00, fee = 0.00, quantity = 0, note = '' }: GCTransactionType) {
     super();
-    this.action = action;
-    this.transId = transId;
-    this.symbol = symbol;
-    this.price = price;
-    // Use positive for Buy & negative for Sell
-    if (action === 'Buy') {
-      this.quantity = quantity > 0 ? quantity : -quantity;
-    } else {
-      this.quantity = quantity < 0 ? quantity : -quantity;
-    }
     if (typeof date === 'string' && date.match(/^.*T.*Z$/)) {
       this.date = new Date(date);
     } else if (typeof date === 'string') {
@@ -119,6 +110,17 @@ class GCTransaction extends GCObject {
     } else {
       this.date = date;
     }
+    this.transId = transId;
+    this.symbol = symbol;
+    // Use positive for Buy & negative for Sell
+    this.action = action;
+    this.price = price;
+    if (action === 'Buy') {
+      this.quantity = quantity > 0 ? quantity : -quantity;
+    } else {
+      this.quantity = quantity < 0 ? quantity : -quantity;
+    }
+    this.fee = fee;
     this.note = note;
   }
 

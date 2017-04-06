@@ -1,25 +1,23 @@
 // @flow
 
-import DB from './db';
-// var crypto = require('crypto');
-// var jwt = require('jsonwebtoken');
+import DB from './index';
 
 const UserSchema = new DB.Schema({
   email: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   ame: {
     type: String,
-    required: true
+    required: true,
   },
   hash: String,
-  salt: String
+  salt: String,
 });
 
 UserSchema.methods.setPassword = (password) => {

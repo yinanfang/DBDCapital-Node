@@ -13,7 +13,7 @@ Parse.Cloud.define('deleteUser', (req, res) => {
       User[0].destroy({
         useMasterKey: true,
         success: () => {
-          logger.info('deleted...');
+          logger.info(`Cloud code deleted: ${User}`);
           res.success('Success');
         },
         error: (error) => {

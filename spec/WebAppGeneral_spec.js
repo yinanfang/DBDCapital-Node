@@ -1,3 +1,5 @@
+// @flow
+
 import request from 'supertest';
 
 import Config from '../config';
@@ -26,15 +28,6 @@ Main Test
 *****************************************************************************/
 
 describe('Automated browser Test for Web Client', () => {
-  const originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-  beforeAll(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
-  });
-
-  afterAll(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-  });
-
   it('Desktop Web Admin Login + Submit New Transactions + View Open Position should work fine', (done) => {
     const browser = TestUtil.getBrowser();
     const patternFormNewTransactions = 'form[name="newTransactions"] div:nth-child(2) td:nth-child';
@@ -61,7 +54,7 @@ describe('Automated browser Test for Web Client', () => {
       .type(`${patternFormNewTransactions}(10) textarea:nth-child(2)`, 'Random note')
       .click('div[class*="accountSectionContainer"]:nth-child(1) button[type="submit"]')
       .end((err, res) => TestUtil.GeneralErrorHandler(done, err));
-  });
+  }, 15 * 1000);
 });
 
 

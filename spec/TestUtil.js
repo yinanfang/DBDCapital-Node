@@ -1,9 +1,11 @@
+// @flow
+
 import notifier from 'node-notifier';
 import Nightmare from 'nightmare';
 
 import logger from '../utils/logger';
 
-const GeneralErrorHandler = (done, error, res = null) => {
+const GeneralErrorHandler = (done: () => void, error: Error, res: any = null) => {
   if (error) {
     notifier.notify({
       title: 'Unexpected Jasmine test error',
@@ -21,9 +23,9 @@ const GeneralErrorHandler = (done, error, res = null) => {
 const MOBILE = 'mobile';
 const DESKTOP = 'desktop';
 
-const getBrowser = (platform = DESKTOP) => {
+const getBrowser = (platform: string = DESKTOP) => {
   const nightmare = Nightmare({
-    show: true,
+    // show: true,
     typeInterval: 1,
     waitTimeout: 5000,
     switches: {

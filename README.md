@@ -1,5 +1,8 @@
 # DBDCapital-Node
 
+## Short Intro
+[Isomorphic Application](https://www.lullabot.com/articles/what-is-an-isomorphic-application)
+
 ## Dev Quick Start
 ```shell
     npm install -g flow-bin
