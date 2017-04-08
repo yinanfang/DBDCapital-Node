@@ -194,8 +194,12 @@ const mapDispatchToProps = {
   newTransactionsUpdate: Actions.accountNewTransactions.update,
   newTransactionsSubmit: Actions.accountNewTransactions.submit,
 };
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(AccountAdmin);
-export default {
-  component: connectedComponent,
-  DEFAULT_NEW_TRANSACTIONS: initNewTransactions(),
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountAdmin);
+
+const DEFAULT_STATE = {
+  newTransactions: initNewTransactions(),
+};
+export {
+  DEFAULT_STATE,
 };

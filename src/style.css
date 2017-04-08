@@ -16,6 +16,7 @@ Common
   /* Color */
   --color_lightSlateGray: rgb(54, 63, 69);
   --color_darkSlateGray: rgb(44, 48, 52);
+  --color_darkSlateGrayTransparent: rgba(44, 48, 52, 0.5);
   --color_snow: rgb(249, 249, 249);
   --color_deepskyblue: rgb(3, 169, 244);
 
@@ -218,6 +219,22 @@ Account
   & h2 {
     margin: 0;
   }
+}
+
+.accountSectionLoadingMask {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 5;
+  background: var(--color_darkSlateGrayTransparent);
+}
+
+/* https://css-tricks.com/quick-css-trick-how-to-center-an-object-exactly-in-the-center/ */
+.accountSectionLoadingContainer {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* The translate value for transform is based off the size of the element, so that will center nicely. */
 }
 
 .accountFormColumnSelect {

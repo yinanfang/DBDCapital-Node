@@ -20,7 +20,7 @@ export default (
       <IndexRoute component={AccountOverview} />
       <Route path="development" component={AccountDevelopment} />
       <Route path="transactions" component={AccountTransactions} />
-      <Route path="admin" component={AccountAdmin.component} />
+      <Route path="admin" component={AccountAdmin} />
     </Route>
     {/* Need to be enabled from server.js */}
     <Route path="*" component={Error} />

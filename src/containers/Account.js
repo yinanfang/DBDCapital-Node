@@ -18,9 +18,21 @@ import Timeline from 'material-ui/svg-icons/action/timeline';
 import Receipt from 'material-ui/svg-icons/action/receipt';
 import VerifiedUser from 'material-ui/svg-icons/action/verified-user';
 import FlatButton from 'material-ui/FlatButton';
+import CircularProgress from 'material-ui/CircularProgress';
+
+import { DEFAULT_STATE as DEFAULT_STATE_ADMIN } from './AccountAdmin';
 
 import Actions from '../actions';
 import styleCSS from '../style.css';
+
+const DEFAULT_STATE = {
+  common: {
+    isLoadingPage: true,
+  },
+  overview: {
+  },
+  admin: DEFAULT_STATE_ADMIN,
+};
 
 const Account = (props) => {
   const muiTheme = getMuiTheme({
@@ -47,6 +59,11 @@ const Account = (props) => {
   };
 
   const DRAWER_WIDTH = 220;
+  const sectionLoadingContainerStyle = () => {
+    return props.isMobileDrawer ? {} : {
+      marginLeft: DRAWER_WIDTH / 2,
+    };
+  };
   const sectionContainerStyle = () => {
     return props.isMobileDrawer ? {} : {
       marginLeft: DRAWER_WIDTH,
@@ -85,6 +102,14 @@ const Account = (props) => {
             <Link to="/account/admin" onClick={navTabOnClick}><ListItem primaryText="Admin" leftIcon={<VerifiedUser />} /></Link>
           </List>
         </Drawer>
+
+        <div className={styleCSS.accountSectionLoadingMask}>
+          <div style={sectionLoadingContainerStyle()} className={styleCSS.accountSectionLoadingContainer}>
+            <CircularProgress size={80} thickness={5} />
+            <h2>Loading...</h2>
+          </div>
+        </div>
+
         <div style={sectionContainerStyle()}>
           <div style={sectionViewerStyle()}>
             {props.children}
@@ -119,3 +144,7 @@ export default connect(mapStateToProps, {
   uiUpdate: Actions.uiUpdate,
   accountOverviewRequest: Actions.accountOverview.request,
 })(Account);
+
+export {
+  DEFAULT_STATE,
+};

@@ -7,7 +7,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _merge from 'lodash/merge';
 
 import actions from '../actions';
-import AccountAdmin from '../containers/AccountAdmin';
+import { DEFAULT_STATE as DEFAULT_STATE_ACCOUNT } from '../containers/Account';
 
 const auth = (state = {}, action) => {
   if (action.type === actions.LOGIN.SUCCESS) {
@@ -29,14 +29,7 @@ const uiStore = (state = uiStoreDefault, action) => {
   return state;
 };
 
-const accountDefault = {
-  overview: {
-  },
-  admin: {
-    newTransactions: AccountAdmin.DEFAULT_NEW_TRANSACTIONS,
-  },
-};
-const account = (state = accountDefault, action) => {
+const account = (state = DEFAULT_STATE_ACCOUNT, action) => {
   if (action.type === actions.ACCOUNT_NEW_TRANSACTIONS.UPDATE) {
     const copy = _cloneDeep(state);
     _merge(copy, {

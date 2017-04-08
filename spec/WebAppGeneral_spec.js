@@ -53,6 +53,8 @@ describe('Automated browser Test for Web Client', () => {
       .type(`${patternFormNewTransactions}(9) input`, '2.1')
       .type(`${patternFormNewTransactions}(10) textarea:nth-child(2)`, 'Random note')
       .click('div[class*="accountSectionContainer"]:nth-child(1) button[type="submit"]')
+      // Wait till the backend to finish the processing, otherwise deleting the user will fail the test
+      .wait(2000)
       .end((err, res) => TestUtil.GeneralErrorHandler(done, err));
   }, 15 * 1000);
 });
