@@ -87,8 +87,8 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
   }
 
   logger.debug('AccountNewTransactionsSubmit start with jwt------>', req.jwt);
+  logger.debug('AccountNewTransactionsSubmit request body', req.body);
   const allTrans = req.body.newTransactions;
-  logger.debug(typeof allTrans, allTrans);
   const symbolList = Object.keys(allTrans)
     .reduce((prev, key) => {
       const symbol = allTrans[key].symbol;

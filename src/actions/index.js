@@ -41,8 +41,8 @@ const accountOverview = {
 
 const ACCOUNT_NEW_TRANSACTIONS = createRequestTypes('ACCOUNT_NEW_TRANSACTIONS');
 const accountNewTransactions = {
-  update: (newTransactions: {}) => action(ACCOUNT_NEW_TRANSACTIONS.UPDATE, { newTransactions }),
-  submit: (newTransactions: {}) => action(ACCOUNT_NEW_TRANSACTIONS.SUBMIT, { newTransactions }),
+  update: (newTransactions: {}, account: string) => action(ACCOUNT_NEW_TRANSACTIONS.UPDATE, { newTransactions, account }),
+  submit: (newTransactions: {}, account: string) => action(ACCOUNT_NEW_TRANSACTIONS.SUBMIT, { newTransactions, account }),
 };
 
 const USER = createRequestTypes('USER');

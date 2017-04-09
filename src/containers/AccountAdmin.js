@@ -61,6 +61,11 @@ const AccountAdmin = (props) => {
     formElement.find('form').first().slideToggle();
   };
 
+  const newTransactionsUpdateAccount = (event, account: string): void => {
+    console.log(`account on change: ${account}`);
+    props.newTransactionsUpdate({}, account);
+  };
+
   const newTransactionsAddEmptyRow = (event) => {
     newTransactionsDiff[newTransactionsCount] = initSingleNewTransaction();
     props.newTransactionsUpdate(newTransactionsDiff);
@@ -150,7 +155,7 @@ const AccountAdmin = (props) => {
         }, true);
       if (passSanityCheck) {
         const simplified = Object.keys(selectedTransactions).map(key => selectedTransactions[key].simple());
-        props.newTransactionsSubmit(simplified);
+        props.newTransactionsSubmit(simplified, props.targetAccount);
       } else {
         sweetAlert('Oops...', errorMessage, 'error');
       }
@@ -166,6 +171,7 @@ const AccountAdmin = (props) => {
         newTransactions={props.newTransactions}
         // function
         toggleSection={toggleSection}
+        newTransactionsUpdateAccount={newTransactionsUpdateAccount}
         newTransactionsAddEmptyRow={newTransactionsAddEmptyRow}
         newTransactionSubmitOnClick={newTransactionSubmitOnClick}
         newTransactionsTableRowOnCheck={newTransactionsTableRowOnCheck}
@@ -180,6 +186,7 @@ const AccountAdmin = (props) => {
 
 AccountAdmin.propTypes = {
   // Injected by React Redux
+  targetAccount: PropTypes.string.isRequired,
   newTransactions: PropTypes.object.isRequired,
   newTransactionsUpdate: PropTypes.func.isRequired,
   newTransactionsSubmit: PropTypes.func.isRequired,
@@ -187,6 +194,7 @@ AccountAdmin.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
+    targetAccount: state.account.admin.account,
     newTransactions: state.account.admin.newTransactions,
   };
 };
@@ -198,6 +206,7 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(AccountAdmin);
 
 const DEFAULT_STATE = {
+  account: '',
   newTransactions: initNewTransactions(),
 };
 export {

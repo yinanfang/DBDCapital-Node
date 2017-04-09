@@ -77,6 +77,20 @@ const Account = (props) => {
     };
   };
 
+  const loadingScreen = () => {
+    if (false) {
+      return (
+        <div className={styleCSS.accountSectionLoadingMask}>
+          <div style={sectionLoadingContainerStyle()} className={styleCSS.accountSectionLoadingContainer}>
+            <CircularProgress size={80} thickness={5} className={styleCSS.accountSectionLoadingProgress} />
+            <h2>Loading...</h2>
+          </div>
+        </div>
+      );
+    }
+    return '';
+  };
+
   return (
     <MuiThemeProvider muiTheme={muiTheme}>
       <div className={styleCSS.accountBase}>
@@ -103,12 +117,7 @@ const Account = (props) => {
           </List>
         </Drawer>
 
-        <div className={styleCSS.accountSectionLoadingMask}>
-          <div style={sectionLoadingContainerStyle()} className={styleCSS.accountSectionLoadingContainer}>
-            <CircularProgress size={80} thickness={5} />
-            <h2>Loading...</h2>
-          </div>
-        </div>
+        { loadingScreen() }
 
         <div style={sectionContainerStyle()}>
           <div style={sectionViewerStyle()}>

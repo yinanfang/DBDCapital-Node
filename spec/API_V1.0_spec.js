@@ -86,6 +86,8 @@ describe('Node Sever API v1.0 Test - Admin Submission Test - /account/newTransac
   it('/api/v1.0/account/newTransactions should works fine', (done) => {
     requestNodeAPI.post('/account/newTransactions')
       .send({
+        // TODO: retrieve a real account id for test
+        account: 'testAccountId',
         newTransactions: {
           [0]: testPosition, // eslint-disable-line no-useless-computed-key
         },

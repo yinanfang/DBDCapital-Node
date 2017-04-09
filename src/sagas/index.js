@@ -30,8 +30,8 @@ function* accountOverviewRequest() {
 
 function* accountNewTransactionsSubmit() {
   while (true) {
-    const { newTransactions } = yield take(actions.ACCOUNT_NEW_TRANSACTIONS.SUBMIT);
-    const result = yield call(API.accountNewTransactionsSubmit, newTransactions);
+    const { newTransactions, account } = yield take(actions.ACCOUNT_NEW_TRANSACTIONS.SUBMIT);
+    const result = yield call(API.accountNewTransactionsSubmit, newTransactions, account);
   }
 }
 

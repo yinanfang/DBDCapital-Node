@@ -30,7 +30,8 @@ Main Test
 describe('Automated browser Test for Web Client', () => {
   it('Desktop Web Admin Login + Submit New Transactions + View Open Position should work fine', (done) => {
     const browser = TestUtil.getBrowser();
-    const patternFormNewTransactions = 'form[name="newTransactions"] div:nth-child(2) td:nth-child';
+    // form -> find the material Table -> find the second Table body -> find the row
+    const patternFormNewTransactions = 'form[name="newTransactions"] div:nth-child(2) div:nth-child(2) td:nth-child';
     browser
       // Go to Home page
       .goto(Config.SERVER_URL)

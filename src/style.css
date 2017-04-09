@@ -16,7 +16,7 @@ Common
   /* Color */
   --color_lightSlateGray: rgb(54, 63, 69);
   --color_darkSlateGray: rgb(44, 48, 52);
-  --color_darkSlateGrayTransparent: rgba(44, 48, 52, 0.5);
+  --color_darkSlateGrayTransparent: rgba(44, 48, 52, 0.9);
   --color_snow: rgb(249, 249, 249);
   --color_deepskyblue: rgb(3, 169, 244);
 
@@ -235,6 +235,11 @@ Account
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%); /* The translate value for transform is based off the size of the element, so that will center nicely. */
+}
+
+.accountSectionLoadingProgress {
+  left: 50%;
+  transform: translate(-50%, 0); /* The translate value for transform is based off the size of the element, so that will center nicely. */
 }
 
 .accountFormColumnSelect {

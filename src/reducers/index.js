@@ -34,6 +34,7 @@ const account = (state = DEFAULT_STATE_ACCOUNT, action) => {
     const copy = _cloneDeep(state);
     _merge(copy, {
       admin: {
+        account: action.account,
         newTransactions: action.newTransactions,
       },
     });

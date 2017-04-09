@@ -42,10 +42,11 @@ const user = (token: string) => {
   });
 };
 
-const accountNewTransactionsSubmit = (newTransactions: { [key: string]: GCNewTransactionInputType }) => {
+const accountNewTransactionsSubmit = (newTransactions: { [key: string]: GCNewTransactionInputType }, account: string) => {
   console.log('accountNewTransactionsSubmitted...');
   return request
     .post(`${Path.API.basePath}/account/newTransactions`, {
+      account,
       newTransactions,
     })
     .then((response) => {
