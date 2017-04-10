@@ -19,6 +19,11 @@ const action = (type, payload = {}) => {
   return { type, ...payload };
 };
 
+const LOADING = createRequestTypes('LOADING');
+const loading = {
+  update: (state: boolean) => action(LOADING.UPDATE, { state }),
+};
+
 const LOGIN = createRequestTypes('LOGIN');
 const login = {
   request: (username: string, password: string) => action(LOGIN.REQUEST, { username, password }),
@@ -33,10 +38,16 @@ const register = {
   failure: (userInfo: {}, error: Error) => action(REGISTER.FAILURE, { userInfo, error }),
 };
 
-const ACCOUNT_NEW_OVERVIEW = createRequestTypes('ACCOUNT_NEW_OVERVIEW');
+const ACCOUNT_INFO = createRequestTypes('ACCOUNT_INFO');
+const accountInfo = {
+  request: (page: string, account: string, scope: {}) => action(ACCOUNT_INFO.REQUEST, { page, account, scope }),
+  success: (payload: {}) => action(ACCOUNT_INFO.SUCCESS, { payload }),
+};
+
+const ACCOUNT_OVERVIEW = createRequestTypes('ACCOUNT_OVERVIEW');
 const accountOverview = {
-  request: () => action(ACCOUNT_NEW_OVERVIEW.REQUEST, { }),
-  success: (payload: {}) => action(ACCOUNT_NEW_OVERVIEW.SUCCESS, { payload }),
+  request: () => action(ACCOUNT_OVERVIEW.REQUEST, { }),
+  success: (payload: {}) => action(ACCOUNT_OVERVIEW.SUCCESS, { payload }),
 };
 
 const ACCOUNT_NEW_TRANSACTIONS = createRequestTypes('ACCOUNT_NEW_TRANSACTIONS');
@@ -54,16 +65,22 @@ const UI_UPDATE = 'UI_UPDATE';
 const uiUpdate = (uiUpdates: {}) => action(UI_UPDATE, { uiUpdates });
 
 export default {
-  USER,
   NAVIGATE,
+  LOADING,
+  loading,
+  navigate,
   UI_UPDATE,
   uiUpdate,
+  REGISTER,
+  register,
+  USER,
   LOGIN,
   login,
-  ACCOUNT_NEW_OVERVIEW,
+  ACCOUNT_INFO,
+  accountInfo,
+  ACCOUNT_OVERVIEW,
   accountOverview,
   ACCOUNT_NEW_TRANSACTIONS,
   accountNewTransactions,
-  navigate,
-  register,
+
 };

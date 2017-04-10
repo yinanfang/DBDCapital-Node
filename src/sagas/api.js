@@ -42,11 +42,23 @@ const user = (token: string) => {
   });
 };
 
-const accountNewTransactionsSubmit = (newTransactions: { [key: string]: GCNewTransactionInputType }, account: string) => {
+const account = (accountId: string, scope: {}): {} => {
+  console.log('saga API account...');
+  return request
+    .get(`${Path.API.basePath}/account`, {
+      scope,
+    })
+    .then((response) => {
+      console.log(response);
+      return response.data;
+    });
+};
+
+const accountNewTransactionsSubmit = (newTransactions: { [key: string]: GCNewTransactionInputType }, accountId: string) => {
   console.log('accountNewTransactionsSubmitted...');
   return request
     .post(`${Path.API.basePath}/account/newTransactions`, {
-      account,
+      accountId,
       newTransactions,
     })
     .then((response) => {
@@ -71,5 +83,6 @@ const accountNewTransactionsSubmit = (newTransactions: { [key: string]: GCNewTra
 export default {
   login,
   user,
+  account,
   accountNewTransactionsSubmit,
 };

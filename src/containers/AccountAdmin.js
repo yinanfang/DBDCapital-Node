@@ -66,6 +66,11 @@ const AccountAdmin = (props) => {
     props.newTransactionsUpdate({}, account);
   };
 
+  const accountInfoRequest = (event) => {
+    // add info
+    props.accountInfoRequest('admin', props.targetAccount, { type: 'essential' });
+  };
+
   const newTransactionsAddEmptyRow = (event) => {
     newTransactionsDiff[newTransactionsCount] = initSingleNewTransaction();
     props.newTransactionsUpdate(newTransactionsDiff);
@@ -171,6 +176,7 @@ const AccountAdmin = (props) => {
         newTransactions={props.newTransactions}
         // function
         toggleSection={toggleSection}
+        accountInfoRequest={accountInfoRequest}
         newTransactionsUpdateAccount={newTransactionsUpdateAccount}
         newTransactionsAddEmptyRow={newTransactionsAddEmptyRow}
         newTransactionSubmitOnClick={newTransactionSubmitOnClick}
@@ -187,6 +193,7 @@ const AccountAdmin = (props) => {
 AccountAdmin.propTypes = {
   // Injected by React Redux
   targetAccount: PropTypes.string.isRequired,
+  accountInfoRequest: PropTypes.func.isRequired,
   newTransactions: PropTypes.object.isRequired,
   newTransactionsUpdate: PropTypes.func.isRequired,
   newTransactionsSubmit: PropTypes.func.isRequired,
@@ -199,6 +206,7 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = {
+  accountInfoRequest: Actions.accountInfo.request,
   newTransactionsUpdate: Actions.accountNewTransactions.update,
   newTransactionsSubmit: Actions.accountNewTransactions.submit,
 };

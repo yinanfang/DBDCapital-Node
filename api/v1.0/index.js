@@ -69,6 +69,11 @@ const User = (req: Request, res: Response, next: NextFunction) => {
   res.send('User!!!');
 };
 
+async function Account(req: Request, res: Response, next: NextFunction) {
+  logger.debug('finished all!!!');
+  res.send(200);
+}
+
 const DeleteUser = (req: Request, res: Response, next: NextFunction) => {
   res.send('Delete User!!!');
 };
@@ -246,6 +251,7 @@ export default {
   Register,
   Login,
   User,
+  Account,
   DeleteUser,
   AccountOverview,
   AccountNewTransactionsSubmit,

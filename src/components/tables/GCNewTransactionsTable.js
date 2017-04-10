@@ -24,6 +24,7 @@ const GCNewTransactionsTable = ({
   // function
   toggleSection,
   newTransactionsUpdateAccount,
+  accountInfoRequest,
   newTransactionsAddEmptyRow,
   newTransactionSubmitOnClick,
   newTransactionsTableRowOnCheck,
@@ -36,6 +37,7 @@ const GCNewTransactionsTable = ({
   // function
   toggleSection: (event: any) => void,
   newTransactionsUpdateAccount: (event: any, text: string) => void,
+  accountInfoRequest: (event: any) => void,
   newTransactionsAddEmptyRow: (event: any) => void,
   newTransactionSubmitOnClick: (event: any) => void,
   newTransactionsTableRowOnCheck: (event: any, isInputChecked: boolean) => void,
@@ -109,7 +111,11 @@ const GCNewTransactionsTable = ({
         <h2>New Transactions</h2>
       </div>
       <form name="newTransactions">
-        <div>Account: <TextField name="account" onChange={newTransactionsUpdateAccount} /></div>
+        <div>
+          Account:
+          <TextField name="account" onChange={newTransactionsUpdateAccount} />
+          <RaisedButton label="Pull" onClick={accountInfoRequest} />
+        </div>
         <Table selectable>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>

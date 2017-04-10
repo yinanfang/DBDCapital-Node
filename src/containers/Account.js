@@ -27,7 +27,6 @@ import styleCSS from '../style.css';
 
 const DEFAULT_STATE = {
   common: {
-    isLoadingPage: true,
   },
   overview: {
   },
@@ -78,7 +77,7 @@ const Account = (props) => {
   };
 
   const loadingScreen = () => {
-    if (false) {
+    if (props.isLoading) {
       return (
         <div className={styleCSS.accountSectionLoadingMask}>
           <div style={sectionLoadingContainerStyle()} className={styleCSS.accountSectionLoadingContainer}>
@@ -136,6 +135,7 @@ Account.propTypes = {
   isMobileDrawer: PropTypes.bool.isRequired,
   isMobileViewer: PropTypes.bool.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   uiUpdate: PropTypes.func.isRequired,
   accountOverviewRequest: PropTypes.func.isRequired,
 };
@@ -145,6 +145,7 @@ const mapStateToProps = (state) => {
     isMobileDrawer: state.uiStore.isMobileDrawer,
     isMobileViewer: state.uiStore.isMobileViewer,
     isDrawerOpen: state.uiStore.isDrawerOpen,
+    isLoading: state.uiStore.isLoading,
     accountOverview: state.account.overview,
   };
 };

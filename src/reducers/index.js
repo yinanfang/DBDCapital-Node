@@ -6,11 +6,11 @@ import { combineReducers } from 'redux';
 import _cloneDeep from 'lodash/cloneDeep';
 import _merge from 'lodash/merge';
 
-import actions from '../actions';
+import Actions from '../actions';
 import { DEFAULT_STATE as DEFAULT_STATE_ACCOUNT } from '../containers/Account';
 
 const auth = (state = {}, action) => {
-  if (action.type === actions.LOGIN.SUCCESS) {
+  if (action.type === Actions.LOGIN.SUCCESS) {
     return { token: action.token };
   }
   return state;
@@ -20,17 +20,21 @@ const uiStoreDefault = {
   isMobileViewer: false,
   isMobileDrawer: false,
   isDrawerOpen: false,
+  isLoading: false,
   measure: {},
 };
 const uiStore = (state = uiStoreDefault, action) => {
-  if (action.type === actions.UI_UPDATE) {
+  if (action.type === Actions.UI_UPDATE) {
     return Object.assign({}, state, action.uiUpdates);
+  }
+  if (action.type === Actions.LOADING.UPDATE) {
+    return Object.assign({}, state, { isLoading: action.state });
   }
   return state;
 };
 
 const account = (state = DEFAULT_STATE_ACCOUNT, action) => {
-  if (action.type === actions.ACCOUNT_NEW_TRANSACTIONS.UPDATE) {
+  if (action.type === Actions.ACCOUNT_NEW_TRANSACTIONS.UPDATE) {
     const copy = _cloneDeep(state);
     _merge(copy, {
       admin: {
