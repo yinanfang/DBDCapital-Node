@@ -24,6 +24,8 @@ const Register = (req: Request, res: Response, next: NextFunction) => {
   Object.keys(req.body).forEach((key) => {
     newUser.set(key, req.body[key]);
   });
+  // Default type to client
+  newUser.set('type', 'client');
 
   newUser.signUp(null, {
     success: (user) => {
@@ -45,8 +47,9 @@ const Login = (req: Request, res: Response, next: NextFunction) => {
       const originalJWTPayload = {
         userId: user.id,
         username: user.getUsername(),
-        parseSessionToken: user.getSessionToken(),
+        // parseSessionToken: user.getSessionToken(),
         email: user.getEmail(),
+        type: user.get('type'),
       };
       const token = jwt.sign(originalJWTPayload, Config.JWT_SECRET);
       res.cookie('token', token, { maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
@@ -70,8 +73,36 @@ const User = (req: Request, res: Response, next: NextFunction) => {
 };
 
 async function Account(req: Request, res: Response, next: NextFunction) {
-  logger.debug('finished all!!!');
-  res.send(200);
+  logger.debug('API /Account started with jwt------>', req.jwt);
+  logger.debug('API /Account started with req.body------>', req.body);
+  if (req.jwt.type === 'admin') {
+    logger.debug('admin!!!');
+    const PAccount = Parse.Object.extend('Account');
+    const queryAccount = new Parse.Query(PAccount);
+    queryAccount.include('owner');
+    const result = await queryAccount.get(req.body.accountId,
+      r => r,
+      (r, error) => {
+        logger.error(`Login fail - ${JSON.stringify(r)} - ${JSON.stringify(error)}`);
+      });
+    const owner = result.get('owner');
+    const accountInfo = {
+      objectId: result.id,
+      stockBuyFeeRate: result.get('stockBuyFeeRate'),
+      stockSellFeeRate: result.get('stockSellFeeRate'),
+      owner: {
+        objectId: owner.id,
+        username: owner.get('username'),
+        firstName: owner.get('firstName'),
+        lastName: owner.get('lastName'),
+        type: owner.get('type'),
+      },
+    };
+    logger.debug(accountInfo);
+    res.status(200).json({ message: 'Success!', accountInfo });
+  } else {
+    res.sendStatus(401); // Unauthorized
+  }
 }
 
 const DeleteUser = (req: Request, res: Response, next: NextFunction) => {
@@ -166,8 +197,8 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
         $group: {
           _id: '$_p_security',
           currentShares: { $sum: '$quantity' },
-        } }
-      )
+        }
+      })
       .then((results) => {
         console.log('Get open positions: ', results);
         return results;
@@ -229,7 +260,7 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
 
     logger.debug('finished all!!!');
 
-    res.status(200).send({ message: 'Success!' });
+    res.status(200).json({ message: 'Success!' });
   } else {
     res.sendStatus(400);
   }

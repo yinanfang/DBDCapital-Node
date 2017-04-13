@@ -25,6 +25,8 @@ describe('Node Sever API v1.0 Test Setup', () => {
       .expect(200)
       .end((err, res) => TestUtil.GeneralErrorHandler(done, err));
   });
+
+  // TODO: set admin right for test user
 });
 
 /* ***************************************************************************
@@ -103,27 +105,27 @@ describe('Node Sever API v1.0 Test - Admin Submission Test - /account/newTransac
     DBPosition.find({
       transId: testPosition.transId,
     })
-      .then((results) => {
-        expect(results.length).toEqual(1);
-        done();
-        return null;
-      })
-      .catch(err => TestUtil.GeneralErrorHandler(done, err));
+    .then((results) => {
+      expect(results.length).toEqual(1);
+      done();
+      return null;
+    })
+    .catch(err => TestUtil.GeneralErrorHandler(done, err));
   });
 
   it('the stock info in Security Table should be updated after the previous minute', (done) => {
     DBSecurity.find({
       symbol: testPosition.symbol,
     })
-      .then((results) => {
-        expect(results.length).toEqual(1);
-        const today = new Date();
-        const minuteAgo = new Date(today.getTime() - (1000 * 60));
-        expect(minuteAgo < results[0]._updated_at).toBeTruthy();
-        done();
-        return null;
-      })
-      .catch(err => TestUtil.GeneralErrorHandler(done, err));
+    .then((results) => {
+      expect(results.length).toEqual(1);
+      const today = new Date();
+      const minuteAgo = new Date(today.getTime() - (1000 * 60));
+      expect(minuteAgo < results[0]._updated_at).toBeTruthy();
+      done();
+      return null;
+    })
+    .catch(err => TestUtil.GeneralErrorHandler(done, err));
     done();
   });
 });

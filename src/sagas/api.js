@@ -45,7 +45,7 @@ const user = (token: string) => {
 const account = (accountId: string, scope: {}): {} => {
   console.log('saga API account...');
   return request
-    .get(`${Path.API.basePath}/account`, {
+    .post(`${Path.API.basePath}/account`, {
       scope,
     })
     .then((response) => {

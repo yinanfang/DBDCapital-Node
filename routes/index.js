@@ -32,7 +32,7 @@ APIRouter.post('/register', API.Register);
 
 APIRouter.get('/user', Auth, API.User);
 
-APIRouter.get('/account', Auth, API.Account);
+APIRouter.post('/account', Auth, API.Account);
 
 APIRouter.delete('/deleteUser', API.DeleteUser);
 
