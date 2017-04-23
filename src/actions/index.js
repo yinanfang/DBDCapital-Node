@@ -38,10 +38,19 @@ const register = {
   failure: (userInfo: {}, error: Error) => action(REGISTER.FAILURE, { userInfo, error }),
 };
 
-const ACCOUNT_INFO = createRequestTypes('ACCOUNT_INFO');
-const accountInfo = {
-  request: (page: string, account: string, scope: {}) => action(ACCOUNT_INFO.REQUEST, { page, account, scope }),
-  success: (payload: {}) => action(ACCOUNT_INFO.SUCCESS, { payload }),
+const ACCOUNT = {
+  INFO: createRequestTypes('ACCOUNT_INFO'),
+  ADD: createRequestTypes('ACCOUNT_ADD'),
+};
+const account = {
+  create: {
+    request: (page: string, name: string, scope: {}) => action(ACCOUNT.ADD.REQUEST, { page, name, scope }),
+    success: (payload: {}) => action(ACCOUNT.ADD.SUCCESS, { payload }),
+  },
+  info: {
+    request: (page: string, accountId: string, scope: {}) => action(ACCOUNT.INFO.REQUEST, { page, accountId, scope }),
+    success: (payload: {}) => action(ACCOUNT.INFO.SUCCESS, { payload }),
+  },
 };
 
 const ACCOUNT_OVERVIEW = createRequestTypes('ACCOUNT_OVERVIEW');
@@ -52,8 +61,8 @@ const accountOverview = {
 
 const ACCOUNT_NEW_TRANSACTIONS = createRequestTypes('ACCOUNT_NEW_TRANSACTIONS');
 const accountNewTransactions = {
-  update: (newTransactions: {}, account: string) => action(ACCOUNT_NEW_TRANSACTIONS.UPDATE, { newTransactions, account }),
-  submit: (newTransactions: {}, account: string) => action(ACCOUNT_NEW_TRANSACTIONS.SUBMIT, { newTransactions, account }),
+  update: (newTransactions: {}, accountId: string) => action(ACCOUNT_NEW_TRANSACTIONS.UPDATE, { newTransactions, accountId }),
+  submit: (newTransactions: {}, accountId: string) => action(ACCOUNT_NEW_TRANSACTIONS.SUBMIT, { newTransactions, accountId }),
 };
 
 const USER = createRequestTypes('USER');
@@ -76,8 +85,8 @@ export default {
   USER,
   LOGIN,
   login,
-  ACCOUNT_INFO,
-  accountInfo,
+  ACCOUNT,
+  account,
   ACCOUNT_OVERVIEW,
   accountOverview,
   ACCOUNT_NEW_TRANSACTIONS,

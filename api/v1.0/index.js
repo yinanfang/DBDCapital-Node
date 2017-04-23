@@ -9,9 +9,11 @@ import Promise from 'bluebird';
 import Config from '../../config';
 import logger from '../../utils/logger';
 import GCSecurity from '../../model/GCSecurity';
-import { GCSecurityUtil, GCUserUtil, SinaStock } from './GCAPIUtil';
+import { GCSecurityUtil, GCUserUtil, GCAccountUtil, SinaStock } from './GCAPIUtil';
 import GCTransaction from '../../model/GCTransaction';
+import { Role as GCUserRole } from '../../model/GCUser';
 import DBPosition from './db/DBPosition';
+import Actions from '../../src/actions';
 
 /* ***************************************************************************
 Auth
@@ -25,32 +27,34 @@ const Register = (req: Request, res: Response, next: NextFunction) => {
     newUser.set(key, req.body[key]);
   });
   // Default type to client
-  newUser.set('type', 'client');
+  newUser.set('type', GCUserRole.CLIENT);
 
   newUser.signUp(null, {
     success: (user) => {
       logger.debug(`sign up successfully...${JSON.stringify(user)}`);
-      res.send('Reigster!!!');
+      const userInfo = GCUserUtil.simple(user);
+      res.status(200).json(userInfo);
     },
     error: (user, error) => {
       logger.debug(`sign up failed...${user} - ${error.code} - ${error.message} - ${Config.PARSE_SERVER_URL} - ${Config.PARSE_APP_ID}`);
-      res.send('Fail...');
+      res.status(400).send('Fail...');
     },
   });
 };
 
+/**
+ * Example Return (decrypted)
+ * {  "_id":"FC8JmpunDB",
+ *    "username":"dbdcapital_test",
+ *    "type":"admin",
+ *    "iat":1492937123}
+ */
 const Login = (req: Request, res: Response, next: NextFunction) => {
   logger.debug(`API/Login---->${JSON.stringify(req.body)}--${req.body.username}==>${req.body.password}`);
   Parse.User.logIn(req.body.username, req.body.password)
     .then((user) => {
       logger.info(`Login success - ${user.constructor.name} - ${JSON.stringify(user)}`);
-      const originalJWTPayload = {
-        userId: user.id,
-        username: user.getUsername(),
-        // parseSessionToken: user.getSessionToken(),
-        email: user.getEmail(),
-        type: user.get('type'),
-      };
+      const originalJWTPayload = GCUserUtil.simple(user);
       const token = jwt.sign(originalJWTPayload, Config.JWT_SECRET);
       res.cookie('token', token, { maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
       res.status(200);
@@ -72,34 +76,95 @@ const User = (req: Request, res: Response, next: NextFunction) => {
   res.send('User!!!');
 };
 
+async function AccountCreateRequest(req: Request, res: Response) {
+  logger.debug('Actions.ACCOUNT.CREATE.REQUEST!!!', req.body);
+  const newAccountInfo = req.body.account;
+  const owner = await GCUserUtil.find(newAccountInfo.ownerId);
+  const PAccount = Parse.Object.extend('Account');
+  let newAccount = new PAccount();
+  newAccount.set('name', newAccountInfo.name);
+  newAccount.set('owner', owner);
+  newAccount.set('stockBuyFeeRate', newAccountInfo.stockBuyFeeRate);
+  newAccount.set('stockSellFeeRate', newAccountInfo.stockSellFeeRate);
+  newAccount = await newAccount.save()
+    .then((obj) => {
+      logger.debug('newAccount added: ', obj);
+      return obj;
+    }, (error) => {
+      logger.debug('newAccount add error:', error);
+      res.status(400).json(error);
+    });
+  const payload = GCAccountUtil.simple(newAccount);
+  res.status(200).json(payload);
+}
+
+async function AccountInfoRequest(req: Request, res: Response) {
+  // Check param
+  if (req.body.accountId == null) {
+    res.status(400).json({ error: 'Missing req.body.accountId!' });
+    return;
+  }
+  // Handle request
+  logger.debug('Actions.ACCOUNT.INFO.REQUEST!!!');
+  const PAccount = Parse.Object.extend('Account');
+  const queryAccount = new Parse.Query(PAccount);
+  queryAccount.include('owner');
+  const result = await queryAccount.get(req.body.accountId,
+    r => r,
+    (r, error) => {
+      logger.error(`DB Account query fail - ${JSON.stringify(r)} - ${JSON.stringify(error)}`);
+    })
+    // Catch non-error rejection
+    .catch(err => err);
+  console.log('/account result', result, typeof result, JSON.stringify(result));
+
+  // Parse non-error rejection
+  if (result.code === 101) {
+    logger.error(`/account result non-error rejection ${JSON.stringify(result)}`);
+    res.status(400).json(result);
+    return;
+  }
+
+  const payload = GCAccountUtil.simple(result);
+  console.log('payload', payload);
+  res.status(200).json(payload);
+}
+
+/**
+ * [Account description]
+ *
+ * if jwt.type = GCUserRole.Admin {
+ *  req.body = {
+ *    action: [
+ *      ACCOUNT.INFO.REQUEST
+ *      | ACCOUNT.ADD.REQUEST
+ *    ]
+ *  }
+ * }
+ * Example Return:
+ * { _id: 'oDAutDGYcs',
+ *   name: 'Client Account',
+ *   owner: { _id: 'ihiRD21gO6', username: 'dbdcapital_test', type: 'admin' },
+ *   stockBuyFeeRate: 0.0052,
+ *   stockSellFeeRate: 0.0021,
+ *   _updatedAt: '2017-04-23T08:41:58.267Z',
+ *   _createdAt: '2017-04-23T08:41:58.267Z',
+ *  }
+ *
+ * jwt.type = GCUserRole.Client
+ *
+
+ */
 async function Account(req: Request, res: Response, next: NextFunction) {
   logger.debug('API /Account started with jwt------>', req.jwt);
   logger.debug('API /Account started with req.body------>', req.body);
-  if (req.jwt.type === 'admin') {
+  if (req.jwt.type === GCUserRole.ADMIN) {
     logger.debug('admin!!!');
-    const PAccount = Parse.Object.extend('Account');
-    const queryAccount = new Parse.Query(PAccount);
-    queryAccount.include('owner');
-    const result = await queryAccount.get(req.body.accountId,
-      r => r,
-      (r, error) => {
-        logger.error(`Login fail - ${JSON.stringify(r)} - ${JSON.stringify(error)}`);
-      });
-    const owner = result.get('owner');
-    const accountInfo = {
-      objectId: result.id,
-      stockBuyFeeRate: result.get('stockBuyFeeRate'),
-      stockSellFeeRate: result.get('stockSellFeeRate'),
-      owner: {
-        objectId: owner.id,
-        username: owner.get('username'),
-        firstName: owner.get('firstName'),
-        lastName: owner.get('lastName'),
-        type: owner.get('type'),
-      },
-    };
-    logger.debug(accountInfo);
-    res.status(200).json({ message: 'Success!', accountInfo });
+    if (req.body.action === Actions.ACCOUNT.ADD.REQUEST) {
+      await AccountCreateRequest(req, res);
+    } else if (req.body.action === Actions.ACCOUNT.INFO.REQUEST) {
+      await AccountInfoRequest(req, res);
+    }
   } else {
     res.sendStatus(401); // Unauthorized
   }
@@ -153,7 +218,7 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
     // TODO: return 400 if GCSecurityUtil.updateAll fails
 
     // Get the user
-    const user = await GCUserUtil.find(req.jwt.userId);
+    const user = await GCUserUtil.find(req.jwt._id);
 
     // Add open positions
     const Position = Parse.Object.extend('Position');
@@ -197,7 +262,7 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
         $group: {
           _id: '$_p_security',
           currentShares: { $sum: '$quantity' },
-        }
+        },
       })
       .then((results) => {
         console.log('Get open positions: ', results);

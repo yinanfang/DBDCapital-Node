@@ -6,6 +6,7 @@ import Raven from 'raven-js';
 
 import Path from '../../path';
 import type { GCNewTransactionInputType } from '../../model/GCTransaction';
+import Actions from '../actions';
 
 const login = (username: string, password: string) => {
   console.log(`src/api.js-------> ${Path.API.basePath}/login`);
@@ -42,16 +43,19 @@ const user = (token: string) => {
   });
 };
 
-const account = (accountId: string, scope: {}): {} => {
-  console.log('saga API account...');
-  return request
-    .post(`${Path.API.basePath}/account`, {
-      scope,
-    })
-    .then((response) => {
-      console.log(response);
-      return response.data;
-    });
+const account = {
+  info: (accountId: string, scope: {}): {} => {
+    console.log('saga API account...');
+    return request
+      .post(`${Path.API.basePath}/account`, {
+        action: Actions.ACCOUNT.INFO.REQUEST,
+        scope,
+      })
+      .then((response) => {
+        console.log(response);
+        return response.data;
+      });
+  },
 };
 
 const accountNewTransactionsSubmit = (newTransactions: { [key: string]: GCNewTransactionInputType }, accountId: string) => {

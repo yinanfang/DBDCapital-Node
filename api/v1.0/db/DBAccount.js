@@ -8,6 +8,10 @@ const AccountSchema = new DB.Schema({
     unique: true,
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
   _p_owner: {
     type: String,
     ref: '_User',

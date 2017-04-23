@@ -13,7 +13,7 @@ export default class GCObject {
 
   simple() {
     // Exclude schema
-    const { schema: _, ...otherKeys } = this;
+    const { schema: _, ...otherKeys } = this; // eslint-disable-line no-unused-vars
     return otherKeys;
   }
 

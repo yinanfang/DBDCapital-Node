@@ -24,10 +24,11 @@ function* login() {
 function* account() {
   while (true) {
     // TODO: Cancel previous request if there's new one
-    yield take(Actions.ACCOUNT_INFO.REQUEST);
+    yield take(Actions.ACCOUNT.INFO.REQUEST);
     console.log('---->sss', Actions.loading.update(true));
     yield put(Actions.loading.update(true));
-    const result = yield call(API.account, 'accountId', {});
+    const result = yield call(API.account.info, 'accountId', {});
+    console.log('account info result', result);
     yield put(Actions.loading.update(false));
   }
 }
@@ -41,8 +42,9 @@ function* accountOverviewRequest() {
 
 function* accountNewTransactionsSubmit() {
   while (true) {
-    const { newTransactions, account } = yield take(Actions.ACCOUNT_NEW_TRANSACTIONS.SUBMIT);
-    const result = yield call(API.accountNewTransactionsSubmit, newTransactions, account);
+    const { newTransactions, accountId } = yield take(Actions.ACCOUNT_NEW_TRANSACTIONS.SUBMIT);
+    const result = yield call(API.accountNewTransactionsSubmit, newTransactions, accountId);
+    console.log('accountNewTransactionsSubmit result', result);
   }
 }
 

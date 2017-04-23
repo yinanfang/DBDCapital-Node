@@ -6,6 +6,7 @@ import request from 'request-promise';
 import iconv from 'iconv-lite';
 
 import GCSecurity from '../../model/GCSecurity';
+import type { GCAccountType } from '../../model/GCAccount';
 import logger from '../../utils/logger';
 
 const GCSecurityUtil = {
@@ -90,7 +91,7 @@ const GCSecurityUtil = {
 };
 
 const GCUserUtil = {
-  find: async function _find(userId: string) {
+  find: async function _find(userId: string): Parse.User {
     const queryUser = new Parse.Query(Parse.User);
     return queryUser.get(userId)
       .then((obj) => {
@@ -99,6 +100,29 @@ const GCUserUtil = {
       }, (error) => {
         logger.debug('get user failed: ', error);
       });
+  },
+  simple: (user: Parse.User): { _id: string, username: string, type: string } => {
+    return {
+      _id: user.id,
+      username: user.getUsername(),
+      // parseSessionToken: user.getSessionToken(),
+      // email: user.getEmail(),
+      type: user.get('type'),
+    };
+  },
+};
+
+const GCAccountUtil = {
+  simple: (account: Parse.Object): GCAccountType => {
+    return {
+      _id: account.id,
+      name: account.get('name'),
+      owner: GCUserUtil.simple(account.get('owner')),
+      stockBuyFeeRate: account.get('stockBuyFeeRate'),
+      stockSellFeeRate: account.get('stockSellFeeRate'),
+      _updatedAt: account.updatedAt,
+      _createdAt: account.createdAt,
+    };
   },
 };
 
@@ -166,5 +190,6 @@ const SinaStock = {
 export {
   GCSecurityUtil,
   GCUserUtil,
+  GCAccountUtil,
   SinaStock,
 };

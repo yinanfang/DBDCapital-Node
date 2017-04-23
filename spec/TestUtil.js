@@ -4,6 +4,7 @@ import notifier from 'node-notifier';
 import Nightmare from 'nightmare';
 
 import logger from '../utils/logger';
+import { Role as GCUserRole } from '../model/GCUser';
 
 const GeneralErrorHandler = (done: () => void, error: Error, res: any = null) => {
   if (error) {
@@ -44,13 +45,23 @@ const getBrowser = (platform: string = DESKTOP) => {
 };
 
 const TestUser = {
+  _id: '',
+  token: '',
   username: 'dbdcapital_test',
   password: 'password',
+  type: GCUserRole.ADMIN,
   email: 'dbdcapital_test@dbd-capital.com',
+  account: {
+    _id: '',
+    ownerId: '',
+    name: 'Client Account',
+    stockBuyFeeRate: 0.0052,
+    stockSellFeeRate: 0.0021,
+  },
 };
 
 export default {
   GeneralErrorHandler,
   getBrowser,
-  TestUser,
+  DEFAULT_TEST_USER: TestUser,
 };

@@ -206,7 +206,7 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = {
-  accountInfoRequest: Actions.accountInfo.request,
+  accountInfoRequest: Actions.account.info.request,
   newTransactionsUpdate: Actions.accountNewTransactions.update,
   newTransactionsSubmit: Actions.accountNewTransactions.submit,
 };

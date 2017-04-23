@@ -8,13 +8,15 @@ import TestUtil from './TestUtil';
 const requestNodeAPI = request(Config.SERVER_API_BASE);
 const requestParseCloudAPI = request(Config.PARSE_CLOUD_API_BASE);
 
+const TestUser = TestUtil.DEFAULT_TEST_USER;
+
 /* ***************************************************************************
 Setup - Register test user
 *****************************************************************************/
 describe('Web App Test Setup', () => {
   it('should be able to register the test user', (done) => {
     requestNodeAPI.post('/register')
-      .send(TestUtil.TestUser)
+      .send(TestUser)
       .expect(200)
       .end((err, res) => {
         TestUtil.GeneralErrorHandler(done, err);
@@ -39,8 +41,8 @@ describe('Automated browser Test for Web Client', () => {
       // Go to Auth page and log in
       .click('a[href="/auth"]')
       .wait('form[name="login"]')
-      .type('form[name="login"] input[name="username"]', TestUtil.TestUser.username)
-      .type('form[name="login"] input[name="password"]', TestUtil.TestUser.password)
+      .type('form[name="login"] input[name="username"]', TestUser.username)
+      .type('form[name="login"] input[name="password"]', TestUser.password)
       .click('form[name="login"] button[type="submit"]')
       // Go to Account/Admin, fill out first row, and submit
       .wait('div[class*="__accountBase__"]')
@@ -69,7 +71,7 @@ describe('Parse-Sever API v1.0 Test', () => {
   it('should be able to delete the test user', (done) => {
     requestParseCloudAPI.post('/deleteUser')
       .set('X-Parse-Application-Id', Config.PARSE_APP_ID)
-      .send(TestUtil.TestUser)
+      .send(TestUser)
       .expect(200)
       .end((err, res) => TestUtil.GeneralErrorHandler(done, err));
   });
