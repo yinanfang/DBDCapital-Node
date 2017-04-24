@@ -34,7 +34,7 @@ const uiStore = (state = uiStoreDefault, action) => {
 };
 
 const account = (state = DEFAULT_STATE_ACCOUNT, action) => {
-  if (action.type === Actions.ACCOUNT_NEW_TRANSACTIONS.UPDATE) {
+  if (action.type === Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE) {
     if (action.accountId) {
       return {
         ...state,

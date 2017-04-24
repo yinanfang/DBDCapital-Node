@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 // import Parse from 'parse/node';
 import _ from 'lodash';
 
-import logger from '../utils/logger';
+// import logger from '../utils/logger';
 import Config from '../config';
 import TestUtil from './TestUtil';
 import DBPosition from '../api/v1.0/db/DBPosition';

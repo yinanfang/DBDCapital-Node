@@ -52,7 +52,7 @@ const Account = (props) => {
   };
   const navTabOnClick = (event) => {
     if ($(event.target).closest('a').attr('href') === '/account') {
-      props.accountOverviewRequest();
+      props.accountOverviewInfoRequest();
     }
     updateDrawOpenState(false);
   };
@@ -137,7 +137,7 @@ Account.propTypes = {
   isDrawerOpen: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   uiUpdate: PropTypes.func.isRequired,
-  accountOverviewRequest: PropTypes.func.isRequired,
+  accountOverviewInfoRequest: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -152,7 +152,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   uiUpdate: Actions.uiUpdate,
-  accountOverviewRequest: Actions.accountOverview.request,
+  accountOverviewInfoRequest: Actions.account.overview.info.request,
 })(Account);
 
 export {

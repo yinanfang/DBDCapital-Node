@@ -34,14 +34,14 @@ function* account() {
 
 function* accountOverviewRequest() {
   while (true) {
-    yield take(Actions.ACCOUNT_OVERVIEW.REQUEST);
+    yield take(Actions.ACCOUNT.OVERVIEW.INFO.REQUEST);
     console.log('---->sss');
   }
 }
 
 function* accountNewTransactionsSubmit() {
   while (true) {
-    const { newTransactions, accountId } = yield take(Actions.ACCOUNT_NEW_TRANSACTIONS.SUBMIT);
+    const { newTransactions, accountId } = yield take(Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.SUBMIT);
     const result = yield call(API.accountNewTransactionsSubmit, newTransactions, accountId);
     console.log('accountNewTransactionsSubmit result', result);
   }

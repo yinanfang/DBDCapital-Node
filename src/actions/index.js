@@ -19,10 +19,18 @@ const action = (type, payload = {}) => {
   return { type, ...payload };
 };
 
+const NAVIGATE = 'NAVIGATE';
+const navigate = (pathname: string) => action(NAVIGATE, { pathname });
+
+const UI_UPDATE = 'UI_UPDATE';
+const uiUpdate = (uiUpdates: {}) => action(UI_UPDATE, { uiUpdates });
+
 const LOADING = createRequestTypes('LOADING');
 const loading = {
   update: (state: boolean) => action(LOADING.UPDATE, { state }),
 };
+
+const USER = createRequestTypes('USER');
 
 const LOGIN = createRequestTypes('LOGIN');
 const login = {
@@ -41,8 +49,12 @@ const register = {
 const ACCOUNT = {
   INFO: createRequestTypes('ACCOUNT_INFO'),
   ADD: createRequestTypes('ACCOUNT_ADD'),
+  OVERVIEW: {
+    INFO: createRequestTypes('ACCOUNT_OVERVIEW'),
+  },
   ADMIN: {
     TARGET_ACCOUNT: createRequestTypes('ACCOUNT_ADMIN_TARGET_ACCOUNT'),
+    NEW_TRANSACTIONS: createRequestTypes('ACCOUNT_ADMIN_NEW_TRANSACTIONS'),
   },
 };
 const account = {
@@ -54,32 +66,22 @@ const account = {
     request: (page: string, accountId: string, scope: {}) => action(ACCOUNT.INFO.REQUEST, { page, accountId, scope }),
     success: (payload: {}) => action(ACCOUNT.INFO.SUCCESS, { payload }),
   },
+  overview: {
+    info: {
+      request: () => action(ACCOUNT.INFO.OVERVIEW.REQUEST, { }),
+      success: (payload: {}) => action(ACCOUNT.OVERVIEW.INFO.SUCCESS, { payload }),
+    },
+  },
   admin: {
     targetAccount: {
       success: (accountInfo: {}) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS, { accountInfo }),
     },
+    newTransactions: {
+      update: (newTransactions: {}, accountId: string) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.UPDATE, { newTransactions, accountId }),
+      submit: (newTransactions: {}, accountId: string) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.SUBMIT, { newTransactions, accountId }),
+    },
   },
 };
-
-const ACCOUNT_OVERVIEW = createRequestTypes('ACCOUNT_OVERVIEW');
-const accountOverview = {
-  request: () => action(ACCOUNT_OVERVIEW.REQUEST, { }),
-  success: (payload: {}) => action(ACCOUNT_OVERVIEW.SUCCESS, { payload }),
-};
-
-const ACCOUNT_NEW_TRANSACTIONS = createRequestTypes('ACCOUNT_NEW_TRANSACTIONS');
-const accountNewTransactions = {
-  update: (newTransactions: {}, accountId: string) => action(ACCOUNT_NEW_TRANSACTIONS.UPDATE, { newTransactions, accountId }),
-  submit: (newTransactions: {}, accountId: string) => action(ACCOUNT_NEW_TRANSACTIONS.SUBMIT, { newTransactions, accountId }),
-};
-
-const USER = createRequestTypes('USER');
-
-const NAVIGATE = 'NAVIGATE';
-const navigate = (pathname: string) => action(NAVIGATE, { pathname });
-
-const UI_UPDATE = 'UI_UPDATE';
-const uiUpdate = (uiUpdates: {}) => action(UI_UPDATE, { uiUpdates });
 
 export default {
   NAVIGATE,
@@ -95,9 +97,4 @@ export default {
   login,
   ACCOUNT,
   account,
-  ACCOUNT_OVERVIEW,
-  accountOverview,
-  ACCOUNT_NEW_TRANSACTIONS,
-  accountNewTransactions,
-
 };

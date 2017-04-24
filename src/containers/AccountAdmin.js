@@ -3,7 +3,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import faker from 'faker';
 import _merge from 'lodash/merge';
 import _cloneDeep from 'lodash/cloneDeep';
 import moment from 'moment';
@@ -205,8 +204,8 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = {
   accountInfoRequest: Actions.account.info.request,
-  newTransactionsUpdate: Actions.accountNewTransactions.update,
-  newTransactionsSubmit: Actions.accountNewTransactions.submit,
+  newTransactionsUpdate: Actions.account.admin.newTransactions.update,
+  newTransactionsSubmit: Actions.account.admin.newTransactions.submit,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AccountAdmin);
 export {
