@@ -41,6 +41,9 @@ const register = {
 const ACCOUNT = {
   INFO: createRequestTypes('ACCOUNT_INFO'),
   ADD: createRequestTypes('ACCOUNT_ADD'),
+  ADMIN: {
+    TARGET_ACCOUNT: createRequestTypes('ACCOUNT_ADMIN_TARGET_ACCOUNT'),
+  },
 };
 const account = {
   create: {
@@ -50,6 +53,11 @@ const account = {
   info: {
     request: (page: string, accountId: string, scope: {}) => action(ACCOUNT.INFO.REQUEST, { page, accountId, scope }),
     success: (payload: {}) => action(ACCOUNT.INFO.SUCCESS, { payload }),
+  },
+  admin: {
+    targetAccount: {
+      success: (accountInfo: {}) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS, { accountInfo }),
+    },
   },
 };
 

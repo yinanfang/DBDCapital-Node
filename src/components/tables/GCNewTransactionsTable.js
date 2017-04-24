@@ -74,7 +74,7 @@ const GCNewTransactionsTable = ({
   const newTransactionColumnInput = (col = {}, cssClassName = '') => {
     return (
       <TableRowColumn className={cssClassName} style={tableRowColumnStyle}>
-        <TextField fullWidth name={col.key} hintText={col.hint} errorText={col.error} onChange={newTransactionInputOnChange} multiLine={col.multiLine} />
+        <TextField fullWidth name={col.key} value={col.value} hintText={col.hint} errorText={col.error} onChange={newTransactionInputOnChange} multiLine={col.multiLine} />
       </TableRowColumn>
     );
   };

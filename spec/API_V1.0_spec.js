@@ -194,6 +194,9 @@ describe('Node Sever API v1.0 Test - General API Tests', () => {
         const account = res.body;
         expect(account._id).toEqual(TestUser.account._id);
         expect(account.owner._id).toEqual(TestUser.account.ownerId);
+        expect(account.stockBuyFeeRate).toEqual(TestUser.account.stockBuyFeeRate);
+        expect(account.stockSellFeeRate).toEqual(TestUser.account.stockSellFeeRate);
+        expect(account.owner._id).toEqual(TestUser.account.ownerId);
         TestUtil.GeneralErrorHandler(done, err);
       });
   });

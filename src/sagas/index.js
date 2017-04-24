@@ -24,10 +24,9 @@ function* login() {
 function* account() {
   while (true) {
     // TODO: Cancel previous request if there's new one
-    yield take(Actions.ACCOUNT.INFO.REQUEST);
-    console.log('---->sss', Actions.loading.update(true));
+    const { accountId } = yield take(Actions.ACCOUNT.INFO.REQUEST);
     yield put(Actions.loading.update(true));
-    const result = yield call(API.account.info, 'accountId', {});
+    const result = yield call(API.account.info, accountId);
     console.log('account info result', result);
     yield put(Actions.loading.update(false));
   }

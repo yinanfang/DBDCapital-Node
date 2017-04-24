@@ -35,12 +35,32 @@ const uiStore = (state = uiStoreDefault, action) => {
 
 const account = (state = DEFAULT_STATE_ACCOUNT, action) => {
   if (action.type === Actions.ACCOUNT_NEW_TRANSACTIONS.UPDATE) {
+    if (action.accountId) {
+      return {
+        ...state,
+        admin: {
+          ...state.admin,
+          targetAccount: {
+            _id: action.accountId,
+          },
+        },
+      };
+    }
     const copy = _cloneDeep(state);
     _merge(copy, {
       admin: {
-        account: action.account,
         newTransactions: action.newTransactions,
       },
+    });
+    // Update fee value if possible
+    const updatedRows = Object.keys(action.newTransactions);
+    updatedRows.forEach((row) => {
+      const rowData = copy.admin.newTransactions[row];
+      const price: number = parseInt(rowData.price.value, 10);
+      const quantity: number = parseInt(rowData.quantity.value, 10);
+      if (price && quantity) {
+        rowData.fee.value = `${price * quantity * state.admin.targetAccount.stockBuyFeeRate}`;
+      }
     });
     return copy;
   }

@@ -2,6 +2,7 @@
 
 import Joi from 'joi-browser';
 import Immutable from 'seamless-immutable';
+import faker from 'faker';
 
 import GCObject from './GCObject';
 
@@ -44,15 +45,20 @@ const NewTransaction: GCNewTransactionInputType = Immutable({
   transId: {
     key: 'transId',
     name: 'ID',
+    hint: `${faker.random.arrayElement([86, 168, 355, 173, 853, '225b', '115c', '352d'])}`,
+    value: '',
   },
   symbol: {
     key: 'symbol',
     name: 'Symbol',
+    hint: faker.random.number({ min: 600000, max: 699999 }),
+    value: '',
   },
   name: {
     key: 'name',
     name: 'Name',
     disabled: true,
+    value: 'N/A',
   },
   action: {
     key: 'action',
@@ -64,19 +70,27 @@ const NewTransaction: GCNewTransactionInputType = Immutable({
   price: {
     key: 'price',
     name: 'Price',
+    hint: faker.commerce.price(),
+    value: '',
   },
   quantity: {
     key: 'quantity',
     name: 'Quantity',
+    hint: faker.random.number({ min: 100, max: 10000 }),
+    value: '',
   },
   fee: {
     key: 'fee',
     name: 'Fee',
+    hint: faker.random.number({ min: 1, max: 10 }),
+    value: '',
   },
   note: {
     key: 'note',
     name: 'Note',
     multiLine: true,
+    hint: faker.lorem.words(),
+    value: '',
   },
 });
 

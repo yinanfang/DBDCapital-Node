@@ -3,6 +3,7 @@
 import Joi from 'joi-browser';
 
 import GCObject from './GCObject';
+import GCUser from './GCUser';
 
 export type GCAccountType = {
   _id: string,
@@ -40,6 +41,18 @@ export default class GCAccount extends GCObject {
     this.stockSellFeeRate = stockSellFeeRate;
     this._updatedAt = _updatedAt;
     this._createdAt = _createdAt;
+  }
+
+  static default() {
+    return {
+      _id: 'defaultId',
+      name: 'defaultName',
+      owner: GCUser.default(),
+      stockBuyFeeRate: 0.00,
+      stockSellFeeRate: 0.00,
+      _updatedAt: new Date(),
+      _createdAt: new Date(),
+    };
   }
 
   schema = Joi.object().keys({

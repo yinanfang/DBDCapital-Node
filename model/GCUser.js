@@ -59,6 +59,21 @@ export default class GCUser extends GCObject {
     this._createdAt = _createdAt;
   }
 
+  static default() {
+    return {
+      _id: 'defaultId',
+      username: 'defaultUsername',
+      type: Role.CLIENT,
+      email: 'email@example.com',
+      emailVerified: false,
+      firstName: 'firstName',
+      lastName: 'lastName',
+      phone: '123-456-7890',
+      _updatedAt: new Date(),
+      _createdAt: new Date(),
+    };
+  }
+
   schema = Joi.object().keys({
     _id: Joi.string(),
     username: Joi.string().required(),

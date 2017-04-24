@@ -49,10 +49,10 @@ const account = {
     return request
       .post(`${Path.API.basePath}/account`, {
         action: Actions.ACCOUNT.INFO.REQUEST,
-        scope,
+        accountId,
       })
       .then((response) => {
-        console.log(response);
+        console.log('account info succeeded!');
         return response.data;
       });
   },

@@ -15,6 +15,7 @@ import styleCSS from '../style.css';
 
 import GCNewTransactionsTable from '../components/tables/GCNewTransactionsTable';
 import GCTransaction, { NewTransaction } from '../../model/GCTransaction';
+import GCAccount from '../../model/GCAccount';
 import type { GCTransactionType, GCNewTransactionInputType } from '../../model/GCTransaction';
 import GCUtil from '../../utils';
 
@@ -35,13 +36,6 @@ const initSingleNewTransaction = () => {
   const previousWorkday = getPreviousWorkday();
   copy.date.defaultValue = previousWorkday.toDate();
   copy.date.value = previousWorkday.format('YYYY-MM-DD');
-  copy.transId.hint = `${faker.random.arrayElement([86, 168, 355, 173, 853, '225b', '115c', '352d'])}`;
-  copy.symbol.hint = faker.random.number({ min: 600000, max: 699999 });
-  copy.name.value = 'N/A';
-  copy.price.hint = faker.commerce.price();
-  copy.quantity.hint = faker.random.number({ min: 100, max: 10000 });
-  copy.fee.hint = faker.random.number({ min: 1, max: 10 });
-  copy.note.hint = faker.lorem.words();
   return copy;
 };
 const initNewTransactions = () => {
@@ -50,6 +44,10 @@ const initNewTransactions = () => {
     result[i] = initSingleNewTransaction();
   }
   return result;
+};
+const DEFAULT_STATE = {
+  targetAccount: GCAccount.default(),
+  newTransactions: initNewTransactions(),
 };
 
 const AccountAdmin = (props) => {
@@ -68,7 +66,7 @@ const AccountAdmin = (props) => {
 
   const accountInfoRequest = (event) => {
     // add info
-    props.accountInfoRequest('admin', props.targetAccount, { type: 'essential' });
+    props.accountInfoRequest('admin', props.targetAccount._id);
   };
 
   const newTransactionsAddEmptyRow = (event) => {
@@ -81,6 +79,7 @@ const AccountAdmin = (props) => {
       value: content,
       error: '',
     };
+    // Check input validity
     if (inputName === NewTransaction.transId.key) {
       updates.error = validator.isAlphanumeric(content) ? '' : 'Format!';
     } else if (inputName === NewTransaction.symbol.key || inputName === NewTransaction.quantity.key) {
@@ -160,7 +159,7 @@ const AccountAdmin = (props) => {
         }, true);
       if (passSanityCheck) {
         const simplified = Object.keys(selectedTransactions).map(key => selectedTransactions[key].simple());
-        props.newTransactionsSubmit(simplified, props.targetAccount);
+        props.newTransactionsSubmit(simplified, props.targetAccount._id);
       } else {
         sweetAlert('Oops...', errorMessage, 'error');
       }
@@ -192,16 +191,15 @@ const AccountAdmin = (props) => {
 
 AccountAdmin.propTypes = {
   // Injected by React Redux
-  targetAccount: PropTypes.string.isRequired,
+  targetAccount: PropTypes.object.isRequired,
   accountInfoRequest: PropTypes.func.isRequired,
   newTransactions: PropTypes.object.isRequired,
   newTransactionsUpdate: PropTypes.func.isRequired,
   newTransactionsSubmit: PropTypes.func.isRequired,
 };
-
 const mapStateToProps = (state) => {
   return {
-    targetAccount: state.account.admin.account,
+    targetAccount: state.account.admin.targetAccount,
     newTransactions: state.account.admin.newTransactions,
   };
 };
@@ -210,13 +208,7 @@ const mapDispatchToProps = {
   newTransactionsUpdate: Actions.accountNewTransactions.update,
   newTransactionsSubmit: Actions.accountNewTransactions.submit,
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(AccountAdmin);
-
-const DEFAULT_STATE = {
-  account: '',
-  newTransactions: initNewTransactions(),
-};
 export {
   DEFAULT_STATE,
 };
