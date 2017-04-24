@@ -34,8 +34,17 @@ const uiStore = (state = uiStoreDefault, action) => {
 };
 
 const account = (state = DEFAULT_STATE_ACCOUNT, action) => {
-  if (action.type === Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE) {
+  if (action.type === Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS) {
+    return {
+      ...state,
+      admin: {
+        ...state.admin,
+        targetAccount: action.accountInfo,
+      },
+    };
+  } else if (action.type === Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE) {
     if (action.accountId) {
+      // TODO: Move to Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.UPDATE or others ?
       return {
         ...state,
         admin: {
@@ -63,6 +72,14 @@ const account = (state = DEFAULT_STATE_ACCOUNT, action) => {
       }
     });
     return copy;
+  } else if (action.type === Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS) {
+    return {
+      admin: {
+        targetAccount: action.accountInfo,
+        ...state.admin,
+      },
+      ...state,
+    };
   }
   return state;
 };

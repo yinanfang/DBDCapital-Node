@@ -105,7 +105,7 @@ async function AccountInfoRequest(req: Request, res: Response) {
     return;
   }
   // Handle request
-  logger.debug('Actions.ACCOUNT.INFO.REQUEST!!!');
+  logger.debug('AccountInfoRequest!!!');
   const PAccount = Parse.Object.extend('Account');
   const queryAccount = new Parse.Query(PAccount);
   queryAccount.include('owner');
@@ -162,7 +162,7 @@ async function Account(req: Request, res: Response, next: NextFunction) {
     logger.debug('admin!!!');
     if (req.body.action === Actions.ACCOUNT.ADD.REQUEST) {
       await AccountCreateRequest(req, res);
-    } else if (req.body.action === Actions.ACCOUNT.INFO.REQUEST) {
+    } else if (req.body.action === Actions.ACCOUNT.INFO.REQUEST || req.body.action === Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST) {
       await AccountInfoRequest(req, res);
     }
   } else {

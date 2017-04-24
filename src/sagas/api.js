@@ -48,7 +48,7 @@ const account = {
     console.log('saga API account...');
     return request
       .post(`${Path.API.basePath}/account`, {
-        action: Actions.ACCOUNT.INFO.REQUEST,
+        action: Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST,
         accountId,
       })
       .then((response) => {

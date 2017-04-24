@@ -74,11 +74,12 @@ const account = {
   },
   admin: {
     targetAccount: {
+      request: (accountId: string) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST, { accountId }),
       success: (accountInfo: {}) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS, { accountInfo }),
     },
     newTransactions: {
-      update: (newTransactions: {}, accountId: string) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.UPDATE, { newTransactions, accountId }),
-      submit: (newTransactions: {}, accountId: string) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.SUBMIT, { newTransactions, accountId }),
+      update: (newTransactions: {}, accountId: string) => action(ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE, { newTransactions, accountId }),
+      submit: (newTransactions: {}, accountId: string) => action(ACCOUNT.ADMIN.NEW_TRANSACTIONS.SUBMIT, { newTransactions, accountId }),
     },
   },
 };

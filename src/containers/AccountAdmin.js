@@ -58,14 +58,14 @@ const AccountAdmin = (props) => {
     formElement.find('form').first().slideToggle();
   };
 
-  const newTransactionsUpdateAccount = (event, account: string): void => {
-    console.log(`account on change: ${account}`);
-    props.newTransactionsUpdate({}, account);
+  const newTransactionsUpdateAccount = (event, accountId: string): void => {
+    console.log(`account on change: ${accountId}`);
+    props.newTransactionsUpdate({}, accountId);
   };
 
   const accountInfoRequest = (event) => {
     // add info
-    props.accountInfoRequest('admin', props.targetAccount._id);
+    props.accountInfoRequest(props.targetAccount._id);
   };
 
   const newTransactionsAddEmptyRow = (event) => {
@@ -203,7 +203,7 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = {
-  accountInfoRequest: Actions.account.info.request,
+  accountInfoRequest: Actions.account.admin.targetAccount.request,
   newTransactionsUpdate: Actions.account.admin.newTransactions.update,
   newTransactionsSubmit: Actions.account.admin.newTransactions.submit,
 };

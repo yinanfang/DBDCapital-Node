@@ -34,6 +34,8 @@ describe('Automated browser Test for Web Client', () => {
     const browser = TestUtil.getBrowser();
     // form -> find the material Table -> find the second Table body -> find the row
     const patternFormNewTransactions = 'form[name="newTransactions"] div:nth-child(2) div:nth-child(2) td:nth-child';
+
+    // TODO: add test to verify new actions
     browser
       // Go to Home page
       .goto(Config.SERVER_URL)

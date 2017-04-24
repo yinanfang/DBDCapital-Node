@@ -24,22 +24,31 @@ function* login() {
 function* account() {
   while (true) {
     // TODO: Cancel previous request if there's new one
-    const { accountId } = yield take(Actions.ACCOUNT.INFO.REQUEST);
-    yield put(Actions.loading.update(true));
-    const result = yield call(API.account.info, accountId);
-    console.log('account info result', result);
-    yield put(Actions.loading.update(false));
+    yield take(Actions.ACCOUNT.INFO.REQUEST);
+    console.log('saga/index.js - account');
   }
 }
 
-function* accountOverviewRequest() {
+function* accountOverviewInfoRequest() {
   while (true) {
     yield take(Actions.ACCOUNT.OVERVIEW.INFO.REQUEST);
     console.log('---->sss');
   }
 }
 
-function* accountNewTransactionsSubmit() {
+function* accountAdminTargetAccount() {
+  while (true) {
+    // TODO: Cancel previous request if there's new one
+    const { accountId } = yield take(Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST);
+    yield put(Actions.loading.update(true));
+    const accountInfo = yield call(API.account.info, accountId);
+    console.log('account info result', accountInfo);
+    yield put(Actions.account.admin.targetAccount.success(accountInfo));
+    yield put(Actions.loading.update(false));
+  }
+}
+
+function* accountAdminNewTransactionsSubmit() {
   while (true) {
     const { newTransactions, accountId } = yield take(Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.SUBMIT);
     const result = yield call(API.accountNewTransactionsSubmit, newTransactions, accountId);
@@ -64,8 +73,9 @@ export default function* root() {
     // Feature
     fork(login),
     fork(account),
-    fork(accountOverviewRequest),
-    fork(accountNewTransactionsSubmit),
+    fork(accountOverviewInfoRequest),
+    fork(accountAdminTargetAccount),
+    fork(accountAdminNewTransactionsSubmit),
     // Utility
     fork(watchNavigate),
   ];

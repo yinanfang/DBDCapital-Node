@@ -182,23 +182,38 @@ describe('Node Sever API v1.0 Test - General API Tests', () => {
       });
   });
 
-  it('should  be able do Actions.ACCOUNT.INFO.REQUEST with correct accountId', async (done) => {
-    requestNodeAPI.post('/account')
+  it('should be able do Actions.ACCOUNT.[INFO | ADMIN.TARGET_ACCOUNT].REQUEST with correct accountId and get the same result', async (done) => {
+    const body1 = await requestNodeAPI.post('/account')
       .send({
         action: Actions.ACCOUNT.INFO.REQUEST,
         accountId: TestUser.account._id,
       })
       .set('Authorization', `Bearer ${TestUser.token}`)
       .expect(200)
-      .end((err, res) => {
-        const account = res.body;
-        expect(account._id).toEqual(TestUser.account._id);
-        expect(account.owner._id).toEqual(TestUser.account.ownerId);
-        expect(account.stockBuyFeeRate).toEqual(TestUser.account.stockBuyFeeRate);
-        expect(account.stockSellFeeRate).toEqual(TestUser.account.stockSellFeeRate);
-        expect(account.owner._id).toEqual(TestUser.account.ownerId);
-        TestUtil.GeneralErrorHandler(done, err);
-      });
+      .then((res) => {
+        return res.body;
+      })
+      .catch(err => TestUtil.GeneralErrorHandler(done, err));
+
+    const body2 = await requestNodeAPI.post('/account')
+      .send({
+        action: Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST,
+        accountId: TestUser.account._id,
+      })
+      .set('Authorization', `Bearer ${TestUser.token}`)
+      .expect(200)
+      .then((res) => {
+        return res.body;
+      })
+      .catch(err => TestUtil.GeneralErrorHandler(done, err));
+
+    expect(_.isEqual(body1, body2)).toBeTruthy();
+    expect(body1._id).toEqual(TestUser.account._id);
+    expect(body1.owner._id).toEqual(TestUser.account.ownerId);
+    expect(body1.stockBuyFeeRate).toEqual(TestUser.account.stockBuyFeeRate);
+    expect(body1.stockSellFeeRate).toEqual(TestUser.account.stockSellFeeRate);
+    expect(body1.owner._id).toEqual(TestUser.account.ownerId);
+    done();
   });
 });
 
