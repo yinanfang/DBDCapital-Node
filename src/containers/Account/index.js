@@ -20,10 +20,10 @@ import VerifiedUser from 'material-ui/svg-icons/action/verified-user';
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import { DEFAULT_STATE as DEFAULT_STATE_ADMIN } from './AccountAdmin';
+import { DEFAULT_STATE as DEFAULT_STATE_ADMIN } from './Admin';
 
-import Actions from '../actions';
-import styleCSS from '../style.css';
+import Actions from '../../actions';
+import styleCSS from '../../style.css';
 
 const DEFAULT_STATE = {
   common: {

@@ -5,22 +5,19 @@ import { connect } from 'react-redux';
 
 import Helmet from 'react-helmet';
 
-import Actions from '../actions';
-// import styleCSS from '../style.css';
+import Actions from '../../actions';
+// import styleCSS from '../../style.css';
 
-const AccountDevelopment = (props) => {
+const AccountTransactions = (props) => {
   return (
     <div>
       <Helmet title="Account" />
-      <div>Charts</div>
-      <div>Portfolio Value</div>
-      <div>Weekly Variation</div>
-      <div>Total Variation</div>
+      AccountTransactions
     </div>
   );
 };
 
-AccountDevelopment.propTypes = {
+AccountTransactions.propTypes = {
   // Injected by React Router
   children: PropTypes.node,
   // Injected by React Redux
@@ -38,4 +35,4 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   uiUpdate: Actions.uiUpdate,
-})(AccountDevelopment);
+})(AccountTransactions);

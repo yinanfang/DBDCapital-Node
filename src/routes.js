@@ -6,10 +6,10 @@ import App from './containers/App';
 import Home from './containers/Home';
 import Account from './containers/Account';
 import Auth from './containers/Auth';
-import AccountOverview from './containers/AccountOverview';
-import AccountDevelopment from './containers/AccountDevelopment';
-import AccountTransactions from './containers/AccountTransactions';
-import AccountAdmin from './containers/AccountAdmin';
+import AccountOverview from './containers/Account/Overview';
+import AccountDevelopment from './containers/Account/Development';
+import AccountTransactions from './containers/Account/Transactions';
+import AccountAdmin from './containers/Account/Admin';
 import Error from './containers/Error';
 
 export default (

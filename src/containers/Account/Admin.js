@@ -9,14 +9,14 @@ import moment from 'moment';
 import validator from 'validator';
 import sweetAlert from 'sweetalert';
 
-import Actions from '../actions';
-import styleCSS from '../style.css';
+import Actions from '../../actions';
+import styleCSS from '../../style.css';
 
-import GCNewTransactionsTable from '../components/tables/GCNewTransactionsTable';
-import GCTransaction, { NewTransaction } from '../../model/GCTransaction';
-import GCAccount from '../../model/GCAccount';
-import type { GCTransactionType, GCNewTransactionInputType } from '../../model/GCTransaction';
-import GCUtil from '../../utils';
+import GCNewTransactionsTable from '../../components/tables/GCNewTransactionsTable';
+import GCTransaction, { NewTransaction } from '../../../model/GCTransaction';
+import GCAccount from '../../../model/GCAccount';
+import type { GCTransactionType, GCNewTransactionInputType } from '../../../model/GCTransaction';
+import GCUtil from '../../../utils';
 
 const DEFAULT_NEW_TRANSACTIONS_COUNT = 3;
 const getPreviousWorkday = () => {
