@@ -12,6 +12,7 @@ import sweetAlert from 'sweetalert';
 import Actions from '../../actions';
 import styleCSS from '../../style.css';
 
+import EditorTransaction, { DEFAULT_STATE as DEFAULT_STATE_EDITOR_TRANSACTION} from './EditorTransaction';
 import GCNewTransactionsTable from '../../components/tables/GCNewTransactionsTable';
 import GCTransaction, { NewTransaction } from '../../../model/GCTransaction';
 import GCAccount from '../../../model/GCAccount';
@@ -45,8 +46,9 @@ const initNewTransactions = () => {
   return result;
 };
 const DEFAULT_STATE = {
-  targetAccount: GCAccount.default(),
-  newTransactions: initNewTransactions(),
+  targetAccount: GCAccount.default(), // Deprecate
+  newTransactions: initNewTransactions(), // Deprecate
+  EditorTransaction: DEFAULT_STATE_EDITOR_TRANSACTION,
 };
 
 const AccountAdmin = (props) => {
@@ -183,7 +185,8 @@ const AccountAdmin = (props) => {
         newTransactionInputOnChange={newTransactionInputOnChange}
         updateNewTransactions={updateNewTransactions}
       />
-      <h2>Next</h2>
+      <br />
+      <EditorTransaction />
     </div>
   );
 };

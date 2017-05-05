@@ -156,7 +156,7 @@ const GCNewTransactionsTable = ({
           </TableBody>
         </Table>
         <RaisedButton label="Add A Row" onClick={newTransactionsAddEmptyRow} />
-        <RaisedButton type="submit" onClick={newTransactionSubmitOnClick} label="Submit" className={styleCSS.accountSubmit} />
+        <RaisedButton type="submit" onClick={newTransactionSubmitOnClick} label="Submit" className={styleCSS.floatRight} />
       </form>
     </Paper>
   );

@@ -54,6 +54,10 @@ body {
   height: 20vh;
 }
 
+.floatRight {
+  float: right;
+}
+
 /* ***************************************************************************
 Home
 *****************************************************************************/
@@ -214,6 +218,7 @@ Account
 
 .accountSectionContainer {
   padding: 20px;
+  overflow: auto;
 
   /* Avoid jQuery toggle jump */
   & h2 {
@@ -284,8 +289,4 @@ Account
 
 .accountInputLong {
   width: 30%;
-}
-
-.accountSubmit {
-  float: right;
 }
