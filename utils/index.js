@@ -1,4 +1,5 @@
 // @flow
+import moment from 'moment';
 
 const parseAuthHeader = (authHeader: string) => {
   const elements = authHeader.split(' ');
@@ -19,8 +20,12 @@ const getJWTFromHttpObject = (httpObject: Request) => {
   return '';
 };
 
-// Prefix market string for API call
-const getFixedSymbol = (symbol: string) => {
+/**
+ * Prefix market string for API call
+ * @param  {[type]} symbol e.g. 600635
+ * @return {[type]}        e.g. sh600635
+ */
+const convertToAttributedSymbol = (symbol: string) => {
   if (symbol) {
     if (symbol.match(/^((600|601|603|900)\d{3})|(204(001|002|003|004|007|014|028|091|182))$/)) {
       // 沪市 - A股: 600, 601, 603; B股: 900; 国债回购: 204
@@ -33,8 +38,21 @@ const getFixedSymbol = (symbol: string) => {
   return null;
 };
 
+const previousWorkday = () => {
+  const today = moment();
+  const day = today.day();
+  let diff = 0;
+  if (day === 6) {
+    diff = 1;
+  } else if (day === 0) {
+    diff = 2;
+  }
+  return today.subtract(diff, 'days');
+};
+
 export default {
-  parseAuthHeader,
+  convertToAttributedSymbol,
   getJWTFromHttpObject,
-  getFixedSymbol,
+  parseAuthHeader,
+  previousWorkday,
 };

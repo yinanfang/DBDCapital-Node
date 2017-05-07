@@ -4,15 +4,13 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import _merge from 'lodash/merge';
-import _cloneDeep from 'lodash/cloneDeep';
-import moment from 'moment';
 import validator from 'validator';
 import sweetAlert from 'sweetalert';
 
 import Actions from '../../actions';
 import styleCSS from '../../style.css';
 
-import EditorTransaction, { DEFAULT_STATE as DEFAULT_STATE_EDITOR_TRANSACTION} from './EditorTransaction';
+import EditorTransaction, { DEFAULT_STATE as DEFAULT_STATE_EDITOR_TRANSACTION } from './EditorTransaction';
 import GCNewTransactionsTable from '../../components/tables/GCNewTransactionsTable';
 import GCTransaction, { NewTransaction } from '../../../model/GCTransaction';
 import GCAccount from '../../../model/GCAccount';
@@ -20,34 +18,9 @@ import type { GCTransactionType, GCNewTransactionInputType } from '../../../mode
 import GCUtil from '../../../utils';
 
 const DEFAULT_NEW_TRANSACTIONS_COUNT = 3;
-const getPreviousWorkday = () => {
-  const today = moment();
-  const day = today.day();
-  let diff = 0;
-  if (day === 6) {
-    diff = 1;
-  } else if (day === 0) {
-    diff = 2;
-  }
-  return today.subtract(diff, 'days');
-};
-const initSingleNewTransaction = () => {
-  const copy = _cloneDeep(NewTransaction);
-  const previousWorkday = getPreviousWorkday();
-  copy.date.defaultValue = previousWorkday.toDate();
-  copy.date.value = previousWorkday.format('YYYY-MM-DD');
-  return copy;
-};
-const initNewTransactions = () => {
-  const result = {};
-  for (let i = 0; i < DEFAULT_NEW_TRANSACTIONS_COUNT; i++) {
-    result[i] = initSingleNewTransaction();
-  }
-  return result;
-};
 const DEFAULT_STATE = {
   targetAccount: GCAccount.default(), // Deprecate
-  newTransactions: initNewTransactions(), // Deprecate
+  newTransactions: GCTransaction.defaultInputWithCount(DEFAULT_NEW_TRANSACTIONS_COUNT), // Deprecate
   EditorTransaction: DEFAULT_STATE_EDITOR_TRANSACTION,
 };
 
@@ -71,7 +44,7 @@ const AccountAdmin = (props) => {
   };
 
   const newTransactionsAddEmptyRow = (event) => {
-    newTransactionsDiff[newTransactionsCount] = initSingleNewTransaction();
+    newTransactionsDiff[newTransactionsCount] = GCTransaction.defaultInput();
     props.newTransactionsUpdate(newTransactionsDiff);
   };
 
@@ -136,7 +109,7 @@ const AccountAdmin = (props) => {
           .reduce((transItem, transKey): GCTransactionType => {
             let value = singleTrans[transKey].value;
             if (transKey === NewTransaction.symbol.key) {
-              value = GCUtil.getFixedSymbol(value);
+              value = GCUtil.convertToAttributedSymbol(value);
             }
             transItem[transKey] = isNaN(value) || transKey === NewTransaction.transId.key || transKey === NewTransaction.note.key
                                   ? value
@@ -193,9 +166,9 @@ const AccountAdmin = (props) => {
 
 AccountAdmin.propTypes = {
   // Injected by React Redux
-  targetAccount: PropTypes.object.isRequired,
+  targetAccount: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   accountInfoRequest: PropTypes.func.isRequired,
-  newTransactions: PropTypes.object.isRequired,
+  newTransactions: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   newTransactionsUpdate: PropTypes.func.isRequired,
   newTransactionsSubmit: PropTypes.func.isRequired,
 };

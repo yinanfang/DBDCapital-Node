@@ -234,6 +234,7 @@ describe('Node Sever API v1.0 Test - Admin Submission Test - /account/newTransac
 
   // TODO: insert a few more. Test close & open position
 
+  // TODO: test to make sure the position belongs to the test user account
   it('the new transaction should be in Position Table', async (done) => {
     DBPosition.find({
       transId: testPosition.transId,

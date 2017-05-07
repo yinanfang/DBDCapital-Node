@@ -7,10 +7,21 @@ import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
+// import GCUtil from '../../../utils';
 // import Actions from '../../actions';
 import styleCSS from '../../style.css';
 
+const MAX_STEP = 2; // [0, 1, 2]
 const DEFAULT_STATE = {
+  step: {
+    index: 0,
+    isRequesting: true,
+  },
+  allAccounts: {}, // {num: GCAccount, ...}
+  targetAccount: {}, // GCAccount.default()
+  newTransactions: {}, // initNewTransactions()
+  oldTransactions: {}, // {num: GCTransaction, ...}
+  result: {},
 };
 
 const EditorTransaction = (props) => {
@@ -99,7 +110,8 @@ const EditorTransaction = (props) => {
 
 EditorTransaction.propTypes = {
   // Injected by React Router
-  children: PropTypes.node,
+  // TODO: mark this as required
+  children: PropTypes.node, // eslint-disable-line react/require-default-props
   // Injected by React Redux
   // isMobileDrawer: PropTypes.bool.isRequired,
 };

@@ -130,7 +130,7 @@ const Account = (props) => {
 
 Account.propTypes = {
   // Injected by React Router
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
   // Injected by React Redux
   isMobileDrawer: PropTypes.bool.isRequired,
   isMobileViewer: PropTypes.bool.isRequired,

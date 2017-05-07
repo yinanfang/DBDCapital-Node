@@ -3,8 +3,10 @@
 import Joi from 'joi-browser';
 import Immutable from 'seamless-immutable';
 import faker from 'faker';
+import _cloneDeep from 'lodash/cloneDeep';
 
 import GCObject from './GCObject';
+import GCUtil from '../utils';
 
 // Default object structure
 export type GCNewTransactionInputDetailType = {
@@ -138,6 +140,7 @@ class GCTransaction extends GCObject {
     this.note = note;
   }
 
+  // Simplified data for network
   static default() {
     return {
       date: new Date(),
@@ -149,6 +152,22 @@ class GCTransaction extends GCObject {
       fee: 0,
       note: '',
     };
+  }
+
+  // Detailed info for user input
+  static defaultInput() {
+    const copy = _cloneDeep(NewTransaction);
+    const previousWorkday = GCUtil.previousWorkday();
+    copy.date.defaultValue = previousWorkday.toDate();
+    copy.date.value = previousWorkday.format('YYYY-MM-DD');
+    return copy;
+  }
+
+  static defaultInputWithCount(count: number = 1) {
+    return Array(count).fill().map((_, i) => i).reduce((results, index) => {
+      results[index] = GCTransaction.defaultInput();
+      return results;
+    }, {});
   }
 
   schema = Joi.object().keys({
