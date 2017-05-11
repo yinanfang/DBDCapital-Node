@@ -7,7 +7,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _merge from 'lodash/merge';
 
 import Actions from '../actions';
-import { DEFAULT_STATE as DEFAULT_STATE_ACCOUNT } from '../containers/Account';
+import { DEFAULT_STATE as DEFAULT_STATE_ACCOUNT_ADMIN } from '../containers/Account/Admin';
 
 const auth = (state = {}, action) => {
   if (action.type === Actions.LOGIN.SUCCESS) {
@@ -33,56 +33,50 @@ const uiStore = (state = uiStoreDefault, action) => {
   return state;
 };
 
-const account = (state = DEFAULT_STATE_ACCOUNT, action) => {
+const accountAdminReducer = (state = DEFAULT_STATE_ACCOUNT_ADMIN, action) => {
+  // TODO: Deprecated. Deleate after the transaction editor is done
   if (action.type === Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS) {
     return {
       ...state,
-      admin: {
-        ...state.admin,
-        targetAccount: action.accountInfo,
-      },
+      targetAccount: action.accountInfo,
     };
   } else if (action.type === Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE) {
     if (action.accountId) {
       // TODO: Move to Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.UPDATE or others ?
       return {
         ...state,
-        admin: {
-          ...state.admin,
-          targetAccount: {
-            _id: action.accountId,
-          },
+        targetAccount: {
+          _id: action.accountId,
         },
       };
     }
     const copy = _cloneDeep(state);
     _merge(copy, {
-      admin: {
-        newTransactions: action.newTransactions,
-      },
+      newTransactions: action.newTransactions,
     });
     // Update fee value if possible
     const updatedRows = Object.keys(action.newTransactions);
     updatedRows.forEach((row) => {
-      const rowData = copy.admin.newTransactions[row];
+      const rowData = copy.newTransactions[row];
       const price: number = parseInt(rowData.price.value, 10);
       const quantity: number = parseInt(rowData.quantity.value, 10);
       if (price && quantity) {
-        rowData.fee.value = `${price * quantity * state.admin.targetAccount.stockBuyFeeRate}`;
+        rowData.fee.value = `${price * quantity * state.targetAccount.stockBuyFeeRate}`;
       }
     });
     return copy;
-  } else if (action.type === Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS) {
-    return {
-      admin: {
-        targetAccount: action.accountInfo,
-        ...state.admin,
-      },
-      ...state,
-    };
   }
+
+  // TODO: add the editorTransaction reducer methods here and potentially separate reducer after done
+
   return state;
 };
+
+const account = combineReducers({
+  common: (state = {}, action) => state,
+  overview: (state = {}, action) => state,
+  admin: accountAdminReducer,
+});
 
 const entities = (state = 0, action) => {
   switch (action.type) {

@@ -10,7 +10,6 @@ import sweetAlert from 'sweetalert';
 import Actions from '../../actions';
 import styleCSS from '../../style.css';
 
-
 import EditorTransaction, { DEFAULT_STATE as DEFAULT_STATE_EDITOR_TRANSACTION } from './EditorTransaction';
 import GCSection from '../../components/GCSection';
 import GCNewTransactionsTable from '../../components/tables/GCNewTransactionsTable';
@@ -23,7 +22,7 @@ const DEFAULT_NEW_TRANSACTIONS_COUNT = 3;
 const DEFAULT_STATE = {
   targetAccount: GCAccount.default(), // Deprecate
   newTransactions: GCTransaction.defaultInputWithCount(DEFAULT_NEW_TRANSACTIONS_COUNT), // Deprecate
-  EditorTransaction: DEFAULT_STATE_EDITOR_TRANSACTION,
+  editorTransaction: DEFAULT_STATE_EDITOR_TRANSACTION,
 };
 
 const AccountAdmin = (props) => {

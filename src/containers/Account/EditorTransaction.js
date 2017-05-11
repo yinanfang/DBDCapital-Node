@@ -8,7 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
 // import GCUtil from '../../../utils';
-// import Actions from '../../actions';
+import Actions from '../../actions';
 import styleCSS from '../../style.css';
 
 const initStep = () => {
@@ -47,6 +47,11 @@ const DEFAULT_STATE = {
 
 const EditorTransaction = ({
   step,
+
+  // function
+  stepIndexIncrement,
+
+
   // uiControl,
   // data
   // newTransactions,
@@ -62,6 +67,11 @@ const EditorTransaction = ({
   // updateNewTransactions,
 }: {
   step: { [key: string]: any },
+
+  // function
+  stepIndexIncrement: () => void
+
+
   // uiControl: {
   // }
   // data
@@ -80,14 +90,6 @@ const EditorTransaction = ({
   let state = {
     finished: false,
     stepIndex: 0,
-  };
-
-  const handleNext = () => {
-    const { stepIndex } = state;
-    state = {
-      stepIndex: stepIndex + 1,
-      finished: stepIndex >= 2,
-    };
   };
 
   const handlePrev = () => {
@@ -113,7 +115,7 @@ const EditorTransaction = ({
         <RaisedButton
           label={stepIndex === 2 ? 'Finish' : 'Next'}
           primary
-          onTouchTap={handleNext}
+          onTouchTap={stepIndexIncrement}
         />
       </div>
     );
@@ -159,18 +161,23 @@ EditorTransaction.propTypes = {
   // Injected by React Router
   // TODO: mark this as required
   children: PropTypes.node, // eslint-disable-line react/require-default-props
-  // Injected by React Redux
+  // States Injected by React Redux
   step: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  // Dispatches Injected by React Redux
+  stepIndexIncrement: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
-    step: state.account.admin.EditorTransaction.step,
+    step: state.account.admin.editorTransaction.step,
   };
 };
-
-export default connect(mapStateToProps, {
-})(EditorTransaction);
+const mapDispatchToProps = {
+  stepIndexIncrement: Actions.account.admin.editorTransaction.step.index.increment,
+  // newTransactionsUpdate: Actions.account.admin.newTransactions.update,
+  // newTransactionsSubmit: Actions.account.admin.newTransactions.submit,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(EditorTransaction);
 export {
   DEFAULT_STATE,
 };

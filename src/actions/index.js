@@ -3,14 +3,22 @@
 // Reference 01: https://github.com/yelouafi/redux-saga/blob/master/examples/real-world/actions/index.js
 // Reference 02: https://engineering.haus.com/so-youve-screwed-up-your-redux-store-or-why-redux-makes-refactoring-easy-400e19606c71#4fed
 
-const UPDATE = 'UPDATE';
+// Number
+const INCREMENT = 'INCREMENT';
+const DECREMENT = 'DECREMENT';
+const RESET = 'RESET';
+// Status
+const START = 'START';
+const END = 'END';
+// Network
 const REQUEST = 'REQUEST';
+const UPDATE = 'UPDATE';
 const SUBMIT = 'SUBMIT';
 const SUCCESS = 'SUCCESS';
 const FAILURE = 'FAILURE';
 
 const createRequestTypes = (base) => {
-  return [UPDATE, REQUEST, SUBMIT, SUCCESS, FAILURE].reduce((acc, type) => {
+  return [INCREMENT, DECREMENT, RESET, START, END, REQUEST, UPDATE, SUBMIT, SUCCESS, FAILURE].reduce((acc, type) => {
     acc[type] = `${base}_${type}`;
     return acc;
   }, {});
@@ -55,6 +63,12 @@ const ACCOUNT = {
   ADMIN: {
     TARGET_ACCOUNT: createRequestTypes('ACCOUNT_ADMIN_TARGET_ACCOUNT'),
     NEW_TRANSACTIONS: createRequestTypes('ACCOUNT_ADMIN_NEW_TRANSACTIONS'),
+    EDITOR_TRANSACTION: {
+      STEP: {
+        INDEX: createRequestTypes('ACCOUNT_ADMIN_EDITOR_TRANSACTION_STEP_INDEX'),
+        IS_REQUESTING: createRequestTypes('ACCOUNT_ADMIN_EDITOR_TRANSACTION_STEP_IS_REQUESTING'),
+      },
+    },
   },
 };
 const account = {
@@ -73,13 +87,26 @@ const account = {
     },
   },
   admin: {
-    targetAccount: {
+    targetAccount: { // Deprecated
       request: (accountId: string) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST, { accountId }),
       success: (accountInfo: {}) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS, { accountInfo }),
     },
-    newTransactions: {
+    newTransactions: { // Deprecated
       update: (newTransactions: {}, accountId: string) => action(ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE, { newTransactions, accountId }),
       submit: (newTransactions: {}, accountId: string) => action(ACCOUNT.ADMIN.NEW_TRANSACTIONS.SUBMIT, { newTransactions, accountId }),
+    },
+    editorTransaction: {
+      step: {
+        index: {
+          // Increase the step index by 1
+          increment: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.INDEX.INCREMENT, {}),
+          reset: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.INDEX.RESET, {}),
+        },
+        isRequesting: {
+          start: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.IS_REQUESTING.START, {}),
+          end: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.IS_REQUESTING.END, {}),
+        },
+      },
     },
   },
 };
