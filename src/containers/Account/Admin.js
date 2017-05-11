@@ -10,7 +10,9 @@ import sweetAlert from 'sweetalert';
 import Actions from '../../actions';
 import styleCSS from '../../style.css';
 
+
 import EditorTransaction, { DEFAULT_STATE as DEFAULT_STATE_EDITOR_TRANSACTION } from './EditorTransaction';
+import GCSection from '../../components/GCSection';
 import GCNewTransactionsTable from '../../components/tables/GCNewTransactionsTable';
 import GCTransaction, { NewTransaction } from '../../../model/GCTransaction';
 import GCAccount from '../../../model/GCAccount';
@@ -28,7 +30,12 @@ const AccountAdmin = (props) => {
   const newTransactionsCount = Object.keys(props.newTransactions).length;
   let newTransactionsDiff = {};
 
-  const toggleSection = (event) => {
+  /**
+   * Toggle closest form within accountSectionContainer
+   * @param  {[type]} event [description]
+   * @return {[type]}       [description]
+   */
+  const toggleCloestForm = (event) => {
     const formElement = $(event.target).closest(`.${styleCSS.accountSectionContainer}`);
     formElement.find('form').first().slideToggle();
   };
@@ -148,7 +155,7 @@ const AccountAdmin = (props) => {
         // data
         newTransactions={props.newTransactions}
         // function
-        toggleSection={toggleSection}
+        toggleSection={toggleCloestForm}
         accountInfoRequest={accountInfoRequest}
         newTransactionsUpdateAccount={newTransactionsUpdateAccount}
         newTransactionsAddEmptyRow={newTransactionsAddEmptyRow}
@@ -159,7 +166,14 @@ const AccountAdmin = (props) => {
         updateNewTransactions={updateNewTransactions}
       />
       <br />
-      <EditorTransaction />
+      <br />
+      <GCSection
+        title="Transaction Editor"
+        idSuffix="editorTransaction"
+        description="Add/Update/Delete transactions here"
+      >
+        <EditorTransaction />
+      </GCSection>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { Router } from 'react-router';
 
 import routes from '../routes';
 
-const Root = (props) => {
+const Root = (props: { store: any, history: any }) => {
   const { store, history } = props;
   return (
     <Provider store={store}>
@@ -16,8 +16,8 @@ const Root = (props) => {
 };
 
 Root.propTypes = {
-  store: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  history: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
 export default Root;

@@ -20,6 +20,11 @@ const getJWTFromHttpObject = (httpObject: Request) => {
   return '';
 };
 
+// const toggleCloestForm = (event) => {
+//   const formElement = $(event.target).closest(`.${styleCSS.accountSectionContainer}`);
+//   formElement.find('form').first().slideToggle();
+// };
+
 /**
  * Prefix market string for API call
  * @param  {[type]} symbol e.g. 600635
@@ -55,4 +60,6 @@ export default {
   getJWTFromHttpObject,
   parseAuthHeader,
   previousWorkday,
+  UI: {
+  },
 };
