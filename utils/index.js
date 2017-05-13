@@ -12,7 +12,8 @@ const parseAuthHeader = (authHeader: string) => {
   return '';
 };
 
-const getJWTFromHttpObject = (httpObject: Request) => {
+// TODO: change httpObject to Request after finding a way to let flow validate "authorization"
+const getJWTFromHttpObject = (httpObject: any) => {
   const authHeader = httpObject.headers.authorization;
   if (authHeader) {
     return parseAuthHeader(authHeader);

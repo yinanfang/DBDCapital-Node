@@ -28,7 +28,7 @@ const GCSection = (props: any) => {
 
   return (
     <Paper id={`section_${props.idSuffix}`} className={styleCSS.section}>
-      <Toolbar onTouchTap={toggleSectionDescriptionAndContent}>
+      <Toolbar id="sectionTitle" onTouchTap={toggleSectionDescriptionAndContent}>
         <ToolbarGroup>
           <ToolbarTitle text={props.title} />
         </ToolbarGroup>

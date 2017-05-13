@@ -3,13 +3,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 // import Paper from 'material-ui/Paper';
-import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+// import RaisedButton from 'material-ui/RaisedButton';
+// import FlatButton from 'material-ui/FlatButton';
 
 // import GCUtil from '../../../utils';
+import GCStepper from '../../components/GCStepper';
 import Actions from '../../actions';
-import styleCSS from '../../style.css';
+// import styleCSS from '../../style.css';
 
 const initStep = () => {
   const content: { [key: number]: {[key: string]: string} } = {};
@@ -50,6 +50,7 @@ const EditorTransaction = ({
 
   // function
   stepIndexIncrement,
+  stepIndexDecrement,
 
 
   // uiControl,
@@ -69,7 +70,8 @@ const EditorTransaction = ({
   step: { [key: string]: any },
 
   // function
-  stepIndexIncrement: () => void
+  stepIndexIncrement: () => void,
+  stepIndexDecrement: () => void
 
 
   // uiControl: {
@@ -87,38 +89,8 @@ const EditorTransaction = ({
   // newTransactionInputOnChange: (event: any, text: string) => void,
   // updateNewTransactions: (row: number, inputName: string, content: string) => void
 }) => {
-  let state = {
-    finished: false,
-    stepIndex: 0,
-  };
-
-  const handlePrev = () => {
-    const { stepIndex } = state;
-    if (stepIndex > 0) {
-      Object.assign({}, state, { stepIndex: stepIndex - 1 });
-    }
-  };
-
   const pullAllAccountInfo = (): void => {
     console.log('pulling!');
-  };
-
-  const singleStepControlButton = (stepIndex: number) => {
-    return (
-      <div className={styleCSS.floatRight}>
-        <FlatButton
-          label="Back"
-          disabled={stepIndex === 0}
-          onTouchTap={handlePrev}
-          style={{ marginRight: 12 }}
-        />
-        <RaisedButton
-          label={stepIndex === 2 ? 'Finish' : 'Next'}
-          primary
-          onTouchTap={stepIndexIncrement}
-        />
-      </div>
-    );
   };
 
   const singleStepContainer = (stepIndex: number = 0) => {
@@ -127,7 +99,6 @@ const EditorTransaction = ({
         <div>
           {pullAllAccountInfo()}
           {step.content[stepIndex].descriptiton}
-          {singleStepControlButton(state.stepIndex)}
         </div>
       );
     }
@@ -135,25 +106,17 @@ const EditorTransaction = ({
   };
 
   return (
-    <form
-      name="EditorTransaction"
-      style={{
-        overflow: 'auto', // clearFix for material-ui Button
-      }}
+    <GCStepper
+      step={step}
+      stepIndexIncrement={stepIndexIncrement}
+      stepIndexDecrement={stepIndexDecrement}
     >
-      <Stepper activeStep={step.index} style={{ width: '100%', maxWidth: 600, margin: 'auto' }}>
-        {[...Array(step.maxCount)].map((_, i) => {
-          return (
-            <Step
-              key={i} // eslint-disable-line react/no-array-index-key
-            >
-              <StepLabel>{step.content[i].title}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
-      {singleStepContainer(step.stepIndex)}
-    </form>
+      <form
+        name="EditorTransaction"
+      >
+        {singleStepContainer(step.index)}
+      </form>
+    </GCStepper>
   );
 };
 
@@ -174,6 +137,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = {
   stepIndexIncrement: Actions.account.admin.editorTransaction.step.index.increment,
+  stepIndexDecrement: Actions.account.admin.editorTransaction.step.index.decrement,
   // newTransactionsUpdate: Actions.account.admin.newTransactions.update,
   // newTransactionsSubmit: Actions.account.admin.newTransactions.submit,
 };

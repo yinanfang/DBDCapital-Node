@@ -68,7 +68,32 @@ const accountAdminReducer = (state = DEFAULT_STATE_ACCOUNT_ADMIN, action) => {
   }
 
   // TODO: add the editorTransaction reducer methods here and potentially separate reducer after done
-
+  if (action.type === Actions.ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.INDEX.INCREMENT) {
+    const maxIndex = state.editorTransaction.step.maxCount;
+    const currentIndex = state.editorTransaction.step.index;
+    const newIndex = currentIndex < maxIndex ? currentIndex + 1 : currentIndex;
+    return Object.assign({}, state, {
+      editorTransaction: {
+        ...state.editorTransaction,
+        step: {
+          ...state.editorTransaction.step,
+          index: newIndex,
+        },
+      },
+    });
+  } else if (action.type === Actions.ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.INDEX.DECREMENT) {
+    const currentIndex = state.editorTransaction.step.index;
+    const newIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
+    return Object.assign({}, state, {
+      editorTransaction: {
+        ...state.editorTransaction,
+        step: {
+          ...state.editorTransaction.step,
+          index: newIndex,
+        },
+      },
+    });
+  }
   return state;
 };
 

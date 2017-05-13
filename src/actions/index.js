@@ -100,6 +100,7 @@ const account = {
         index: {
           // Increase the step index by 1
           increment: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.INDEX.INCREMENT, {}),
+          decrement: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.INDEX.DECREMENT, {}),
           reset: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.INDEX.RESET, {}),
         },
         isRequesting: {
