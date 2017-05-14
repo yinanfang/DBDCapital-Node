@@ -48,8 +48,8 @@ export default class GCAccount extends GCObject {
       _id: 'defaultId',
       name: 'defaultName',
       owner: GCUser.default(),
-      stockBuyFeeRate: 0.00,
-      stockSellFeeRate: 0.00,
+      stockBuyFeeRate: 0.01,
+      stockSellFeeRate: 0.01,
       _updatedAt: new Date(),
       _createdAt: new Date(),
     };

@@ -4,13 +4,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import _merge from 'lodash/merge';
+import _cloneDeep from 'lodash/cloneDeep';
 import validator from 'validator';
 import sweetAlert from 'sweetalert';
 
 import Actions from '../../actions';
 import styleCSS from '../../style.css';
 
-import EditorTransaction, { DEFAULT_STATE as DEFAULT_STATE_EDITOR_TRANSACTION } from './EditorTransaction';
+import EditorTransaction, { DEFAULT_STATE as DEFAULT_STATE_EDITOR_TRANSACTION } from './EditorTransaction/';
 import GCSection from '../../components/GCSection';
 import GCNewTransactionsTable from '../../components/tables/GCNewTransactionsTable';
 import GCTransaction, { NewTransaction } from '../../../model/GCTransaction';
@@ -73,7 +74,21 @@ const AccountAdmin = (props) => {
         [inputName]: updates,
       },
     });
-    props.newTransactionsUpdate(newTransactionsDiff);
+    // TODO: use selector to minimize the calculation and only post updated object
+    const copy = _cloneDeep(props.newTransactions);
+    _merge(copy, newTransactionsDiff);
+    // Update fee value if possible
+    const updatedRows = Object.keys(newTransactionsDiff);
+    updatedRows.forEach((part) => {
+      const rowData = copy[part];
+      const price: number = parseInt(rowData.price.value, 10);
+      const quantity: number = parseInt(rowData.quantity.value, 10);
+      if (price && quantity) {
+        rowData.fee.value = `${price * quantity * props.targetAccount.stockBuyFeeRate}`;
+      }
+      console.log('updatedRows part', part, updates, rowData);
+    });
+    props.newTransactionsUpdate(copy);
   };
 
   const newTransactionsTableRowOnCheck = (event, isInputChecked: boolean) => {

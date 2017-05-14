@@ -5,7 +5,7 @@ import { Route, IndexRoute } from 'react-router';
 import App from './containers/App';
 import Home from './containers/Home';
 import Auth from './containers/Auth';
-import Account from './containers/Account';
+import Account from './containers/Account/';
 import AccountOverview from './containers/Account/Overview';
 import AccountDevelopment from './containers/Account/Development';
 import AccountTransactions from './containers/Account/Transactions';

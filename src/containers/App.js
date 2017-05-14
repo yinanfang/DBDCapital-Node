@@ -56,9 +56,10 @@ const App = (props) => {
 
 App.propTypes = {
   // Injected by React Router
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
   // Injected by React Redux
   uiUpdate: PropTypes.func.isRequired,
+  uiStore: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
 const mapStateToProps = (state) => {

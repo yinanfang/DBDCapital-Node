@@ -68,6 +68,9 @@ const ACCOUNT = {
         INDEX: createRequestTypes('ACCOUNT_ADMIN_EDITOR_TRANSACTION_STEP_INDEX'),
         IS_REQUESTING: createRequestTypes('ACCOUNT_ADMIN_EDITOR_TRANSACTION_STEP_IS_REQUESTING'),
       },
+      SELECT: {
+        ALL_ACCOUNTS: createRequestTypes('ACCOUNT_ADMIN_EDITOR_TRANSACTION_SELECT_ALL_ACCOUNTS'),
+      },
     },
   },
 };
@@ -106,6 +109,11 @@ const account = {
         isRequesting: {
           start: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.IS_REQUESTING.START, {}),
           end: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.IS_REQUESTING.END, {}),
+        },
+      },
+      select: {
+        allAccounts: {
+          request: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.SELECT.ALL_ACCOUNTS.REQUEST, {}),
         },
       },
     },

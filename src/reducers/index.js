@@ -3,11 +3,12 @@
 import { routerReducer as routing } from 'react-router-redux';
 import { combineReducers } from 'redux';
 
-import _cloneDeep from 'lodash/cloneDeep';
-import _merge from 'lodash/merge';
+// import _cloneDeep from 'lodash/cloneDeep';
+// import _merge from 'lodash/merge';
 
 import Actions from '../actions';
 import { DEFAULT_STATE as DEFAULT_STATE_ACCOUNT_ADMIN } from '../containers/Account/Admin';
+import { DEFAULT_STATE as DEFAULT_STATE_ACCOUNT_EDITOR_TRANSACTION } from '../containers/Account/EditorTransaction';
 
 const auth = (state = {}, action) => {
   if (action.type === Actions.LOGIN.SUCCESS) {
@@ -33,69 +34,61 @@ const uiStore = (state = uiStoreDefault, action) => {
   return state;
 };
 
-const accountAdminReducer = (state = DEFAULT_STATE_ACCOUNT_ADMIN, action) => {
-  // TODO: Deprecated. Deleate after the transaction editor is done
+// TODO: Deprecated. Deleate after the transaction editor is done
+const accountAdminTargetAccountReducer = (state = DEFAULT_STATE_ACCOUNT_ADMIN.targetAccount, action) => {
   if (action.type === Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS) {
-    return {
-      ...state,
-      targetAccount: action.accountInfo,
-    };
+    return action.accountInfo;
   } else if (action.type === Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE) {
     if (action.accountId) {
       // TODO: Move to Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.UPDATE or others ?
       return {
-        ...state,
-        targetAccount: {
-          _id: action.accountId,
-        },
+        _id: action.accountId,
       };
     }
-    const copy = _cloneDeep(state);
-    _merge(copy, {
-      newTransactions: action.newTransactions,
-    });
-    // Update fee value if possible
-    const updatedRows = Object.keys(action.newTransactions);
-    updatedRows.forEach((row) => {
-      const rowData = copy.newTransactions[row];
-      const price: number = parseInt(rowData.price.value, 10);
-      const quantity: number = parseInt(rowData.quantity.value, 10);
-      if (price && quantity) {
-        rowData.fee.value = `${price * quantity * state.targetAccount.stockBuyFeeRate}`;
-      }
-    });
-    return copy;
   }
+  return state;
+};
 
-  // TODO: add the editorTransaction reducer methods here and potentially separate reducer after done
+// TODO: Move to Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.UPDATE or others ?
+const accountAdminNewTransactionsReducer = (state = DEFAULT_STATE_ACCOUNT_ADMIN.newTransactions, action) => {
+  if (action.type === Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE) {
+    return Object.assign({}, state, action.newTransactions);
+  }
+  return state;
+};
+
+const accountAdminEditorTransactionStepReducer = (state = DEFAULT_STATE_ACCOUNT_EDITOR_TRANSACTION.step, action) => {
   if (action.type === Actions.ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.INDEX.INCREMENT) {
-    const maxIndex = state.editorTransaction.step.maxCount;
-    const currentIndex = state.editorTransaction.step.index;
+    const maxIndex = state.maxCount;
+    const currentIndex = state.index;
     const newIndex = currentIndex < maxIndex ? currentIndex + 1 : currentIndex;
     return Object.assign({}, state, {
-      editorTransaction: {
-        ...state.editorTransaction,
-        step: {
-          ...state.editorTransaction.step,
-          index: newIndex,
-        },
-      },
+      ...state,
+      index: newIndex,
     });
   } else if (action.type === Actions.ACCOUNT.ADMIN.EDITOR_TRANSACTION.STEP.INDEX.DECREMENT) {
-    const currentIndex = state.editorTransaction.step.index;
+    const currentIndex = state.index;
     const newIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
     return Object.assign({}, state, {
-      editorTransaction: {
-        ...state.editorTransaction,
-        step: {
-          ...state.editorTransaction.step,
-          index: newIndex,
-        },
-      },
+      ...state,
+      index: newIndex,
     });
   }
   return state;
 };
+
+const accountAdminEditorTransactionReducer = (state = DEFAULT_STATE_ACCOUNT_EDITOR_TRANSACTION, action) => {
+  return {
+    ...state,
+    step: accountAdminEditorTransactionStepReducer(state.step, action),
+  };
+};
+
+const accountAdminReducer = combineReducers({
+  targetAccount: accountAdminTargetAccountReducer,
+  newTransactions: accountAdminNewTransactionsReducer,
+  editorTransaction: accountAdminEditorTransactionReducer,
+});
 
 const account = combineReducers({
   common: (state = {}, action) => state,

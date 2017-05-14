@@ -7,8 +7,10 @@ import { connect } from 'react-redux';
 // import FlatButton from 'material-ui/FlatButton';
 
 // import GCUtil from '../../../utils';
-import GCStepper from '../../components/GCStepper';
-import Actions from '../../actions';
+import GCStepper from '../../../components/GCStepper';
+import Actions from '../../../actions';
+import EditorTransactionSelect, { DEFAULT_STATE as DEFAULT_STATE_SELECT } from './Select';
+// import EditorTransactionEdit, { DEFAULT_STATE as DEFAULT_STATE_EDIT } from './Edit';
 // import styleCSS from '../../style.css';
 
 const initStep = () => {
@@ -38,7 +40,8 @@ const initStep = () => {
 };
 const DEFAULT_STATE = {
   step: initStep(),
-  allAccounts: {}, // {num: GCAccount, ...}
+  select: DEFAULT_STATE_SELECT,
+  editorType: '',
   targetAccount: {}, // GCAccount.default()
   newTransactions: {}, // GCTransaction.defaultInputWithCount(DEFAULT_NEW_TRANSACTIONS_COUNT)
   oldTransactions: {}, // {num: GCTransaction, ...}
@@ -89,17 +92,10 @@ const EditorTransaction = ({
   // newTransactionInputOnChange: (event: any, text: string) => void,
   // updateNewTransactions: (row: number, inputName: string, content: string) => void
 }) => {
-  const pullAllAccountInfo = (): void => {
-    console.log('pulling!');
-  };
-
   const singleStepContainer = (stepIndex: number = 0) => {
     if (stepIndex === 0) { // Select
       return (
-        <div>
-          {pullAllAccountInfo()}
-          {step.content[stepIndex].descriptiton}
-        </div>
+        <EditorTransactionSelect />
       );
     }
     return '';
