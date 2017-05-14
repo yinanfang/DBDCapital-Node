@@ -1,6 +1,7 @@
 // @flow
 
 import Joi from 'joi-browser';
+import Parse from 'parse';
 
 import GCObject from './GCObject';
 
@@ -90,6 +91,20 @@ export default class GCUser extends GCObject {
 
   validate(): boolean {
     return Joi.validate(this, this.schema);
+  }
+
+  static simplifyParseObject(user: Parse.User): { _id: string, username: string, type: string } {
+    return {
+      _id: user.id,
+      username: user.getUsername(),
+      // parseSessionToken: user.getSessionToken(),
+      type: user.get('type'),
+      // Need extra priviledge to get email: https://github.com/parse-community/parse-server/issues/3301
+      // email: user.getEmail(),
+      firstName: user.get('firstName'),
+      lastName: user.get('lastName'),
+      phone: user.get('phone'),
+    };
   }
 }
 

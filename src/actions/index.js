@@ -55,6 +55,10 @@ const register = {
 };
 
 const ACCOUNT = {
+  SINGLE: createRequestTypes('ACCOUNT_SINGLE'),
+  MULTI: {
+    ALL_ACCOUNTS: createRequestTypes('ACCOUNT_MULTI_ALL_ACCOUNTS'),
+  },
   INFO: createRequestTypes('ACCOUNT_INFO'),
   ADD: createRequestTypes('ACCOUNT_ADD'),
   OVERVIEW: {
@@ -75,6 +79,12 @@ const ACCOUNT = {
   },
 };
 const account = {
+  // single: {},
+  multi: {
+    allAccounts: {
+      request: () => action(ACCOUNT.MULTI.ALL_ACCOUNTS.REQUEST, {}),
+    },
+  },
   create: {
     request: (page: string, name: string, scope: {}) => action(ACCOUNT.ADD.REQUEST, { page, name, scope }),
     success: (payload: {}) => action(ACCOUNT.ADD.SUCCESS, { payload }),

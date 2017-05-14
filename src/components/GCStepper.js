@@ -4,10 +4,52 @@ import React, { PropTypes } from 'react';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import Immutable from 'seamless-immutable';
+import _cloneDeep from 'lodash/cloneDeep';
 
 import styleCSS from '../style.css';
 
-const GCStepper = (props: any) => {
+export type GCStepperInputType = {
+  index: number,
+  maxCount: number,
+  isRequesting: boolean,
+  content: {
+    [key: number]: {
+      title: string,
+      descriptiton: string
+    }
+  }
+};
+
+const initStep = (): GCStepperInputType => {
+  const content = {};
+  content[0] = {
+    title: 'Step title 0',
+    descriptiton: 'Step descriptiton 0',
+  };
+  content[1] = {
+    title: 'Step title 1',
+    descriptiton: 'Step descriptiton 1',
+  };
+  content[2] = {
+    title: 'Step title 2',
+    descriptiton: 'Step descriptiton 2',
+  };
+  return Immutable({
+    index: 0,
+    maxCount: Object.keys(content).length,
+    isRequesting: false,
+    content,
+  });
+};
+const DEFAULT_STATE_STEP: GCStepperInputType = _cloneDeep(initStep());
+
+const GCStepper = (props: {
+  step: GCStepperInputType,
+  stepIndexIncrement: () => void,
+  stepIndexDecrement: () => void,
+  children: any
+}) => {
   return (
     <div
       style={{
@@ -55,3 +97,6 @@ GCStepper.propTypes = {
 };
 
 export default GCStepper;
+export {
+  DEFAULT_STATE_STEP,
+};

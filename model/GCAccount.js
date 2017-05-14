@@ -1,6 +1,7 @@
 // @flow
 
 import Joi from 'joi-browser';
+import Parse from 'parse';
 
 import GCObject from './GCObject';
 import GCUser from './GCUser';
@@ -68,5 +69,17 @@ export default class GCAccount extends GCObject {
 
   validate(): boolean {
     return Joi.validate(this, this.schema);
+  }
+
+  static simplifyParseObject(account: Parse.Object): GCAccountType {
+    return {
+      _id: account.id,
+      name: account.get('name'),
+      owner: GCUser.simplifyParseObject(account.get('owner')),
+      stockBuyFeeRate: account.get('stockBuyFeeRate'),
+      stockSellFeeRate: account.get('stockSellFeeRate'),
+      _updatedAt: account.updatedAt,
+      _createdAt: account.createdAt,
+    };
   }
 }

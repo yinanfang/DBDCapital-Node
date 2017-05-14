@@ -29,7 +29,17 @@ function* account() {
   }
 }
 
-function* accountOverviewInfoRequest() {
+function* accountAllBasicInfo() {
+  while (true) {
+    // TODO: Cancel previous request if there's new one
+    yield take(Actions.ACCOUNT.MULTI.ALL_ACCOUNTS.REQUEST);
+    console.log('saga/index.js - accountAllBasicInfo');
+    const allAccounts = yield call(API.account.multi.allAccounts);
+    console.log('allAccounts', allAccounts);
+  }
+}
+
+function* accountOverviewInfo() {
   while (true) {
     yield take(Actions.ACCOUNT.OVERVIEW.INFO.REQUEST);
     console.log('---->sss');
@@ -41,7 +51,7 @@ function* accountAdminTargetAccount() {
     // TODO: Cancel previous request if there's new one
     const { accountId } = yield take(Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST);
     yield put(Actions.loading.update(true));
-    const accountInfo = yield call(API.account.info, accountId);
+    const accountInfo = yield call(API.account.single.info, accountId);
     console.log('account info result', accountInfo);
     yield put(Actions.account.admin.targetAccount.success(accountInfo));
     yield put(Actions.loading.update(false));
@@ -73,7 +83,8 @@ export default function* root() {
     // Feature
     fork(login),
     fork(account),
-    fork(accountOverviewInfoRequest),
+    fork(accountAllBasicInfo),
+    fork(accountOverviewInfo),
     fork(accountAdminTargetAccount),
     fork(accountAdminNewTransactionsSubmit),
     // Utility

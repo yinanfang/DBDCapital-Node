@@ -7,14 +7,15 @@ import { connect } from 'react-redux';
 // import FlatButton from 'material-ui/FlatButton';
 
 // import GCUtil from '../../../utils';
-import GCStepper from '../../../components/GCStepper';
+import GCStepper, { DEFAULT_STATE_STEP } from '../../../components/GCStepper';
 import Actions from '../../../actions';
 import EditorTransactionSelect, { DEFAULT_STATE as DEFAULT_STATE_SELECT } from './Select';
 // import EditorTransactionEdit, { DEFAULT_STATE as DEFAULT_STATE_EDIT } from './Edit';
 // import styleCSS from '../../style.css';
 
-const initStep = () => {
-  const content: { [key: number]: {[key: string]: string} } = {};
+const prepareStep = () => {
+  const step = DEFAULT_STATE_STEP;
+  const content = {};
   content[0] = {
     title: 'Select account & action',
     descriptiton: 'Select account from dropdown',
@@ -31,15 +32,12 @@ const initStep = () => {
     title: 'Result',
     descriptiton: 'See results!',
   };
-  return {
-    index: 0,
-    maxCount: Object.keys(content).length,
-    isRequesting: false,
-    content,
-  };
+  step.content = content;
+  step.maxCount = Object.keys(content).length;
+  return step;
 };
 const DEFAULT_STATE = {
-  step: initStep(),
+  step: prepareStep(),
   select: DEFAULT_STATE_SELECT,
   editorType: '',
   targetAccount: {}, // GCAccount.default()
@@ -106,6 +104,7 @@ const EditorTransaction = ({
       step={step}
       stepIndexIncrement={stepIndexIncrement}
       stepIndexDecrement={stepIndexDecrement}
+      children={(null: any)} // eslint-disable-line react/no-children-prop
     >
       <form
         name="EditorTransaction"

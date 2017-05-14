@@ -182,7 +182,7 @@ describe('Node Sever API v1.0 Test - General API Tests', () => {
       });
   });
 
-  it('should be able do Actions.ACCOUNT.[INFO | ADMIN.TARGET_ACCOUNT].REQUEST with correct accountId and get the same result', async (done) => {
+  it('should be able do Actions.ACCOUNT.INFO | ADMIN.TARGET_ACCOUNT].REQUEST with correct accountId and get the same result', async (done) => {
     const body1 = await requestNodeAPI.post('/account')
       .send({
         action: Actions.ACCOUNT.INFO.REQUEST,

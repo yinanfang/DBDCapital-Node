@@ -6,12 +6,14 @@ import { Request, Response, NextFunction } from 'express';
 // import _ from 'lodash';
 import Promise from 'bluebird';
 
+import GCAPIConstant from './GCAPIConstant';
 import Config from '../../config';
 import logger from '../../utils/logger';
 import GCSecurity from '../../model/GCSecurity';
-import { GCSecurityUtil, GCUserUtil, GCAccountUtil, SinaStock } from './GCAPIUtil';
+import { GCSecurityUtil, GCUserUtil, SinaStock } from './GCAPIUtil';
 import GCTransaction from '../../model/GCTransaction';
-import { Role as GCUserRole } from '../../model/GCUser';
+import GCAccount from '../../model/GCAccount';
+import GCUser, { Role as GCUserRole } from '../../model/GCUser';
 import DBPosition from './db/DBPosition';
 import Actions from '../../src/actions';
 
@@ -32,7 +34,7 @@ const Register = (req: Request, res: Response, next: NextFunction) => {
   newUser.signUp(null, {
     success: (user) => {
       logger.debug(`sign up successfully...${JSON.stringify(user)}`);
-      const userInfo = GCUserUtil.simple(user);
+      const userInfo = GCUser.simplifyParseObject(user);
       res.status(200).json(userInfo);
     },
     error: (user, error) => {
@@ -54,7 +56,7 @@ const Login = (req: Request, res: Response, next: NextFunction) => {
   Parse.User.logIn(req.body.username, req.body.password)
     .then((user) => {
       logger.info(`Login success - ${user.constructor.name} - ${JSON.stringify(user)}`);
-      const originalJWTPayload = GCUserUtil.simple(user);
+      const originalJWTPayload = GCUser.simplifyParseObject(user);
       const token = jwt.sign(originalJWTPayload, Config.JWT_SECRET);
       res.cookie('token', token, { maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
       res.status(200);
@@ -94,39 +96,7 @@ async function AccountCreateRequest(req: Request, res: Response) {
       logger.debug('newAccount add error:', error);
       res.status(400).json(error);
     });
-  const payload = GCAccountUtil.simple(newAccount);
-  res.status(200).json(payload);
-}
-
-async function AccountInfoRequest(req: Request, res: Response) {
-  // Check param
-  if (req.body.accountId == null) {
-    res.status(400).json({ error: 'Missing req.body.accountId!' });
-    return;
-  }
-  // Handle request
-  logger.debug('AccountInfoRequest!!!');
-  const PAccount = Parse.Object.extend('Account');
-  const queryAccount = new Parse.Query(PAccount);
-  queryAccount.include('owner');
-  const result = await queryAccount.get(req.body.accountId,
-    r => r,
-    (r, error) => {
-      logger.error(`DB Account query fail - ${JSON.stringify(r)} - ${JSON.stringify(error)}`);
-    })
-    // Catch non-error rejection
-    .catch(err => err);
-  console.log('/account result', result, typeof result, JSON.stringify(result));
-
-  // Parse non-error rejection
-  if (result.code === 101) {
-    logger.error(`/account result non-error rejection ${JSON.stringify(result)}`);
-    res.status(400).json(result);
-    return;
-  }
-
-  const payload = GCAccountUtil.simple(result);
-  console.log('payload', payload);
+  const payload = GCAccount.simplifyParseObject(newAccount);
   res.status(200).json(payload);
 }
 
@@ -155,6 +125,82 @@ async function AccountInfoRequest(req: Request, res: Response) {
  *
 
  */
+async function AccountInfoSingleRequest(req: Request, res: Response) {
+  // Check param
+  if (req.body.accountId == null) {
+    res.status(400).json({ error: 'Missing req.body.accountId!' });
+    return;
+  }
+  // Handle request
+  logger.debug('AccountInfoSingleRequest!!!');
+  const PAccount = Parse.Object.extend('Account');
+  const queryAccount = new Parse.Query(PAccount);
+  queryAccount.include('owner');
+  const result = await queryAccount.get(req.body.accountId,
+    r => r,
+    (r, error) => {
+      logger.error(`DB Account query fail - ${JSON.stringify(r)} - ${JSON.stringify(error)}`);
+    })
+    // Catch non-error rejection
+    .catch(err => err);
+  console.log('/account result', result, typeof result, JSON.stringify(result));
+
+  // Parse non-error rejection
+  if (result.code === 101) {
+    logger.error(`/account result non-error rejection ${JSON.stringify(result)}`);
+    res.status(400).json(result);
+    return;
+  }
+
+  const payload = GCAccount.simplifyParseObject(result);
+  console.log('payload', payload);
+  res.status(200).json(payload);
+}
+
+/**
+ * Return all account basic info
+ * @param {[type]} req [description]
+ * @param {[type]} res [description]
+ */
+async function AccountInfoMultipleRequest(req: Request, res: Response) {
+  // Check param
+  if (req.body.scope == null) {
+    res.status(400).json({ error: 'Missing req.body.scope!' });
+    return;
+  }
+  // Handle request
+  logger.debug('AccountInfoMultipleRequest!!!');
+  if (req.body.scope === GCAPIConstant.Account.BASIC_INFO) {
+    const PAccount = Parse.Object.extend('Account');
+    const queryAccount = new Parse.Query(PAccount);
+    queryAccount.include('owner');
+    queryAccount.include('email');
+    const results = await queryAccount.find(
+      rs => rs,
+      (rs, error) => {
+        logger.error(`DB Account query fail - ${JSON.stringify(rs)} - ${JSON.stringify(error)}`);
+      })
+      // Catch non-error rejection
+      .catch(err => err);
+    console.log('/account results', results, typeof results, JSON.stringify(results));
+
+    // Parse non-error rejection
+    if (results.code === 101) {
+      logger.error(`/account result non-error rejection ${JSON.stringify(results)}`);
+      res.status(400).json(results);
+      return;
+    }
+
+    const payload = results.map(r => GCAccount.simplifyParseObject(r));
+    console.log('payload', payload);
+    res.status(200).json(payload);
+  } else {
+    const msg = '/account AccountInfoMultipleRequest unknown error';
+    logger.error(msg);
+    res.status(400).json({ error: msg });
+  }
+}
+
 async function Account(req: Request, res: Response, next: NextFunction) {
   logger.debug('API /Account started with jwt------>', req.jwt);
   logger.debug('API /Account started with req.body------>', req.body);
@@ -163,7 +209,9 @@ async function Account(req: Request, res: Response, next: NextFunction) {
     if (req.body.action === Actions.ACCOUNT.ADD.REQUEST) {
       await AccountCreateRequest(req, res);
     } else if (req.body.action === Actions.ACCOUNT.INFO.REQUEST || req.body.action === Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST) {
-      await AccountInfoRequest(req, res);
+      await AccountInfoSingleRequest(req, res);
+    } else if (req.body.action === Actions.ACCOUNT.MULTI.ALL_ACCOUNTS.REQUEST) {
+      await AccountInfoMultipleRequest(req, res);
     }
   } else {
     res.sendStatus(401); // Unauthorized

@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 // import GCUtil from '../../../utils';
 // import GCStepper from '../../../components/GCStepper';
-// import Actions from '../../../actions';
+import Actions from '../../../actions';
 // import styleCSS from '../../style.css';
 
 const DEFAULT_STATE = {
@@ -18,11 +18,14 @@ const DEFAULT_STATE = {
 
 const EditorTransactionSelect = ({
   step,
+  allAccountsRequest,
 }: {
-  step: { [key: string]: any }
+  step: { [key: string]: any },
+  allAccountsRequest: () => void
 }) => {
   const pullAllAccountInfo = (): void => {
-    console.log('pulling!');
+    console.log('pulling all account basic info!');
+    allAccountsRequest();
   };
 
   return (
@@ -39,6 +42,7 @@ EditorTransactionSelect.propTypes = {
   children: PropTypes.node, // eslint-disable-line react/require-default-props
   // States Injected by React Redux
   step: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  allAccountsRequest: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -47,6 +51,7 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = {
+  allAccountsRequest: Actions.account.multi.allAccounts.request,
   // newTransactionsUpdate: Actions.account.admin.newTransactions.update,
   // newTransactionsSubmit: Actions.account.admin.newTransactions.submit,
 };

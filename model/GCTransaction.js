@@ -188,7 +188,6 @@ class GCTransaction extends GCObject {
 }
 
 export default GCTransaction;
-
 export {
   NewTransaction,
 };

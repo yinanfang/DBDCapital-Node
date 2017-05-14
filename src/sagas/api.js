@@ -7,6 +7,7 @@ import Raven from 'raven-js';
 import Path from '../../path';
 import type { GCNewTransactionInputType } from '../../model/GCTransaction';
 import Actions from '../actions';
+import GCAPIConstant from '../../api/v1.0/GCAPIConstant';
 
 const login = (username: string, password: string) => {
   console.log(`src/api.js-------> ${Path.API.basePath}/login`);
@@ -44,17 +45,33 @@ const user = (token: string) => {
 };
 
 const account = {
-  info: (accountId: string, scope: {}): {} => {
-    console.log('saga API account...');
-    return request
-      .post(`${Path.API.basePath}/account`, {
-        action: Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST,
-        accountId,
-      })
-      .then((response) => {
-        console.log('account info succeeded!');
-        return response.data;
-      });
+  single: {
+    info: (accountId: string, scope: {}): {} => {
+      console.log('saga API account...');
+      return request
+        .post(`${Path.API.basePath}/account`, {
+          action: Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.REQUEST,
+          accountId,
+        })
+        .then((response) => {
+          console.log('account info succeeded!');
+          return response.data;
+        });
+    },
+  },
+  multi: {
+    allAccounts: () => {
+      console.log('saga API allAccounts...');
+      return request
+        .post(`${Path.API.basePath}/account`, {
+          action: Actions.ACCOUNT.MULTI.ALL_ACCOUNTS.REQUEST,
+          scope: GCAPIConstant.Account.BASIC_INFO,
+        })
+        .then((response) => {
+          console.log('account allAccounts succeeded!');
+          return response.data;
+        });
+    },
   },
 };
 
