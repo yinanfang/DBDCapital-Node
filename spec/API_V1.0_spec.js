@@ -118,7 +118,7 @@ describe('Node Sever API v1.0 Test - Sanity Checks', () => {
 
 const testPosition = {
   date: '2017-03-30T16:00:00.000Z',
-  transId: `apiTest${Date.now()}`,
+  transId: `apiTest_${Date.now()}`,
   symbol: 'sh600635',
   action: 'Buy',
   price: 22.34,
@@ -274,7 +274,11 @@ describe('Node Sever API v1.0 Test Main Cleanup', () => {
     try {
       await DBPosition.deleteMany({
         // option m: For patterns that include anchors
-        transId: { $regex: /^apiTest.*$/, $options: 'm' },
+        transId: { $regex: /^apiTest_.*$/, $options: 'm' },
+      });
+      await DBAccount.deleteMany({
+        // option m: For patterns that include anchors
+        name: { $regex: /^apiTest_.*$/, $options: 'm' },
       });
       await DBAccount.remove({
         _id: TestUser.account._id,

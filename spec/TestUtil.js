@@ -54,7 +54,7 @@ const TestUser = {
   account: {
     _id: '',
     ownerId: '',
-    name: 'Client Account',
+    name: 'apiTest_Client_Account',
     stockBuyFeeRate: 0.0052,
     stockSellFeeRate: 0.0021,
   },

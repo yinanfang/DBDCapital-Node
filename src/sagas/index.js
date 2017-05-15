@@ -31,11 +31,11 @@ function* account() {
 
 function* accountAllBasicInfo() {
   while (true) {
-    // TODO: Cancel previous request if there's new one
     yield take(Actions.ACCOUNT.MULTI.ALL_ACCOUNTS.REQUEST);
     console.log('saga/index.js - accountAllBasicInfo');
     const allAccounts = yield call(API.account.multi.allAccounts);
     console.log('allAccounts', allAccounts);
+    yield put(Actions.account.admin.editorTransaction.select.allAccounts.success(allAccounts));
   }
 }
 

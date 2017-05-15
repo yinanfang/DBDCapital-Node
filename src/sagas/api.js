@@ -60,16 +60,16 @@ const account = {
     },
   },
   multi: {
-    allAccounts: () => {
-      console.log('saga API allAccounts...');
+    allAccounts: (scope: string = GCAPIConstant.Account.BASIC_INFO) => {
+      // console.log('saga API allAccounts...');
       return request
         .post(`${Path.API.basePath}/account`, {
           action: Actions.ACCOUNT.MULTI.ALL_ACCOUNTS.REQUEST,
-          scope: GCAPIConstant.Account.BASIC_INFO,
+          scope,
         })
         .then((response) => {
-          console.log('account allAccounts succeeded!');
-          return response.data;
+          // console.log('account allAccounts succeeded!');
+          return response.data.entities.accounts;
         });
     },
   },

@@ -2,6 +2,7 @@
 
 import Joi from 'joi-browser';
 import Parse from 'parse';
+import { normalize, schema } from 'normalizr';
 
 import GCObject from './GCObject';
 import GCUser from './GCUser';
@@ -81,5 +82,14 @@ export default class GCAccount extends GCObject {
       _updatedAt: account.updatedAt,
       _createdAt: account.createdAt,
     };
+  }
+
+  static normalizeAccountList(accountListData: GCAccountType[]) {
+    const accountsSchema = new schema.Entity('accounts', {}, { idAttribute: '_id' });
+    return normalize({
+      accounts: accountListData,
+    }, {
+      accounts: [accountsSchema],
+    });
   }
 }

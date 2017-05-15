@@ -1,5 +1,7 @@
 // @flow
 
+import type { GCAccountType } from '../../model/GCAccount';
+
 // Reference 01: https://github.com/yelouafi/redux-saga/blob/master/examples/real-world/actions/index.js
 // Reference 02: https://engineering.haus.com/so-youve-screwed-up-your-redux-store-or-why-redux-makes-refactoring-easy-400e19606c71#4fed
 
@@ -123,7 +125,7 @@ const account = {
       },
       select: {
         allAccounts: {
-          request: () => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.SELECT.ALL_ACCOUNTS.REQUEST, {}),
+          success: (accounts: {[key: string]: GCAccountType}) => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.SELECT.ALL_ACCOUNTS.SUCCESS, { accounts }),
         },
       },
     },

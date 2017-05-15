@@ -174,7 +174,6 @@ async function AccountInfoMultipleRequest(req: Request, res: Response) {
     const PAccount = Parse.Object.extend('Account');
     const queryAccount = new Parse.Query(PAccount);
     queryAccount.include('owner');
-    queryAccount.include('email');
     const results = await queryAccount.find(
       rs => rs,
       (rs, error) => {
@@ -182,7 +181,7 @@ async function AccountInfoMultipleRequest(req: Request, res: Response) {
       })
       // Catch non-error rejection
       .catch(err => err);
-    console.log('/account results', results, typeof results, JSON.stringify(results));
+    // console.log('/account results', results, typeof results, JSON.stringify(results));
 
     // Parse non-error rejection
     if (results.code === 101) {
@@ -191,8 +190,10 @@ async function AccountInfoMultipleRequest(req: Request, res: Response) {
       return;
     }
 
-    const payload = results.map(r => GCAccount.simplifyParseObject(r));
-    console.log('payload', payload);
+    const simpliedAccountList = results.map(r => GCAccount.simplifyParseObject(r));
+    const normalizedAccountList = GCAccount.normalizeAccountList(simpliedAccountList);
+    const payload = normalizedAccountList;
+    console.log('payload', normalizedAccountList);
     res.status(200).json(payload);
   } else {
     const msg = '/account AccountInfoMultipleRequest unknown error';

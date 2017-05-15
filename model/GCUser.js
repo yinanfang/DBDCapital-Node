@@ -94,6 +94,7 @@ export default class GCUser extends GCObject {
   }
 
   static simplifyParseObject(user: Parse.User): { _id: string, username: string, type: string } {
+    // console.log(`GCUser simplifyParseObject - ${JSON.stringify(user)}`);
     return {
       _id: user.id,
       username: user.getUsername(),
