@@ -25,7 +25,11 @@ const createRequestTypes = (base) => {
     return acc;
   }, {});
 };
-const action = (type, payload = {}) => {
+export type GCActionType = {
+  type: string,
+  [key: string]: any
+};
+const action = (type, payload = {}): GCActionType => {
   return { type, ...payload };
 };
 

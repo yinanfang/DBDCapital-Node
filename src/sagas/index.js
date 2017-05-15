@@ -35,7 +35,11 @@ function* accountAllBasicInfo() {
     console.log('saga/index.js - accountAllBasicInfo');
     const allAccounts = yield call(API.account.multi.allAccounts);
     console.log('allAccounts', allAccounts);
-    yield put(Actions.account.admin.editorTransaction.select.allAccounts.success(allAccounts));
+    if (allAccounts) {
+      yield put(Actions.account.admin.editorTransaction.select.allAccounts.success(allAccounts));
+    } else {
+      // TODO: handle request failure
+    }
   }
 }
 

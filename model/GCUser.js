@@ -9,13 +9,13 @@ export type GCUserType = {
   _id: string,
   username: string,
   type: string,
-  email: string,
-  emailVerified: boolean,
+  email?: string,
+  emailVerified?: boolean,
   firstName: string,
   lastName: string,
-  phone: string,
-  _updatedAt: Date,
-  _createdAt: Date
+  phone?: string,
+  _updatedAt?: Date,
+  _createdAt?: Date
 };
 
 const Role = {
@@ -24,7 +24,7 @@ const Role = {
 };
 
 export default class GCUser extends GCObject {
-  _id: ?string;
+  _id: string;
   username: string;
   type: string;
   email: string;
@@ -93,7 +93,7 @@ export default class GCUser extends GCObject {
     return Joi.validate(this, this.schema);
   }
 
-  static simplifyParseObject(user: Parse.User): { _id: string, username: string, type: string } {
+  static simplifyParseObject(user: Parse.User): GCUserType {
     // console.log(`GCUser simplifyParseObject - ${JSON.stringify(user)}`);
     return {
       _id: user.id,

@@ -3,7 +3,6 @@
 import React, { PropTypes } from 'react';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
 import Immutable from 'seamless-immutable';
 import _cloneDeep from 'lodash/cloneDeep';
 
@@ -50,6 +49,9 @@ const GCStepper = (props: {
   stepIndexDecrement: () => void,
   children: any
 }) => {
+  const handleRestart = () => {
+    console.log('restart this');
+  };
   return (
     <div
       style={{
@@ -70,15 +72,25 @@ const GCStepper = (props: {
       <div>
         {props.children}
       </div>
-      <div className={styleCSS.floatRight}>
-        <FlatButton
+      <div className={styleCSS.floatRight} style={{ minHeight: '40px' }}>
+        { props.step.index === props.step.maxCount ?
+          <RaisedButton
+            label="Restart"
+            onTouchTap={handleRestart}
+            primary
+            style={{ marginRight: 12 }}
+          />
+          : ''
+        }
+        <RaisedButton
           label="Back"
-          disabled={props.step.index === props.step.maxCount}
+          disabled={props.step.index === 0 || props.step.index === props.step.maxCount}
           onTouchTap={props.stepIndexDecrement}
           style={{ marginRight: 12 }}
         />
         <RaisedButton
-          label={props.step.index === 2 ? 'Finish' : 'Next'}
+          label="Next"
+          disabled={props.step.index === props.step.maxCount}
           primary
           onTouchTap={props.stepIndexIncrement}
         />

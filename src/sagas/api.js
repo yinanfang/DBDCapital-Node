@@ -56,6 +56,10 @@ const account = {
         .then((response) => {
           console.log('account info succeeded!');
           return response.data;
+        })
+        .catch((error) => {
+          // TODO: handle error
+          console.log('saga error acount.single', error);
         });
     },
   },
@@ -70,6 +74,10 @@ const account = {
         .then((response) => {
           // console.log('account allAccounts succeeded!');
           return response.data.entities.accounts;
+        })
+        .catch((error) => {
+          // TODO: handle error
+          console.log('saga error acount.multi', error);
         });
     },
   },

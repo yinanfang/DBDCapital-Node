@@ -6,15 +6,16 @@ import { normalize, schema } from 'normalizr';
 
 import GCObject from './GCObject';
 import GCUser from './GCUser';
+import type { GCUserType } from './GCUser';
 
 export type GCAccountType = {
   _id: string,
   name: string,
-  owner: any,
+  owner: GCUserType,
   stockBuyFeeRate: number,
   stockSellFeeRate: number,
-  _updatedAt: Date,
-  _createdAt: Date
+  _updatedAt?: Date,
+  _createdAt?: Date
 };
 
 export default class GCAccount extends GCObject {
@@ -29,7 +30,7 @@ export default class GCAccount extends GCObject {
   constructor({
     _id = '',
     name = '',
-    owner = {},
+    owner = GCUser.default(),
     stockBuyFeeRate = 0,
     stockSellFeeRate = 0,
     _updatedAt = new Date(),
