@@ -71,8 +71,8 @@ const ACCOUNT = {
     INFO: createRequestTypes('ACCOUNT_OVERVIEW'),
   },
   ADMIN: {
-    TARGET_ACCOUNT: createRequestTypes('ACCOUNT_ADMIN_TARGET_ACCOUNT'),
-    NEW_TRANSACTIONS: createRequestTypes('ACCOUNT_ADMIN_NEW_TRANSACTIONS'),
+    TARGET_ACCOUNT: createRequestTypes('ACCOUNT_ADMIN_TARGET_ACCOUNT'), // Deprecated
+    NEW_TRANSACTIONS: createRequestTypes('ACCOUNT_ADMIN_NEW_TRANSACTIONS'), // Deprecated
     EDITOR_TRANSACTION: {
       STEP: {
         INDEX: createRequestTypes('ACCOUNT_ADMIN_EDITOR_TRANSACTION_STEP_INDEX'),
@@ -81,6 +81,7 @@ const ACCOUNT = {
       SELECT: {
         ALL_ACCOUNTS: createRequestTypes('ACCOUNT_ADMIN_EDITOR_TRANSACTION_SELECT_ALL_ACCOUNTS'),
       },
+      TARGET_ACCOUNT: createRequestTypes('ACCOUNT_ADMIN_TARGET_ACCOUNT'),
     },
   },
 };
@@ -131,6 +132,9 @@ const account = {
         allAccounts: {
           success: (accounts: {[key: string]: GCAccountType}) => action(ACCOUNT.ADMIN.EDITOR_TRANSACTION.SELECT.ALL_ACCOUNTS.SUCCESS, { accounts }),
         },
+      },
+      targetAccount: {
+        update: (accountInfo: GCAccountType) => action(ACCOUNT.ADMIN.TARGET_ACCOUNT.UPDATE, { accountInfo }),
       },
     },
   },

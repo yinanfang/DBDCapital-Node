@@ -8,17 +8,18 @@ import Actions from '../../actions';
 import type { GCActionType } from '../../actions';
 // import type { GCAccountType } from '../../../model/GCAccount';
 
-// TODO: Deprecated. Deleate after the transaction editor is done
 const targetAccountReducer = (state = DEFAULT_STATE_ACCOUNT_ADMIN.targetAccount, action: GCActionType) => {
-  if (action.type === Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS) {
+  if (action.type === Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.SUCCESS) { // TODO: Deprecated. Deleate after the transaction editor is done
     return action.accountInfo;
-  } else if (action.type === Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE) {
+  } else if (action.type === Actions.ACCOUNT.ADMIN.NEW_TRANSACTIONS.UPDATE) { // TODO: Deprecated. Deleate after the transaction editor is done
     if (action.accountId) {
       // TODO: Move to Actions.ACCOUNT.ADMIN.TARGET_ACCOUNT.UPDATE or others ?
       return {
         _id: action.accountId,
       };
     }
+  } else if (action.type === Actions.ACCOUNT.ADMIN.EDITOR_TRANSACTION.TARGET_ACCOUNT.UPDATE) {
+    return action.accountInfo;
   }
   return state;
 };

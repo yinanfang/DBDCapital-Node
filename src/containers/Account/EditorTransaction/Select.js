@@ -25,10 +25,12 @@ const EditorTransactionSelect = ({
   step,
   allAccounts,
   allAccountsRequest,
+  targetAccountUpdate,
 }: {
   step: { [key: string]: any },
   allAccounts: { [key: string]: GCAccountType },
-  allAccountsRequest: () => void
+  allAccountsRequest: () => void,
+  targetAccountUpdate: (accountInfo: GCAccountType) => void
 }) => {
   const pullAllAccountInfo = (): void => {
     if (Object.keys(allAccounts).length === 0) {
@@ -49,10 +51,12 @@ const EditorTransactionSelect = ({
     return choices;
   };
 
-  const handleSelect = (selected: string, index: number): void => {
+  const handleSelect = (selected: {text: string, value: string}, index: number): void => {
     // -1 means enter is pressed in the TextField
     if (index !== -1) {
       console.log('selected: ', selected);
+      const accountInfo = allAccounts[selected.value];
+      targetAccountUpdate(accountInfo);
     }
   };
 
@@ -81,6 +85,7 @@ EditorTransactionSelect.propTypes = {
   step: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   allAccounts: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   allAccountsRequest: PropTypes.func.isRequired,
+  targetAccountUpdate: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -91,6 +96,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = {
   allAccountsRequest: Actions.account.multi.allAccounts.request,
+  targetAccountUpdate: Actions.account.admin.editorTransaction.targetAccount.update,
   // newTransactionsUpdate: Actions.account.admin.newTransactions.update,
   // newTransactionsSubmit: Actions.account.admin.newTransactions.submit,
 };
