@@ -7,42 +7,42 @@ import { connect } from 'react-redux';
 // import FlatButton from 'material-ui/FlatButton';
 
 // import GCUtil from '../../../utils';
-import GCStepper, { DEFAULT_STATE_STEP } from '../../../components/GCStepper';
+import GCStepper, { initStep as GCStepperInit } from '../../../components/GCStepper';
 import Actions from '../../../actions';
 import EditorTransactionSelect, { DEFAULT_STATE as DEFAULT_STATE_SELECT } from './Select';
+import GCAccount from '../../../../model/GCAccount';
+import GCTransaction from '../../../../model/GCTransaction';
 // import EditorTransactionEdit, { DEFAULT_STATE as DEFAULT_STATE_EDIT } from './Edit';
 // import styleCSS from '../../style.css';
 
 const prepareStep = () => {
-  const step = DEFAULT_STATE_STEP;
-  const content = {};
-  content[0] = {
+  const step = GCStepperInit(4);
+  step.content[0] = {
     title: 'Select account & action',
     descriptiton: 'Select account from dropdown',
   };
-  content[1] = {
+  step.content[1] = {
     title: 'Editor',
     descriptiton: 'Edit them',
   };
-  content[2] = {
+  step.content[2] = {
     title: 'Review & submit',
     descriptiton: 'Review them',
   };
-  content[3] = {
+  step.content[3] = {
     title: 'Result',
     descriptiton: 'See results!',
   };
-  step.content = content;
-  step.maxCount = Object.keys(content).length;
   return step;
 };
+const DEFAULT_NEW_TRANSACTIONS_COUNT = 3;
 const DEFAULT_STATE = {
   step: prepareStep(),
   select: DEFAULT_STATE_SELECT,
   editorType: '',
-  targetAccount: {}, // GCAccount.default()
-  newTransactions: {}, // GCTransaction.defaultInputWithCount(DEFAULT_NEW_TRANSACTIONS_COUNT)
-  oldTransactions: {}, // {num: GCTransaction, ...}
+  targetAccount: GCAccount.default(),
+  newTransactions: GCTransaction.defaultInputWithCount(DEFAULT_NEW_TRANSACTIONS_COUNT),
+  oldTransactions: {},
   result: {},
 };
 
@@ -100,10 +100,8 @@ const EditorTransaction = ({
   };
 
   return (
-    <GCStepper
+    <GCStepper.Frame
       step={step}
-      stepIndexIncrement={stepIndexIncrement}
-      stepIndexDecrement={stepIndexDecrement}
       children={(null: any)} // eslint-disable-line react/no-children-prop
     >
       <form
@@ -111,7 +109,7 @@ const EditorTransaction = ({
       >
         {singleStepContainer(step.index)}
       </form>
-    </GCStepper>
+    </GCStepper.Frame>
   );
 };
 
@@ -123,6 +121,7 @@ EditorTransaction.propTypes = {
   step: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   // Dispatches Injected by React Redux
   stepIndexIncrement: PropTypes.func.isRequired,
+  stepIndexDecrement: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {

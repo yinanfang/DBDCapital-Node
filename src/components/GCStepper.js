@@ -3,7 +3,6 @@
 import React, { PropTypes } from 'react';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
-import Immutable from 'seamless-immutable';
 import _cloneDeep from 'lodash/cloneDeep';
 
 import styleCSS from '../style.css';
@@ -20,44 +19,31 @@ export type GCStepperInputType = {
   }
 };
 
-const initStep = (): GCStepperInputType => {
+const DEFAULT_STEP_COUNT = 3;
+const initStep = (count: number = DEFAULT_STEP_COUNT): GCStepperInputType => {
   const content = {};
-  content[0] = {
-    title: 'Step title 0',
-    descriptiton: 'Step descriptiton 0',
-  };
-  content[1] = {
-    title: 'Step title 1',
-    descriptiton: 'Step descriptiton 1',
-  };
-  content[2] = {
-    title: 'Step title 2',
-    descriptiton: 'Step descriptiton 2',
-  };
-  return Immutable({
+  [...Array(count)].map((_, i) => {
+    content[i] = {
+      title: `Step title ${i}`,
+      descriptiton: `Step description ${i}`,
+    };
+    return '';
+  });
+  return _cloneDeep({
     index: 0,
     maxCount: Object.keys(content).length,
     isRequesting: false,
     content,
   });
 };
-const DEFAULT_STATE_STEP: GCStepperInputType = _cloneDeep(initStep());
+const DEFAULT_STATE_STEP: GCStepperInputType = initStep();
 
-const GCStepper = (props: {
+const Frame = (props: {
   step: GCStepperInputType,
-  stepIndexIncrement: () => void,
-  stepIndexDecrement: () => void,
   children: any
 }) => {
-  const handleRestart = () => {
-    console.log('restart this');
-  };
   return (
-    <div
-      style={{
-        overflow: 'auto', // clearFix for material-ui Button
-      }}
-    >
+    <div>
       <Stepper activeStep={props.step.index} style={{ width: '100%', maxWidth: 600, margin: 'auto' }}>
         {[...Array(props.step.maxCount)].map((_, i) => {
           return (
@@ -72,34 +58,61 @@ const GCStepper = (props: {
       <div>
         {props.children}
       </div>
-      <div className={styleCSS.floatRight} style={{ minHeight: '40px' }}>
-        { props.step.index === props.step.maxCount ?
-          <RaisedButton
-            label="Restart"
-            onTouchTap={handleRestart}
-            primary
-            style={{ marginRight: 12 }}
-          />
-          : ''
-        }
-        <RaisedButton
-          label="Back"
-          disabled={props.step.index === 0 || props.step.index === props.step.maxCount}
-          onTouchTap={props.stepIndexDecrement}
-          style={{ marginRight: 12 }}
-        />
-        <RaisedButton
-          label="Next"
-          disabled={props.step.index === props.step.maxCount}
-          primary
-          onTouchTap={props.stepIndexIncrement}
-        />
-      </div>
     </div>
   );
 };
 
-GCStepper.propTypes = {
+Frame.propTypes = {
+  // Injected by React Redux
+  children: PropTypes.node.isRequired, // eslint-disable-line react/require-default-props
+  // Injected by React Redux
+  step: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+};
+
+const Footer = (props: {
+  step: GCStepperInputType,
+  stepIndexIncrement: () => void,
+  stepIndexDecrement: () => void,
+  children: any
+}) => {
+  const handleRestart = () => {
+    console.log('restart this');
+  };
+  return (
+    <div
+      style={{
+        overflow: 'auto', // clearFix for float right element
+      }}
+    >
+      { props.step.index === props.step.maxCount ?
+        <RaisedButton
+          className={styleCSS.floatRight}
+          label="Restart"
+          onTouchTap={handleRestart}
+          primary
+          style={{ marginRight: 12 }}
+        />
+        : ''
+      }
+      <RaisedButton
+        className={styleCSS.floatRight}
+        label="Back"
+        disabled={props.step.index === 0 || props.step.index === props.step.maxCount}
+        onTouchTap={props.stepIndexDecrement}
+        style={{ marginRight: 12 }}
+      />
+      <RaisedButton
+        className={styleCSS.floatRight}
+        label="Next"
+        disabled={props.step.index === props.step.maxCount}
+        primary
+        onTouchTap={props.stepIndexIncrement}
+      />
+    </div>
+  );
+};
+
+Footer.propTypes = {
   // Injected by React Redux
   children: PropTypes.node.isRequired, // eslint-disable-line react/require-default-props
   // Injected by React Redux
@@ -108,7 +121,8 @@ GCStepper.propTypes = {
   step: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
-export default GCStepper;
+export default { Frame, Footer };
 export {
+  initStep,
   DEFAULT_STATE_STEP,
 };

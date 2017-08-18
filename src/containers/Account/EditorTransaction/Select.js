@@ -9,6 +9,7 @@ import AutoComplete from 'material-ui/AutoComplete';
 
 // import GCUtil from '../../../utils';
 // import GCStepper from '../../../components/GCStepper';
+import GCStepper from '../../../components/GCStepper';
 import type { GCAccountType } from '../../../../model/GCAccount';
 import Actions from '../../../actions';
 // import styleCSS from '../../style.css';
@@ -26,11 +27,15 @@ const EditorTransactionSelect = ({
   allAccounts,
   allAccountsRequest,
   targetAccountUpdate,
+  stepIndexIncrement,
+  stepIndexDecrement,
 }: {
   step: { [key: string]: any },
   allAccounts: { [key: string]: GCAccountType },
   allAccountsRequest: () => void,
-  targetAccountUpdate: (accountInfo: GCAccountType) => void
+  targetAccountUpdate: (accountInfo: GCAccountType) => void,
+  stepIndexIncrement: () => void,
+  stepIndexDecrement: () => void
 }) => {
   const pullAllAccountInfo = (): void => {
     if (Object.keys(allAccounts).length === 0) {
@@ -73,6 +78,11 @@ const EditorTransactionSelect = ({
         onNewRequest={handleSelect}
         maxSearchResults={10}
       />
+      <GCStepper.Footer
+        step={step}
+        stepIndexIncrement={stepIndexIncrement}
+        stepIndexDecrement={stepIndexDecrement}
+      />
     </div>
   );
 };
@@ -97,6 +107,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   allAccountsRequest: Actions.account.multi.allAccounts.request,
   targetAccountUpdate: Actions.account.admin.editorTransaction.targetAccount.update,
+  stepIndexIncrement: Actions.account.admin.editorTransaction.step.index.increment,
+  stepIndexDecrement: Actions.account.admin.editorTransaction.step.index.decrement,
   // newTransactionsUpdate: Actions.account.admin.newTransactions.update,
   // newTransactionsSubmit: Actions.account.admin.newTransactions.submit,
 };
