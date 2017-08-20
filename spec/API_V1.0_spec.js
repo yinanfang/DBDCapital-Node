@@ -21,9 +21,9 @@ const requestParseCloudAPI = request(Config.PARSE_CLOUD_API_BASE);
 
 const TestUser = TestUtil.DEFAULT_TEST_USER;
 
-/* ***************************************************************************
+/* ****************************************************************************
 Setup - Register test user
-*****************************************************************************/
+**************************************************************************** */
 
 describe('Node Sever API v1.0 Test Setup', () => {
   // it('should be able to init Parse', (done) => {
@@ -54,24 +54,24 @@ describe('Node Sever API v1.0 Test Setup', () => {
     }, {
       type: GCUserRole.ADMIN,
     })
-    .catch(err => TestUtil.GeneralErrorHandler(done, err));
+      .catch(err => TestUtil.GeneralErrorHandler(done, err));
 
     DBUser.findOne({
       username: TestUser.username,
     })
-    .then((adminUser) => {
-      expect(adminUser.type).toEqual(GCUserRole.ADMIN);
-      done();
-      return null;
-    })
-    .catch(err => TestUtil.GeneralErrorHandler(done, err));
+      .then((adminUser) => {
+        expect(adminUser.type).toEqual(GCUserRole.ADMIN);
+        done();
+        return null;
+      })
+      .catch(err => TestUtil.GeneralErrorHandler(done, err));
   });
 });
 
 
-/* ***************************************************************************
+/* ****************************************************************************
 Main Test
-*****************************************************************************/
+**************************************************************************** */
 
 describe('Node Sever API v1.0 Test - Sanity Checks', () => {
   it('/login', (done) => {
@@ -239,35 +239,35 @@ describe('Node Sever API v1.0 Test - Admin Submission Test - /account/newTransac
     DBPosition.find({
       transId: testPosition.transId,
     })
-    .then((results) => {
-      expect(results.length).toEqual(1);
-      done();
-      return null;
-    })
-    .catch(err => TestUtil.GeneralErrorHandler(done, err));
+      .then((results) => {
+        expect(results.length).toEqual(1);
+        done();
+        return null;
+      })
+      .catch(err => TestUtil.GeneralErrorHandler(done, err));
   });
 
   it('the stock info in Security Table should be updated after the previous minute', (done) => {
     DBSecurity.find({
       symbol: testPosition.symbol,
     })
-    .then((results) => {
-      expect(results.length).toEqual(1);
-      const today = new Date();
-      const minuteAgo = new Date(today.getTime() - (1000 * 60));
-      expect(minuteAgo < results[0]._updated_at).toBeTruthy();
-      done();
-      return null;
-    })
-    .catch(err => TestUtil.GeneralErrorHandler(done, err));
+      .then((results) => {
+        expect(results.length).toEqual(1);
+        const today = new Date();
+        const minuteAgo = new Date(today.getTime() - (1000 * 60));
+        expect(minuteAgo < results[0]._updated_at).toBeTruthy();
+        done();
+        return null;
+      })
+      .catch(err => TestUtil.GeneralErrorHandler(done, err));
     done();
   });
 });
 
 
-/* ***************************************************************************
+/* ****************************************************************************
 Cleanup - Delete test user
-*****************************************************************************/
+**************************************************************************** */
 
 describe('Node Sever API v1.0 Test Main Cleanup', () => {
   it('should be able to delete all test data', async (done) => {

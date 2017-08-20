@@ -1,6 +1,7 @@
 // @flow
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // Vendor CSS files
@@ -39,17 +40,20 @@ const App = (props) => {
 
   return (
     <Measure
-      onMeasure={(measure) => {
-        handleMeasureUpdate(measure);
+      bounds
+      onResize={(contentRect) => {
+        handleMeasureUpdate(contentRect.bounds);
       }}
     >
-      <div className={styleCSS.appBase}>
-        <Helmet
-          defaultTitle="DBD Capital"
-          titleTemplate="%s - DBD Capital"
-        />
-        {props.children}
-      </div>
+      {({ measureRef }) => (
+        <div ref={measureRef} className={styleCSS.appBase}>
+          <Helmet
+            defaultTitle="DBD Capital"
+            titleTemplate="%s - DBD Capital"
+          />
+          {props.children}
+        </div>
+      )}
     </Measure>
   );
 };

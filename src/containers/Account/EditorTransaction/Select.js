@@ -1,6 +1,7 @@
 // @flow
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import AutoComplete from 'material-ui/AutoComplete';
 // import Paper from 'material-ui/Paper';

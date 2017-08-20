@@ -1,11 +1,12 @@
 // @flow
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import Helmet from 'react-helmet';
 
-import Actions from '../../actions';
+// import Actions from '../../actions';
 // import styleCSS from '../style.css';
 
 const AccountOverview = (props) => {

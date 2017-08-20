@@ -10,9 +10,9 @@ const requestParseCloudAPI = request(Config.PARSE_CLOUD_API_BASE);
 
 const TestUser = TestUtil.DEFAULT_TEST_USER;
 
-/* ***************************************************************************
+/* ****************************************************************************
 Setup - Register test user
-*****************************************************************************/
+**************************************************************************** */
 describe('Web App Test Setup', () => {
   it('should be able to register the test user', (done) => {
     requestNodeAPI.post('/register')
@@ -25,9 +25,9 @@ describe('Web App Test Setup', () => {
 });
 
 
-/* ***************************************************************************
+/* ****************************************************************************
 Main Test
-*****************************************************************************/
+**************************************************************************** */
 
 describe('Automated browser Test for Web Client', () => {
   it('Desktop Web Admin Login + Submit New Transactions + View Open Position should work fine', (done) => {
@@ -65,9 +65,9 @@ describe('Automated browser Test for Web Client', () => {
 });
 
 
-/* ***************************************************************************
+/* ****************************************************************************
 Cleanup - Delete test user
-*****************************************************************************/
+**************************************************************************** */
 
 describe('Parse-Sever API v1.0 Test', () => {
   it('should be able to delete the test user', (done) => {

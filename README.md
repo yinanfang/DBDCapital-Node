@@ -56,6 +56,13 @@
 ```shell
     # Check available upgrades
     ncu
+    # Take a look at the update and handle minor version updates first
+    npm update
+    # Check Github release updates and handle each major update carefully. Run the tests!
+    ncu -u webpack
+    npm update
+    # Update package.json to include the previous minor version updates too
+    ncu -a
 ```
 
 ## MongoLab - Robomongo
@@ -106,3 +113,7 @@
 
 https://medium.com/@dan_abramov/react-components-elements-and-instances-90800811f8ca#.cx6foekli
 https://medium.com/@housecor/react-stateless-functional-components-nine-wins-you-might-have-overlooked-997b0d933dbc#.mzql1zm99
+
+
+## Unused packages
+- chai, chalk, color, passport, passport-local, precss, radium, yahoo-finance, reselect
