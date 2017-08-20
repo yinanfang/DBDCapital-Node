@@ -37,7 +37,7 @@
 
 ### Unsecure dev page
 - https://localhost:3000 -> Browser-Sync Auto refresh
-- https://localhost:8843 -> Original Webpack server
+- https://localhost:8443 -> Original Webpack server
 - https://localhost:8443/dashboard/apps -> Parse dashboard
 
 ### Secure dev page
@@ -52,6 +52,11 @@
 - https://www.dbd-capital.com:8443
 - https://dbd-capital.com:8443/dashboard/apps
 
+### Dependency update
+```shell
+    # Check available upgrades
+    ncu
+```
 
 ## MongoLab - Robomongo
 - MongoLab: https://mlab.com/databases/dbdcapital
