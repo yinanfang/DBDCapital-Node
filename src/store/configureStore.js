@@ -12,7 +12,7 @@ export default function configureStore(initialState: {}) {
   const middlewareList = [sagaMiddleware];
 
   // TODO: use local storage to store dev/prod env
-  const IS_DEVELOPMENT = true;
+  const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
   if (IS_DEVELOPMENT) {
     middlewareList.push(createLogger());
   }

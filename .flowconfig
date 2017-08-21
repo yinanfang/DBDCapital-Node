@@ -65,6 +65,7 @@
 .*/node_modules/eslint-plugin-jsx-a11y/.*
 .*/node_modules/radium/.*
 .*/node_modules/redux-persist/.*
+.*/node_modules/bcryptjs/.*
 
 [include]
 

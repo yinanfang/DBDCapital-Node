@@ -18,7 +18,19 @@ const entry = Config.IS_DEVELOPMENT ? {
   index: ['babel-polyfill', './src/index'],
 };
 
+// 1) Add additional env var so for React app:
+//    https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#user-content-adding-custom-environment-variables
+// 2) Disable React compressed production version warnings for UglifyJsPlugin with DefinePlugin
+//    https://github.com/facebook/react/issues/6479#issuecomment-214590100
+//    http://dev.topheman.com/make-your-react-production-minified-version-with-webpack/
+const AdditionalEnv = new webpack.DefinePlugin({
+  'process.env': {
+    NODE_ENV: JSON.stringify(Config.IS_DEVELOPMENT ? 'development' : 'production'),
+  },
+});
+
 const plugins = Config.IS_DEVELOPMENT ? [
+  AdditionalEnv,
   new HtmlWebpackPlugin({
     template: 'src/index.html',
     inject: true,
@@ -50,20 +62,13 @@ const plugins = Config.IS_DEVELOPMENT ? [
   }),
   new webpack.NoEmitOnErrorsPlugin(),
 ] : [
+  AdditionalEnv,
   new HtmlWebpackPlugin({
     template: 'src/index.html',
     inject: true,
     filename: 'index.html',
   }),
   new ExtractTextPlugin('[name]-[hash].min.css'),
-  // Disable React compressed production version warnings for UglifyJsPlugin with DefinePlugin
-  // https://github.com/facebook/react/issues/6479#issuecomment-214590100
-  // http://dev.topheman.com/make-your-react-production-minified-version-with-webpack/
-  new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: JSON.stringify('production'),
-    },
-  }),
   new webpack.optimize.UglifyJsPlugin({
     minimize: true,
     sourceMap: true,

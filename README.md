@@ -30,7 +30,7 @@
     # One line start
     sudo pm2 start index.js --no-daemon
     # pm2 list
-    sudo pm2 ls
+    sudo pm2 list
     # pm2 start with .json
     sudo pm2 start pm2_config.json
 ```
