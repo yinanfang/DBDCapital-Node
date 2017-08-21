@@ -8,7 +8,7 @@
     npm install -g flow-bin
     npm install
 
-    # Retrieve .env.development, .evn.production, dbd-capital.com.crt, dbd-capital,com.key, StartCom_root_bundle.crt
+    # Upload env & SSL files from local. See key.txt for command
 
     make dev
 

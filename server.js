@@ -168,7 +168,7 @@ http.createServer(app).listen(Config.HTTP_PORT);
 
 // SSL
 const SSLOption = {
-  ca: [fs.readFileSync('StartCom_root_bundle.crt')], // Avoid importing root crt to Mac Key Chain
+  ca: [fs.readFileSync('Comodo_root_bundle.crt')], // Avoid importing root crt to Mac Key Chain
   cert: fs.readFileSync('dbd-capital.com.crt'),
   key: fs.readFileSync('dbd-capital.com.key'),
 };
