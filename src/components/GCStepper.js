@@ -115,7 +115,7 @@ const Footer = (props: {
 
 Footer.propTypes = {
   // Injected by React Redux
-  children: PropTypes.node.isRequired, // eslint-disable-line react/require-default-props
+  children: PropTypes.node, // eslint-disable-line react/require-default-props
   // Injected by React Redux
   stepIndexIncrement: PropTypes.func.isRequired,
   stepIndexDecrement: PropTypes.func.isRequired,

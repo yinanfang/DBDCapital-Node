@@ -17,9 +17,9 @@ import GCUser, { Role as GCUserRole } from '../../model/GCUser';
 import DBPosition from './db/DBPosition';
 import Actions from '../../src/actions';
 
-/* ***************************************************************************
+/* ****************************************************************************
 Auth
-*****************************************************************************/
+**************************************************************************** */
 
 const Register = (req: Request, res: Response, next: NextFunction) => {
   logger.debug(`in register...${JSON.stringify(req.body)}`);
@@ -71,7 +71,7 @@ const Login = (req: Request, res: Response, next: NextFunction) => {
         error,
       });
     }
-  );
+    );
 };
 
 const User = (req: Request, res: Response, next: NextFunction) => {
@@ -223,9 +223,9 @@ const DeleteUser = (req: Request, res: Response, next: NextFunction) => {
   res.send('Delete User!!!');
 };
 
-/* ***************************************************************************
+/* ****************************************************************************
 Account
-*****************************************************************************/
+**************************************************************************** */
 
 async function AccountOverview(req: Request, res: Response, next: NextFunction) {
   logger.debug('finished all!!!');
@@ -380,9 +380,9 @@ async function AccountNewTransactionsSubmit(req: Request, res: Response, next: N
   }
 }
 
-/* ***************************************************************************
+/* ****************************************************************************
 Common
-*****************************************************************************/
+**************************************************************************** */
 
 const Quote = (req: Request, res: Response, next: NextFunction) => {
 

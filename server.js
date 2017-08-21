@@ -117,6 +117,10 @@ if (Config.IS_DEVELOPMENT) {
     stats: {
       colors: true,
     },
+    // Disable origin protection for dev: https://github.com/webpack/webpack-dev-middleware/pull/191
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
   });
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));

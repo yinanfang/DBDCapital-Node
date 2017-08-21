@@ -1,7 +1,7 @@
 // ／@flow
 /* eslint-disable no-constant-condition */
 
-import { take, fork, call, put } from 'redux-saga/effects';
+import { all, take, fork, call, put } from 'redux-saga/effects';
 import { browserHistory } from 'react-router';
 
 import Actions from '../actions';
@@ -83,7 +83,7 @@ function* watchNavigate() {
 }
 
 export default function* root() {
-  yield [
+  yield all([
     // Feature
     fork(login),
     fork(account),
@@ -93,5 +93,5 @@ export default function* root() {
     fork(accountAdminNewTransactionsSubmit),
     // Utility
     fork(watchNavigate),
-  ];
+  ]);
 }

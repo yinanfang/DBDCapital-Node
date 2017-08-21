@@ -113,7 +113,7 @@ const cssLoader = Config.IS_DEVELOPMENT ? {
 };
 
 module.exports = {
-  devtool: Config.IS_DEVELOPMENT ? 'eval-source-map' : 'source-map',
+  devtool: Config.IS_DEVELOPMENT ? 'source-map' : 'source-map',
   entry,
   output: {
     path: path.join(__dirname, 'dist'),

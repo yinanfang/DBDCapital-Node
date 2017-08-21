@@ -23,6 +23,8 @@
     # Update & Restart
     make updateAndRestart
 
+    # Update db if there's schema change. See key.txt for details
+
     ##############################################################################
     # Options
     # Start with babel-node

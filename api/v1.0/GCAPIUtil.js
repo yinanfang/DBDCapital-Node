@@ -67,12 +67,12 @@ const GCSecurityUtil = {
       return { key: [stock.symbol], value: security };
     }))
     // Turn array into a map
-    .then((result) => {
-      return result.reduce((map, obj) => {
-        map[obj.key] = obj.value;
-        return map;
-      }, {});
-    });
+      .then((result) => {
+        return result.reduce((map, obj) => {
+          map[obj.key] = obj.value;
+          return map;
+        }, {});
+      });
   },
   delete: async function _delete(security: ParseObject) {
     await security.destroy()
@@ -133,37 +133,37 @@ const SinaStock = {
       url,
       encoding: null,
     })
-    .then((response) => {
-      const converted = iconv.decode(response, 'GBK').split('\n');
-      converted.pop(); // pop the new line at the end
-      const stockList = [];
-      const errorList = [];
-      converted.forEach((detailText) => {
-        const parts = detailText.split('=');
-        const symbol = parts[0].split('_').pop();
-        const data = parts[1].split('"')[1].split(',');
+      .then((response) => {
+        const converted = iconv.decode(response, 'GBK').split('\n');
+        converted.pop(); // pop the new line at the end
+        const stockList = [];
+        const errorList = [];
+        converted.forEach((detailText) => {
+          const parts = detailText.split('=');
+          const symbol = parts[0].split('_').pop();
+          const data = parts[1].split('"')[1].split(',');
 
-        const security = SinaStock.parseSecurityData(symbol, data);
-        const validation = security.validate();
-        if (validation.error) {
-          logger.debug('validation error->', validation.error.details);
-          errorList.push(security);
-        } else {
-          stockList.push(security);
-        }
+          const security = SinaStock.parseSecurityData(symbol, data);
+          const validation = security.validate();
+          if (validation.error) {
+            logger.debug('validation error->', validation.error.details);
+            errorList.push(security);
+          } else {
+            stockList.push(security);
+          }
+        });
+
+        // debug
+        // logger.debug('stockList-------->');
+        // GCObject.printSimpleArray(stockList);
+        // logger.debug('errorList-------->');
+        // GCObject.printSimpleArray(errorList);
+
+        return { stockList, errorList };
+      })
+      .catch((error) => {
+        logger.error('SinaStock error: ', error.message);
       });
-
-      // debug
-      // logger.debug('stockList-------->');
-      // GCObject.printSimpleArray(stockList);
-      // logger.debug('errorList-------->');
-      // GCObject.printSimpleArray(errorList);
-
-      return { stockList, errorList };
-    })
-    .catch((error) => {
-      logger.error('SinaStock error: ', error.message);
-    });
   },
 };
 

@@ -9,7 +9,6 @@ import AutoComplete from 'material-ui/AutoComplete';
 // import FlatButton from 'material-ui/FlatButton';
 
 // import GCUtil from '../../../utils';
-// import GCStepper from '../../../components/GCStepper';
 import GCStepper from '../../../components/GCStepper';
 import type { GCAccountType } from '../../../../model/GCAccount';
 import Actions from '../../../actions';
@@ -23,7 +22,7 @@ const DEFAULT_STATE: {
   allAccounts: {}, // {num: GCAccount, ...}
 };
 
-const EditorTransactionSelect = ({
+const Select = ({
   step,
   allAccounts,
   allAccountsRequest,
@@ -88,7 +87,7 @@ const EditorTransactionSelect = ({
   );
 };
 
-EditorTransactionSelect.propTypes = {
+Select.propTypes = {
   // Injected by React Router
   // TODO: mark this as required
   children: PropTypes.node, // eslint-disable-line react/require-default-props
@@ -113,7 +112,7 @@ const mapDispatchToProps = {
   // newTransactionsUpdate: Actions.account.admin.newTransactions.update,
   // newTransactionsSubmit: Actions.account.admin.newTransactions.submit,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(EditorTransactionSelect);
+export default connect(mapStateToProps, mapDispatchToProps)(Select);
 export {
   DEFAULT_STATE,
 };
