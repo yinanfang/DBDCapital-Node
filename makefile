@@ -50,7 +50,7 @@ clean:
 	rm -rf dist
 
 build: clean
-	NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js ./node_modules/webpack/bin/webpack.js --progress --profile --colors --production
+	NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js ./node_modules/webpack/bin/webpack.js --progress --profile --colors
 
 pm2:
 	sudo pm2 start pm2_config.json

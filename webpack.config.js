@@ -4,11 +4,12 @@ import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import StatsPlugin from 'stats-webpack-plugin';
 import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 import WebpackShellPlugin from 'webpack-shell-plugin';
 
 import Config from './config';
+
+const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 
 // [name]: [sources] -> file.html output uses the same name. js/css files use [name] and will auto-append to file.html
 const entry = Config.IS_DEVELOPMENT ? {
@@ -74,7 +75,9 @@ const plugins = Config.IS_DEVELOPMENT ? [
       comments: false,
     },
   }),
-  new StatsPlugin('webpack.stats.json'),
+  new StatsWriterPlugin({
+    filename: 'webpack.stats.json',
+  }),
   new WebpackShellPlugin({
     onBuildStart: ['echo "\n\n-----"', 'echo "Webpack Start"', 'echo "-----\n"'],
     onBuildEnd: ['echo "\n\n-----"', 'echo "Webpack End"', 'echo "-----\n"'],
@@ -105,7 +108,7 @@ const cssLoader = Config.IS_DEVELOPMENT ? {
 };
 
 module.exports = {
-  devtool: Config.IS_DEVELOPMENT ? 'source-map' : null,
+  devtool: Config.IS_DEVELOPMENT ? 'eval-source-map' : 'source-map',
   entry,
   output: {
     path: path.join(__dirname, 'dist'),
@@ -118,7 +121,7 @@ module.exports = {
     rules: [
       { // Bable
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: /node_modules\/(?!(autotrack|dom-utils))/, // autotrack is published with ES6: https://github.com/googleanalytics/autotrack/issues/137
         loader: 'babel-loader',
         options: {
           presets: babelPresets,

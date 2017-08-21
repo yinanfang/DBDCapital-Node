@@ -116,4 +116,4 @@ https://medium.com/@housecor/react-stateless-functional-components-nine-wins-you
 
 
 ## Unused packages
-- chai, chalk, color, passport, passport-local, precss, radium, yahoo-finance, reselect
+- chai, chalk, color, passport, passport-local, precss, radium, yahoo-finance, reselect, glob, bcryptjs, mailcheck, mobile-detect, postcss-mixins, postcss-nested, postcss-simple-vars, prettyjson, react-event-listener, react-icons, react-responsive, react-timer-mixin, redux-persist, shelljs

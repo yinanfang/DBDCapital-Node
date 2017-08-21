@@ -28,7 +28,7 @@ describe('Web App Test Setup', () => {
 /* ****************************************************************************
 Main Test
 **************************************************************************** */
-
+// Use insert to fix the truncated text issue: https://github.com/segmentio/nightmare/issues/1116
 describe('Automated browser Test for Web Client', () => {
   it('Desktop Web Admin Login + Submit New Transactions + View Open Position should work fine', (done) => {
     const browser = TestUtil.getBrowser();
@@ -43,8 +43,8 @@ describe('Automated browser Test for Web Client', () => {
       // Go to Auth page and log in
       .click('a[href="/auth"]')
       .wait('form[name="login"]')
-      .insert('form[name="login"] input[name="username"]', TestUser.username) // Use insert to fix the truncated text issue: https://github.com/segmentio/nightmare/issues/1116
-      .type('form[name="login"] input[name="password"]', TestUser.password)
+      .insert('form[name="login"] input[name="username"]', TestUser.username)
+      .insert('form[name="login"] input[name="password"]', TestUser.password)
       .click('form[name="login"] button[type="submit"]')
       // Go to Account/Admin, fill out first row, and submit
       .wait('div[class*="__accountBase__"]')

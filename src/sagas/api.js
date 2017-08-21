@@ -38,10 +38,10 @@ const user = (token: string) => {
       token,
     }),
   })
-  .catch((ex) => {
-    console.log(' failed', ex);
-    return null;
-  });
+    .catch((ex) => {
+      console.log(' failed', ex);
+      return null;
+    });
 };
 
 const account = {
